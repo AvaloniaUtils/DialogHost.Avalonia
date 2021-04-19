@@ -1,0 +1,29 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <TargetFramework>netstandard2.0</TargetFramework>
+        <LangVersion>9</LangVersion>
+        <Nullable>enable</Nullable>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <Title>DialogHost.Avalonia</Title>
+        <Authors>SKProCH</Authors>
+        <Description>Avalonia Dialog Host control that provides a simple way to display a dialog with information or prompt the user when information is required</Description>
+        <PackageProjectUrl>https://github.com/AvaloniaUtils/DialogHost.Avalonia/</PackageProjectUrl>
+        <PackageLicenseUrl>https://github.com/AvaloniaUtils/DialogHost.Avalonia/blob/main/LICENSE</PackageLicenseUrl>
+        <RepositoryUrl>https://github.com/AvaloniaUtils/DialogHost.Avalonia.git</RepositoryUrl>
+        <RepositoryType>Git</RepositoryType>
+        <PackageTags>material icons material-design google-material avalonia</PackageTags>
+        <PackageVersion>1.0.2</PackageVersion>
+        <RootNamespace>Avalonia.DialogHost</RootNamespace>
+    </PropertyGroup>
+    <ItemGroup>
+        <Compile Update="**\*.xaml.cs">
+            <DependentUpon>%(Filename)</DependentUpon>
+        </Compile>
+        <AvaloniaResource Include="**\*.xaml">
+            <SubType>Designer</SubType>
+        </AvaloniaResource>
+    </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="Avalonia" Version="0.10.0" />
+    </ItemGroup>
+</Project>

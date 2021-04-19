@@ -1,0 +1,35 @@
+﻿<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:controls="using:DialogHost.Avalonia"
+        xmlns:dialogHost="clr-namespace:Avalonia.DialogHost">
+    <Design.PreviewWith>
+        <dialogHost:DialogHost />
+    </Design.PreviewWith>
+
+    <Style Selector="dialogHost|DialogHost">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Grid x:Name="DialogHostRoot" Focusable="False">
+                    <AdornerLayer>
+                        <ContentPresenter x:Name="ContentPresenter"
+                                          Opacity="1"
+                                          Content="{TemplateBinding Content}"
+                                          ContentTemplate="{TemplateBinding ContentTemplate}"
+                                          HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                          VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
+                    </AdornerLayer>
+                    <Grid Name="PART_ContentCoverGrid"
+                          Background="{TemplateBinding OverlayBackground}"
+                          IsHitTestVisible="False" Focusable="False">
+                        <Grid.Styles>
+                            <Style Selector="Grid#PART_ContentCoverGrid[Opacity=0]">
+                                <Setter Property="IsVisible" Value="False" />
+                            </Style>
+                        </Grid.Styles>
+                    </Grid>
+                    <OverlayLayer Name="PART_OverlayLayer"/>
+                </Grid>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+</Styles>
