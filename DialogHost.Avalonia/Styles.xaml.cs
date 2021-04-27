@@ -1,5 +1,3 @@
-﻿using Avalonia.Styling;
-
-namespace DialogHost.Avalonia {
+﻿namespace Avalonia.DialogHost {
     public class Styles : global::Avalonia.Styling.Styles { }
 }

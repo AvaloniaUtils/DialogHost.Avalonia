@@ -1,6 +1,5 @@
 ﻿<Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:controls="using:DialogHost.Avalonia"
         xmlns:dialogHost="clr-namespace:Avalonia.DialogHost">
     <Design.PreviewWith>
         <dialogHost:DialogHost />
@@ -33,12 +32,9 @@
         </Setter>
     </Style>
     
-    <Style Selector="dialogHost|DialogHost/template/Grid#PART_ContentCoverGrid">
-        <Setter Property="Opacity" Value="0"></Setter>
-    </Style>
     <Style Selector="dialogHost|DialogHost[IsOpen=True]/template/Grid#PART_ContentCoverGrid">
         <Style.Animations>
-            <Animation Duration="0:0:0.3" FillMode="Both">
+            <Animation Duration="0:0:0.3">
                 <KeyFrame Cue="0%">
                     <Setter Property="Opacity" Value="0"></Setter>
                 </KeyFrame>
@@ -48,6 +44,7 @@
             </Animation>
         </Style.Animations>
         <Setter Property="IsHitTestVisible" Value="True"></Setter>
+        <Setter Property="Opacity" Value="0.56"></Setter>
     </Style>
     <Style Selector="dialogHost|DialogHost[IsOpen=False]/template/Grid#PART_ContentCoverGrid">
         <Style.Animations>
@@ -61,5 +58,6 @@
             </Animation>
         </Style.Animations>
         <Setter Property="IsHitTestVisible" Value="False"></Setter>
+        <Setter Property="Opacity" Value="0"></Setter>
     </Style>
 </Styles>
