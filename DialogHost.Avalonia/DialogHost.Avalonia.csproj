@@ -22,6 +22,9 @@
         <AvaloniaResource Include="**\*.xaml">
             <SubType>Designer</SubType>
         </AvaloniaResource>
+        <Compile Update="Styles.xaml.cs">
+          <DependentUpon>Styles.xaml</DependentUpon>
+        </Compile>
     </ItemGroup>
     <ItemGroup>
         <PackageReference Include="Avalonia" Version="0.10.0" />

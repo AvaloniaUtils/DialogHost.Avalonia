@@ -19,8 +19,8 @@
                                           VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
                     </AdornerLayer>
                     <Grid Name="PART_ContentCoverGrid"
-                          Background="{TemplateBinding OverlayBackground}"
-                          IsHitTestVisible="False" Focusable="False">
+                          Background="{TemplateBinding OverlayBackground}" 
+                          Focusable="False">
                         <Grid.Styles>
                             <Style Selector="Grid#PART_ContentCoverGrid[Opacity=0]">
                                 <Setter Property="IsVisible" Value="False" />
@@ -31,5 +31,35 @@
                 </Grid>
             </ControlTemplate>
         </Setter>
+    </Style>
+    
+    <Style Selector="dialogHost|DialogHost/template/Grid#PART_ContentCoverGrid">
+        <Setter Property="Opacity" Value="0"></Setter>
+    </Style>
+    <Style Selector="dialogHost|DialogHost[IsOpen=True]/template/Grid#PART_ContentCoverGrid">
+        <Style.Animations>
+            <Animation Duration="0:0:0.3" FillMode="Both">
+                <KeyFrame Cue="0%">
+                    <Setter Property="Opacity" Value="0"></Setter>
+                </KeyFrame>
+                <KeyFrame Cue="100%">
+                    <Setter Property="Opacity" Value="0.56"></Setter>
+                </KeyFrame>
+            </Animation>
+        </Style.Animations>
+        <Setter Property="IsHitTestVisible" Value="True"></Setter>
+    </Style>
+    <Style Selector="dialogHost|DialogHost[IsOpen=False]/template/Grid#PART_ContentCoverGrid">
+        <Style.Animations>
+            <Animation Duration="0:0:0.3">
+                <KeyFrame Cue="0%">
+                    <Setter Property="Opacity" Value="0.56"></Setter>
+                </KeyFrame>
+                <KeyFrame Cue="100%">
+                    <Setter Property="Opacity" Value="0"></Setter>
+                </KeyFrame>
+            </Animation>
+        </Style.Animations>
+        <Setter Property="IsHitTestVisible" Value="False"></Setter>
     </Style>
 </Styles>
