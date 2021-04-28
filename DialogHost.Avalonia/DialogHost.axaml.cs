@@ -76,6 +76,12 @@ namespace Avalonia.DialogHost {
                 o => o.DialogOpenedCallback,
                 (o, v) => o.DialogOpenedCallback = v);
 
+        public static readonly DirectProperty<DialogHost, bool> InternalIsOpenProperty =
+            AvaloniaProperty.RegisterDirect<DialogHost, bool>(
+                nameof(InternalIsOpen),
+                o => o.InternalIsOpen,
+                (o, v) => o.InternalIsOpen = v);
+
         private DialogClosingEventHandler? _asyncShowClosingEventHandler;
         private DialogOpenedEventHandler? _asyncShowOpenedEventHandler;
 
@@ -90,6 +96,8 @@ namespace Avalonia.DialogHost {
         private TaskCompletionSource<object?>? _dialogTaskCompletionSource;
 
         private string? _identifier = default;
+
+        private bool _internalIsOpen;
 
         private bool _isOpen;
 
@@ -161,6 +169,22 @@ namespace Avalonia.DialogHost {
             set { SetAndRaise(DialogClosingCallbackProperty, ref _dialogClosingCallback, value); }
         }
 
+        public bool InternalIsOpen {
+            get { return _internalIsOpen; }
+            set {
+                var previousValue = _internalIsOpen;
+                SetAndRaise(InternalIsOpenProperty, ref _internalIsOpen, value);
+                switch (previousValue) {
+                    case true when !value:
+                        _overlayPopupHost?.Hide();
+                        break;
+                    case false when value:
+                        _overlayPopupHost?.Show();
+                        break;
+                }
+            }
+        }
+
         private static void IsOpenPropertyChangedCallback(DialogHost dialogHost, bool newValue) {
             if (!newValue) {
                 object? closeParameter = null;
@@ -178,8 +202,6 @@ namespace Avalonia.DialogHost {
                     closeParameter = session.CloseParameter;
                     dialogHost.CurrentSession = null;
                 }
-
-                dialogHost._overlayPopupHost?.Hide();
 
                 //NB: _dialogTaskCompletionSource is only set in the case where the dialog is shown with Show
                 dialogHost._dialogTaskCompletionSource?.TrySetResult(closeParameter);
@@ -201,7 +223,6 @@ namespace Avalonia.DialogHost {
             dialogHost.DialogOpenedCallback?.Invoke(dialogHost, dialogOpenedEventArgs);
             dialogHost._asyncShowOpenedEventHandler?.Invoke(dialogHost, dialogOpenedEventArgs);
 
-            dialogHost._overlayPopupHost?.Show();
             dialogHost._overlayPopupHost?.ConfigurePosition(dialogHost._overlayLayer, PlacementMode.AnchorAndGravity, new Point());
         }
 
