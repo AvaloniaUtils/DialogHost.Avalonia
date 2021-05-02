@@ -1,7 +1,7 @@
 ﻿using System;
 using Avalonia.Interactivity;
 
-namespace Avalonia.DialogHost {
+namespace DialogHost {
     public class DialogOpenedEventArgs : RoutedEventArgs {
         public DialogOpenedEventArgs(DialogSession session, RoutedEvent routedEvent)
         {

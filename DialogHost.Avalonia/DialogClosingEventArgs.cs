@@ -1,7 +1,7 @@
 ﻿using System;
 using Avalonia.Interactivity;
 
-namespace Avalonia.DialogHost {
+namespace DialogHost {
     public class DialogClosingEventArgs : RoutedEventArgs {
         public DialogClosingEventArgs(DialogSession session, RoutedEvent routedEvent)
             : base(routedEvent)

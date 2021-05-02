@@ -1,117 +1,51 @@
 ﻿<Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:dialogHost="clr-namespace:Avalonia.DialogHost">
+        xmlns:dialogHost="clr-namespace:DialogHost">
     <Design.PreviewWith>
         <dialogHost:DialogHost />
     </Design.PreviewWith>
 
     <Style Selector="dialogHost|DialogHost">
-        <Setter Property="InternalIsOpen" Value="False" />
         <Setter Property="Template">
             <ControlTemplate>
-                <Grid x:Name="DialogHostRoot" Focusable="False">
+                <Grid Name="DialogHostRoot" Focusable="False"
+                      HorizontalAlignment="Stretch"
+                      VerticalAlignment="Stretch">
                     <AdornerLayer>
-                        <ContentPresenter x:Name="ContentPresenter"
-                                          Opacity="1"
+                        <ContentPresenter Name="ContentPresenter"
                                           Content="{TemplateBinding Content}"
                                           ContentTemplate="{TemplateBinding ContentTemplate}"
                                           HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
                                           VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
                     </AdornerLayer>
                     <Grid Name="PART_ContentCoverGrid"
-                          Background="{TemplateBinding OverlayBackground}" 
+                          Background="{TemplateBinding OverlayBackground}"
                           Focusable="False">
                         <Grid.Styles>
                             <Style Selector="Grid#PART_ContentCoverGrid[Opacity=0]">
                                 <Setter Property="IsVisible" Value="False" />
                             </Style>
+                            <Style Selector="Grid#PART_ContentCoverGrid:not(.notransitions)">
+                                <Setter Property="Transitions">
+                                    <Transitions>
+                                        <DoubleTransition Property="Opacity" Easing="LinearEasing" Duration="0.3" />
+                                    </Transitions>
+                                </Setter>
+                            </Style>
                         </Grid.Styles>
                     </Grid>
-                    <OverlayLayer Name="PART_OverlayLayer"/>
+                    <OverlayLayer Name="PART_OverlayLayer" />
                 </Grid>
             </ControlTemplate>
         </Setter>
     </Style>
-    
-    <!-- Default style behavior -->
-    <Style Selector="dialogHost|DialogHost[IsOpen=True]">
-        <Setter Property="InternalIsOpen" Value="True" />
+
+    <Style Selector="dialogHost|DialogHost[IsOpen=True] /template/ Grid#PART_ContentCoverGrid">
+        <Setter Property="IsHitTestVisible" Value="True" />
+        <Setter Property="Opacity" Value="0.56" />
     </Style>
-    
-    <Style Selector="dialogHost|DialogHost[IsOpen=True]/template/Grid#PART_ContentCoverGrid">
-        <Style.Animations>
-            <Animation Duration="0:0:0.3" Easing="SineEaseInOut">
-                <KeyFrame Cue="0%">
-                    <Setter Property="Opacity" Value="0"></Setter>
-                </KeyFrame>
-                <KeyFrame Cue="100%">
-                    <Setter Property="Opacity" Value="0.56"></Setter>
-                </KeyFrame>
-            </Animation>
-        </Style.Animations>
-        <Setter Property="IsHitTestVisible" Value="True"></Setter>
-        <Setter Property="Opacity" Value="0.56"></Setter>
-    </Style>
-    <Style Selector="dialogHost|DialogHost[IsOpen=False]/template/Grid#PART_ContentCoverGrid">
-        <Style.Animations>
-            <Animation Duration="0:0:0.3" Easing="SineEaseInOut">
-                <KeyFrame Cue="0%">
-                    <Setter Property="Opacity" Value="0.56"></Setter>
-                </KeyFrame>
-                <KeyFrame Cue="100%">
-                    <Setter Property="Opacity" Value="0"></Setter>
-                </KeyFrame>
-            </Animation>
-        </Style.Animations>
-        <Setter Property="IsHitTestVisible" Value="False"></Setter>
-        <Setter Property="Opacity" Value="0"></Setter>
-    </Style>
-    
-    <Style Selector="dialogHost|DialogHost[IsOpen=True] dialogHost|DialogOverlayPopupHost">
-        <Style.Animations>
-            <Animation Duration="0:0:0.3" Easing="SineEaseInOut">
-                <KeyFrame Cue="0%">
-                    <Setter Property="ScaleTransform.ScaleY" Value="0"></Setter>
-                    <Setter Property="ScaleTransform.ScaleX" Value="0"></Setter>
-                    <Setter Property="Opacity" Value="0"></Setter>
-                </KeyFrame>
-                <KeyFrame Cue="100%">
-                    <Setter Property="ScaleTransform.ScaleY" Value="1"></Setter>
-                    <Setter Property="ScaleTransform.ScaleX" Value="1"></Setter>
-                    <Setter Property="Opacity" Value="1"></Setter>
-                </KeyFrame>
-            </Animation>
-        </Style.Animations>
-    </Style>
-    <Style Selector="dialogHost|DialogHost[IsOpen=False] dialogHost|DialogOverlayPopupHost">
-        <Style.Animations>
-            <Animation Duration="0:0:0.3" Easing="SineEaseInOut">
-                <KeyFrame Cue="60%">
-                    <Setter Property="ScaleTransform.ScaleY" Value="1"></Setter>
-                    <Setter Property="ScaleTransform.ScaleX" Value="1"></Setter>
-                    <Setter Property="Opacity" Value="1"></Setter>
-                </KeyFrame>
-                <KeyFrame Cue="100%">
-                    <Setter Property="ScaleTransform.ScaleY" Value="0.5"></Setter>
-                    <Setter Property="ScaleTransform.ScaleX" Value="0.5"></Setter>
-                    <Setter Property="Opacity" Value="0"></Setter>
-                </KeyFrame>
-            </Animation>
-        </Style.Animations>
-    </Style>
-    <Style Selector="dialogHost|DialogHost[IsOpen=False]">
-        <Style.Animations>
-            <Animation Duration="0:0:0.3" FillMode="Forward">
-                <KeyFrame Cue="0%">
-                    <Setter Property="InternalIsOpen" Value="True" />
-                </KeyFrame>
-                <KeyFrame Cue="99%">
-                    <Setter Property="InternalIsOpen" Value="True" />
-                </KeyFrame>
-                <KeyFrame Cue="100%">
-                    <Setter Property="InternalIsOpen" Value="False" />
-                </KeyFrame>
-            </Animation>
-        </Style.Animations>
+    <Style Selector="dialogHost|DialogHost[IsOpen=False] /template/ Grid#PART_ContentCoverGrid">
+        <Setter Property="IsHitTestVisible" Value="False" />
+        <Setter Property="Opacity" Value="0" />
     </Style>
 </Styles>

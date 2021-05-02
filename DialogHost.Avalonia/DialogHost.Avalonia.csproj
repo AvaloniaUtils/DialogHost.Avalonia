@@ -13,7 +13,7 @@
         <RepositoryType>Git</RepositoryType>
         <PackageTags>material icons material-design google-material avalonia</PackageTags>
         <PackageVersion>1.0.2</PackageVersion>
-        <RootNamespace>Avalonia.DialogHost</RootNamespace>
+        <RootNamespace>DialogHost</RootNamespace>
     </PropertyGroup>
     <ItemGroup>
         <Compile Update="**\*.xaml.cs">
@@ -22,8 +22,8 @@
         <AvaloniaResource Include="**\*.xaml">
             <SubType>Designer</SubType>
         </AvaloniaResource>
-        <Compile Update="Styles.xaml.cs">
-          <DependentUpon>Styles.xaml</DependentUpon>
+        <Compile Update="DialogOverlayPopupHost.cs">
+          <DependentUpon>DialogOverlayPopupHost.axaml</DependentUpon>
         </Compile>
     </ItemGroup>
     <ItemGroup>

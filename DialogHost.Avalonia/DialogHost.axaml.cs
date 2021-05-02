@@ -1,21 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Reactive;
 using System.Reactive.Disposables;
 using System.Threading.Tasks;
-using System.Windows.Input;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
-using Avalonia.Controls.Primitives.PopupPositioning;
 using Avalonia.Controls.Templates;
-using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Interactivity;
-using Avalonia.Layout;
 using Avalonia.Media;
-using Avalonia.Threading;
 
-namespace Avalonia.DialogHost {
+namespace DialogHost {
     public class DialogHost : ContentControl {
         public const string ContentCoverGridName = "PART_ContentCoverGrid";
         public const string OverlayLayerName = "PART_OverlayLayer";
@@ -75,12 +70,6 @@ namespace Avalonia.DialogHost {
                 nameof(DialogOpenedCallback),
                 o => o.DialogOpenedCallback,
                 (o, v) => o.DialogOpenedCallback = v);
-
-        public static readonly DirectProperty<DialogHost, bool> InternalIsOpenProperty =
-            AvaloniaProperty.RegisterDirect<DialogHost, bool>(
-                nameof(InternalIsOpen),
-                o => o.InternalIsOpen,
-                (o, v) => o.InternalIsOpen = v);
 
         private DialogClosingEventHandler? _asyncShowClosingEventHandler;
         private DialogOpenedEventHandler? _asyncShowOpenedEventHandler;
@@ -169,22 +158,6 @@ namespace Avalonia.DialogHost {
             set { SetAndRaise(DialogClosingCallbackProperty, ref _dialogClosingCallback, value); }
         }
 
-        public bool InternalIsOpen {
-            get { return _internalIsOpen; }
-            set {
-                var previousValue = _internalIsOpen;
-                SetAndRaise(InternalIsOpenProperty, ref _internalIsOpen, value);
-                switch (previousValue) {
-                    case true when !value:
-                        _overlayPopupHost?.Hide();
-                        break;
-                    case false when value:
-                        _overlayPopupHost?.Show();
-                        break;
-                }
-            }
-        }
-
         private static void IsOpenPropertyChangedCallback(DialogHost dialogHost, bool newValue) {
             if (!newValue) {
                 object? closeParameter = null;
@@ -223,6 +196,9 @@ namespace Avalonia.DialogHost {
             dialogHost.DialogOpenedCallback?.Invoke(dialogHost, dialogOpenedEventArgs);
             dialogHost._asyncShowOpenedEventHandler?.Invoke(dialogHost, dialogOpenedEventArgs);
 
+            if (dialogHost._overlayPopupHost != null)
+                dialogHost._overlayPopupHost.IsOpen = true;
+                    
             dialogHost._overlayPopupHost?.ConfigurePosition(dialogHost._overlayLayer, PlacementMode.AnchorAndGravity, new Point());
         }
 
@@ -294,6 +270,10 @@ namespace Avalonia.DialogHost {
                 currentSession.IsEnded = false;
                 return;
             }
+            
+            if (_overlayPopupHost != null)
+                if (_overlayPopupHost.IsOpen)
+                    _overlayPopupHost.IsOpen = false;
 
             IsOpen = false;
         }

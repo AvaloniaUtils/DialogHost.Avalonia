@@ -1,7 +1,6 @@
 ﻿using System;
-using Avalonia.Threading;
 
-namespace Avalonia.DialogHost {
+namespace DialogHost {
     /// <summary>
     /// Allows an open dialog to be managed. Use is only permitted during a single display operation.
     /// </summary>
