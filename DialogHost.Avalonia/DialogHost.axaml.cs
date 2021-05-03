@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reactive.Disposables;
 using System.Threading.Tasks;
 using Avalonia;
@@ -158,6 +159,161 @@ namespace DialogHost {
             set { SetAndRaise(DialogClosingCallbackProperty, ref _dialogClosingCallback, value); }
         }
 
+        /// <summary>
+        /// Shows a modal dialog. To use, a <see cref="DialogHost"/> instance must be in a visual tree (typically this may be specified towards the root of a Window's XAML).
+        /// </summary>
+        /// <param name="content">Content to show (can be a control or view model).</param>
+        /// <returns>Task result is the parameter used to close the dialog, typically what is passed to the <see cref="CloseDialogCommand"/> command.</returns>
+        public static async Task<object?> Show(object content)
+            => await Show(content, dialogIdentifier: null);
+
+        /// <summary>
+        /// Shows a modal dialog. To use, a <see cref="DialogHost"/> instance must be in a visual tree (typically this may be specified towards the root of a Window's XAML).
+        /// </summary>
+        /// <param name="content">Content to show (can be a control or view model).</param>        
+        /// <param name="openedEventHandler">Allows access to opened event which would otherwise have been subscribed to on a instance.</param>        
+        /// <returns>Task result is the parameter used to close the dialog, typically what is passed to the <see cref="CloseDialogCommand"/> command.</returns>
+        public static async Task<object?> Show(object content, DialogOpenedEventHandler openedEventHandler)
+            => await Show(content, null, openedEventHandler, null);
+
+        /// <summary>
+        /// Shows a modal dialog. To use, a <see cref="DialogHost"/> instance must be in a visual tree (typically this may be specified towards the root of a Window's XAML).
+        /// </summary>
+        /// <param name="content">Content to show (can be a control or view model).</param>
+        /// <param name="closingEventHandler">Allows access to closing event which would otherwise have been subscribed to on a instance.</param>
+        /// <returns>Task result is the parameter used to close the dialog, typically what is passed to the <see cref="CloseDialogCommand"/> command.</returns>
+        public static async Task<object?> Show(object content, DialogClosingEventHandler closingEventHandler)
+            => await Show(content, null, null, closingEventHandler);
+
+        /// <summary>
+        /// Shows a modal dialog. To use, a <see cref="DialogHost"/> instance must be in a visual tree (typically this may be specified towards the root of a Window's XAML).
+        /// </summary>
+        /// <param name="content">Content to show (can be a control or view model).</param>        
+        /// <param name="openedEventHandler">Allows access to opened event which would otherwise have been subscribed to on a instance.</param>
+        /// <param name="closingEventHandler">Allows access to closing event which would otherwise have been subscribed to on a instance.</param>
+        /// <returns>Task result is the parameter used to close the dialog, typically what is passed to the <see cref="CloseDialogCommand"/> command.</returns>
+        public static async Task<object?> Show(object content, DialogOpenedEventHandler? openedEventHandler, DialogClosingEventHandler? closingEventHandler)
+            => await Show(content, null, openedEventHandler, closingEventHandler);
+
+        /// <summary>
+        /// Shows a modal dialog. To use, a <see cref="DialogHost"/> instance must be in a visual tree (typically this may be specified towards the root of a Window's XAML).
+        /// </summary>
+        /// <param name="content">Content to show (can be a control or view model).</param>
+        /// <param name="dialogIdentifier"><see cref="Identifier"/> of the instance where the dialog should be shown. Typically this will match an identifer set in XAML. <c>null</c> is allowed.</param>
+        /// <returns>Task result is the parameter used to close the dialog, typically what is passed to the <see cref="CloseDialogCommand"/> command.</returns>
+        public static async Task<object?> Show(object content, string? dialogIdentifier)
+            => await Show(content, dialogIdentifier, null, null);
+
+        /// <summary>
+        /// Shows a modal dialog. To use, a <see cref="DialogHost"/> instance must be in a visual tree (typically this may be specified towards the root of a Window's XAML).
+        /// </summary>
+        /// <param name="content">Content to show (can be a control or view model).</param>
+        /// <param name="dialogIdentifier"><see cref="Identifier"/> of the instance where the dialog should be shown. Typically this will match an identifer set in XAML. <c>null</c> is allowed.</param>
+        /// <param name="openedEventHandler">Allows access to opened event which would otherwise have been subscribed to on a instance.</param>
+        /// <returns>Task result is the parameter used to close the dialog, typically what is passed to the <see cref="CloseDialogCommand"/> command.</returns>
+        public static Task<object?> Show(object content, string? dialogIdentifier, DialogOpenedEventHandler openedEventHandler)
+            => Show(content, dialogIdentifier, openedEventHandler, null);
+
+        /// <summary>
+        /// Shows a modal dialog. To use, a <see cref="DialogHost"/> instance must be in a visual tree (typically this may be specified towards the root of a Window's XAML).
+        /// </summary>
+        /// <param name="content">Content to show (can be a control or view model).</param>
+        /// <param name="dialogIdentifier"><see cref="Identifier"/> of the instance where the dialog should be shown. Typically this will match an identifer set in XAML. <c>null</c> is allowed.</param>        
+        /// <param name="closingEventHandler">Allows access to closing event which would otherwise have been subscribed to on a instance.</param>
+        /// <returns>Task result is the parameter used to close the dialog, typically what is passed to the <see cref="CloseDialogCommand"/> command.</returns>
+        public static Task<object?> Show(object content, string? dialogIdentifier, DialogClosingEventHandler closingEventHandler)
+            => Show(content, dialogIdentifier, null, closingEventHandler);
+
+        /// <summary>
+        /// Shows a modal dialog. To use, a <see cref="DialogHost"/> instance must be in a visual tree (typically this may be specified towards the root of a Window's XAML).
+        /// </summary>
+        /// <param name="content">Content to show (can be a control or view model).</param>
+        /// <param name="dialogIdentifier"><see cref="Identifier"/> of the instance where the dialog should be shown. Typically this will match an identifer set in XAML. <c>null</c> is allowed.</param>
+        /// <param name="openedEventHandler">Allows access to opened event which would otherwise have been subscribed to on a instance.</param>
+        /// <param name="closingEventHandler">Allows access to closing event which would otherwise have been subscribed to on a instance.</param>
+        /// <returns>Task result is the parameter used to close the dialog, typically what is passed to the <see cref="CloseDialogCommand"/> command.</returns>
+        public static async Task<object?> Show(object content, string? dialogIdentifier, DialogOpenedEventHandler? openedEventHandler,
+                                               DialogClosingEventHandler? closingEventHandler) {
+            if (content is null) throw new ArgumentNullException(nameof(content));
+            return await GetInstance(dialogIdentifier).ShowInternal(content, openedEventHandler, closingEventHandler);
+        }
+
+        /// <summary>
+        ///  Close a modal dialog.
+        /// </summary>
+        /// <param name="dialogIdentifier"> of the instance where the dialog should be closed. Typically this will match an identifer set in XAML. </param>
+        public static void Close(string? dialogIdentifier)
+            => Close(dialogIdentifier, null);
+
+        /// <summary>
+        ///  Close a modal dialog.
+        /// </summary>
+        /// <param name="dialogIdentifier"> of the instance where the dialog should be closed. Typically this will match an identifer set in XAML. </param>
+        /// <param name="parameter"> to provide to close handler</param>
+        public static void Close(string? dialogIdentifier, object? parameter) {
+            DialogHost dialogHost = GetInstance(dialogIdentifier);
+            if (dialogHost.CurrentSession is { } currentSession) {
+                currentSession.Close(parameter);
+                return;
+            }
+
+            throw new InvalidOperationException("DialogHost is not open.");
+        }
+
+        /// <summary>
+        /// Retrieve the current dialog session for a DialogHost
+        /// </summary>
+        /// <param name="dialogIdentifier">The identifier to use to retrieve the DialogHost</param>
+        /// <returns>The DialogSession if one is in process, or null</returns>
+        public static DialogSession? GetDialogSession(string? dialogIdentifier) {
+            DialogHost dialogHost = GetInstance(dialogIdentifier);
+            return dialogHost.CurrentSession;
+        }
+
+        /// <summary>
+        /// dialog instance exists
+        /// </summary>
+        /// <param name="dialogIdentifier">of the instance where the dialog should be closed. Typically this will match an identifer set in XAML.</param>
+        /// <returns></returns>
+        public static bool IsDialogOpen(string? dialogIdentifier) => GetDialogSession(dialogIdentifier)?.IsEnded == false;
+
+        private static DialogHost GetInstance(string? dialogIdentifier) {
+            if (LoadedInstances.Count == 0)
+                throw new InvalidOperationException("No loaded DialogHost instances.");
+
+            var targets = LoadedInstances.Where(dh => dialogIdentifier == null || Equals(dh.Identifier, dialogIdentifier)).ToList();
+            if (targets.Count == 0)
+                throw new InvalidOperationException(
+                    $"No loaded DialogHost have an {nameof(Identifier)} property matching {nameof(dialogIdentifier)} ('{dialogIdentifier}') argument.");
+            if (targets.Count > 1)
+                throw new InvalidOperationException(
+                    "Multiple viable DialogHosts. Specify a unique Identifier on each DialogHost, especially where multiple Windows are a concern.");
+
+            return targets[0];
+        }
+
+        internal async Task<object?> ShowInternal(object content, DialogOpenedEventHandler? openedEventHandler,
+                                                  DialogClosingEventHandler? closingEventHandler) {
+            if (IsOpen)
+                throw new InvalidOperationException("DialogHost is already open.");
+
+            _dialogTaskCompletionSource = new TaskCompletionSource<object?>();
+
+            if (content != null)
+                DialogContent = content;
+
+            _asyncShowOpenedEventHandler = openedEventHandler;
+            _asyncShowClosingEventHandler = closingEventHandler;
+            IsOpen = true;
+
+            object? result = await _dialogTaskCompletionSource.Task;
+
+            _asyncShowOpenedEventHandler = null;
+            _asyncShowClosingEventHandler = null;
+
+            return result;
+        }
+
         private static void IsOpenPropertyChangedCallback(DialogHost dialogHost, bool newValue) {
             if (!newValue) {
                 object? closeParameter = null;
@@ -198,25 +354,26 @@ namespace DialogHost {
 
             if (dialogHost._overlayPopupHost != null)
                 dialogHost._overlayPopupHost.IsOpen = true;
-                    
+
             dialogHost._overlayPopupHost?.ConfigurePosition(dialogHost._overlayLayer, PlacementMode.AnchorAndGravity, new Point());
         }
 
         protected override void OnApplyTemplate(TemplateAppliedEventArgs e) {
             _templateDisposables?.Dispose();
-            
+
             _overlayLayer = e.NameScope.Find<OverlayLayer>(OverlayLayerName);
             _overlayPopupHost = new DialogOverlayPopupHost(_overlayLayer) {
                 Content = DialogContent, ContentTemplate = DialogContentTemplate
             };
-            
+
             if (IsOpen) {
                 _overlayPopupHost.Show();
             }
 
             #pragma warning disable 8604
             _templateDisposables = new CompositeDisposable() {
-                this.GetObservable(BoundsProperty).Subscribe(rect => _overlayPopupHost?.ConfigurePosition(_overlayLayer, PlacementMode.AnchorAndGravity, new Point())),
+                this.GetObservable(BoundsProperty)
+                    .Subscribe(rect => _overlayPopupHost?.ConfigurePosition(_overlayLayer, PlacementMode.AnchorAndGravity, new Point())),
                 _overlayPopupHost.Bind(ContentProperty, this.GetBindingObservable(DialogContentProperty)),
                 _overlayPopupHost.Bind(ContentTemplateProperty, this.GetBindingObservable(DialogContentTemplateProperty)),
                 e.NameScope.Find<Grid>(ContentCoverGridName)?.AddDisposableHandler(PointerReleasedEvent, ContentCoverGrid_OnPointerReleased)
@@ -270,7 +427,7 @@ namespace DialogHost {
                 currentSession.IsEnded = false;
                 return;
             }
-            
+
             if (_overlayPopupHost != null)
                 if (_overlayPopupHost.IsOpen)
                     _overlayPopupHost.IsOpen = false;
