@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Disposables;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
@@ -72,8 +73,20 @@ namespace DialogHost {
                 o => o.DialogOpenedCallback,
                 (o, v) => o.DialogOpenedCallback = v);
 
+        public static readonly DirectProperty<DialogHost, ICommand> OpenDialogCommandProperty =
+            AvaloniaProperty.RegisterDirect<DialogHost, ICommand>(
+                nameof(OpenDialogCommand),
+                o => o.OpenDialogCommand);
+
+        public static readonly DirectProperty<DialogHost, ICommand> CloseDialogCommandProperty =
+            AvaloniaProperty.RegisterDirect<DialogHost, ICommand>(
+                nameof(CloseDialogCommand),
+                o => o.CloseDialogCommand);
+
         private DialogClosingEventHandler? _asyncShowClosingEventHandler;
         private DialogOpenedEventHandler? _asyncShowOpenedEventHandler;
+
+        private ICommand _closeDialogCommand;
 
         private bool _closeOnClickAway;
 
@@ -91,20 +104,33 @@ namespace DialogHost {
 
         private bool _isOpen;
 
+        private ICommand _openDialogCommand;
+
         private OverlayLayer? _overlayLayer;
         private DialogOverlayPopupHost? _overlayPopupHost;
         private IInputElement? _restoreFocusDialogClose;
 
         private IDisposable? _templateDisposables;
 
+        public DialogHost() {
+            _closeDialogCommand = new DialogHostCommandImpl(InternalClose, o => IsOpen);
+            _openDialogCommand = new DialogHostCommandImpl(o => ShowInternal(o, null, null), o => !IsOpen);
+        }
+
         public DialogOpenedEventHandler DialogOpenedCallback {
             get { return _dialogOpenedCallback; }
             set { SetAndRaise(DialogOpenedCallbackProperty, ref _dialogOpenedCallback, value); }
         }
 
-        // TODO: Implement commands
-        // public ICommand OpenDialogCommand { get; }
-        // public ICommand CloseDialogCommand { get; }
+        public ICommand OpenDialogCommand {
+            get { return _openDialogCommand; }
+            private set { SetAndRaise<ICommand>(OpenDialogCommandProperty, ref _openDialogCommand, value); }
+        }
+
+        public ICommand CloseDialogCommand {
+            get { return _closeDialogCommand; }
+            private set { SetAndRaise<ICommand>(CloseDialogCommandProperty, ref _closeDialogCommand, value); }
+        }
 
         public string? Identifier {
             get { return _identifier; }
@@ -315,7 +341,22 @@ namespace DialogHost {
         }
 
         private static void IsOpenPropertyChangedCallback(DialogHost dialogHost, bool newValue) {
-            if (!newValue) {
+            if (newValue) {
+                dialogHost.CurrentSession = new DialogSession(dialogHost);
+                dialogHost._restoreFocusDialogClose = FocusManager.Instance.Current;
+
+                //multiple ways of calling back that the dialog has opened:
+                // * routed event
+                // * straight forward dependency property 
+                // * handler provided to the async show method
+                var dialogOpenedEventArgs = new DialogOpenedEventArgs(dialogHost.CurrentSession, DialogOpenedEvent);
+                dialogHost.OnDialogOpened(dialogOpenedEventArgs);
+                dialogHost.DialogOpenedCallback?.Invoke(dialogHost, dialogOpenedEventArgs);
+                dialogHost._asyncShowOpenedEventHandler?.Invoke(dialogHost, dialogOpenedEventArgs);
+
+                dialogHost._overlayPopupHost?.ConfigurePosition(dialogHost._overlayLayer, PlacementMode.AnchorAndGravity, new Point());
+            }
+            else {
                 object? closeParameter = null;
                 if (dialogHost.CurrentSession is { } session) {
                     if (!session.IsEnded) {
@@ -336,26 +377,16 @@ namespace DialogHost {
                 dialogHost._dialogTaskCompletionSource?.TrySetResult(closeParameter);
 
                 dialogHost._restoreFocusDialogClose?.Focus();
-
-                return;
             }
 
-            dialogHost.CurrentSession = new DialogSession(dialogHost);
-            dialogHost._restoreFocusDialogClose = FocusManager.Instance.Current;
-
-            //multiple ways of calling back that the dialog has opened:
-            // * routed event
-            // * straight forward dependency property 
-            // * handler provided to the async show method
-            var dialogOpenedEventArgs = new DialogOpenedEventArgs(dialogHost.CurrentSession, DialogOpenedEvent);
-            dialogHost.OnDialogOpened(dialogOpenedEventArgs);
-            dialogHost.DialogOpenedCallback?.Invoke(dialogHost, dialogOpenedEventArgs);
-            dialogHost._asyncShowOpenedEventHandler?.Invoke(dialogHost, dialogOpenedEventArgs);
-
             if (dialogHost._overlayPopupHost != null)
-                dialogHost._overlayPopupHost.IsOpen = true;
+                dialogHost._overlayPopupHost.IsOpen = newValue;
+            dialogHost.RaiseCommandsCanExecuteChanged();
+        }
 
-            dialogHost._overlayPopupHost?.ConfigurePosition(dialogHost._overlayLayer, PlacementMode.AnchorAndGravity, new Point());
+        protected void RaiseCommandsCanExecuteChanged() {
+            (_openDialogCommand as DialogHostCommandImpl)?.OnCanExecuteChanged();
+            (_closeDialogCommand as DialogHostCommandImpl)?.OnCanExecuteChanged();
         }
 
         protected override void OnApplyTemplate(TemplateAppliedEventArgs e) {
@@ -427,10 +458,6 @@ namespace DialogHost {
                 currentSession.IsEnded = false;
                 return;
             }
-
-            if (_overlayPopupHost != null)
-                if (_overlayPopupHost.IsOpen)
-                    _overlayPopupHost.IsOpen = false;
 
             IsOpen = false;
         }

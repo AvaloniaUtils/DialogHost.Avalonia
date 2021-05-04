@@ -20,5 +20,9 @@ namespace DialogHost {
         }
 
         public event EventHandler? CanExecuteChanged;
+
+        protected internal virtual void OnCanExecuteChanged() {
+            CanExecuteChanged?.Invoke(this, EventArgs.Empty);
+        }
     }
 }
