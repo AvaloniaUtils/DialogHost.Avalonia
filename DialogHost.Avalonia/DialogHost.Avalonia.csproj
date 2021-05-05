@@ -11,9 +11,10 @@
         <PackageLicenseUrl>https://github.com/AvaloniaUtils/DialogHost.Avalonia/blob/main/LICENSE</PackageLicenseUrl>
         <RepositoryUrl>https://github.com/AvaloniaUtils/DialogHost.Avalonia.git</RepositoryUrl>
         <RepositoryType>Git</RepositoryType>
-        <PackageTags>material icons material-design google-material avalonia</PackageTags>
-        <PackageVersion>1.0.2</PackageVersion>
+        <PackageTags>c-sharp xaml multi-platform gui control mvvm dialogs avalonia avaloniaui c-sharp-library</PackageTags>
+        <PackageVersion>0.1.1</PackageVersion>
         <RootNamespace>DialogHost</RootNamespace>
+        <PackageReleaseNotes>Initial release</PackageReleaseNotes>
     </PropertyGroup>
     <ItemGroup>
         <Compile Update="**\*.xaml.cs">

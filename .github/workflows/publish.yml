@@ -1,0 +1,23 @@
+name: .NET Publish
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 5.0.x
+      - name: Build and Pack
+        run: dotnet build DialogHost.Avalonia --configuration Release
+      - name: Publish to Nuget
+        run: dotnet nuget push "DialogHost.Avalonia/bin/Release/*.nupkg" --api-key ${{secrets.NUGET_KEY}} --source https://api.nuget.org/v3/index.json --skip-duplicate
+      - name: Publish to GitHub Packages
+        run: dotnet nuget push "DialogHost.Avalonia/bin/Release/*.nupkg" --api-key ${{secrets.GITHUB_TOKEN}} --source https://nuget.pkg.github.com/AvaloniaUtils/index.json --skip-duplicate
