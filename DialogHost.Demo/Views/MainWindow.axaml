@@ -1,0 +1,37 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:DialogHost.Demo.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:styles="clr-namespace:Material.Styles;assembly=Material.Styles"
+        xmlns:dialogHost="clr-namespace:DialogHost;assembly=DialogHost.Avalonia"
+        xmlns:views="clr-namespace:DialogHost.Demo.Views"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="DialogHost.Demo.Views.MainWindow"
+        Icon="/Assets/avalonia-logo.ico"
+        Title="DialogHost.Demo">
+
+    <Design.DataContext>
+        <vm:MainWindowViewModel />
+    </Design.DataContext>
+    <dialogHost:DialogHost HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"
+                           Name="MainDialogHost" CloseOnClickAway="True"
+                           Identifier="123"
+                           DialogOpened="MainDialogHost_OnDialogOpened">
+        <dialogHost:DialogHost.DialogContent>
+            <styles:Card Margin="16">
+                <CheckBox Margin="16" IsChecked="{Binding ElementName=MainDialogHost, Path=IsOpen}">Uncheck for close</CheckBox>
+            </styles:Card>
+        </dialogHost:DialogHost.DialogContent>
+        <StackPanel HorizontalAlignment="Center" Margin="16">
+            <CheckBox VerticalAlignment="Center" HorizontalAlignment="Center" Content="Check for open"
+                      IsChecked="{Binding ElementName=MainDialogHost, Path=IsOpen}"/>
+            <Button Click="Button_OnClick">Open via code</Button>
+            <Button Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=dialogHost:DialogHost}, Path=OpenDialogCommand}">Open via command</Button>
+            <Border VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0 8 0 0"
+                    BorderThickness="1" BorderBrush="Black">
+                <views:FruitBowl />
+            </Border>
+        </StackPanel>
+    </dialogHost:DialogHost>
+</Window>

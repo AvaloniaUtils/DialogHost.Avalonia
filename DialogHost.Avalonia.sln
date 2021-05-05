@@ -2,6 +2,8 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DialogHost.Avalonia", "DialogHost.Avalonia\DialogHost.Avalonia.csproj", "{6FCAB4B3-A6F8-4243-96CD-B9DB32AF6B2F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DialogHost.Demo", "DialogHost.Demo\DialogHost.Demo.csproj", "{DDD9BB37-B237-4F28-BD82-9BC2E7711B1D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +14,9 @@ Global
 		{6FCAB4B3-A6F8-4243-96CD-B9DB32AF6B2F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6FCAB4B3-A6F8-4243-96CD-B9DB32AF6B2F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6FCAB4B3-A6F8-4243-96CD-B9DB32AF6B2F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DDD9BB37-B237-4F28-BD82-9BC2E7711B1D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DDD9BB37-B237-4F28-BD82-9BC2E7711B1D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DDD9BB37-B237-4F28-BD82-9BC2E7711B1D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DDD9BB37-B237-4F28-BD82-9BC2E7711B1D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
