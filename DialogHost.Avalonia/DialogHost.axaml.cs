@@ -398,7 +398,8 @@ namespace DialogHost {
             };
 
             if (IsOpen) {
-                _overlayPopupHost.Show();
+                _overlayPopupHost.IsOpen = true;
+                _overlayPopupHost?.ConfigurePosition(_overlayLayer, PlacementMode.AnchorAndGravity, new Point());
             }
 
             #pragma warning disable 8604
