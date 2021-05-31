@@ -2,12 +2,23 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:dialogHost="clr-namespace:DialogHost">
     <Design.PreviewWith>
-        <dialogHost:DialogHost />
+        <dialogHost:DialogHost Name="DialogHost" Height="300" Width="300"
+                               Background="Gray">
+            <dialogHost:DialogHost.DialogContent>
+                <Grid RowDefinitions="Auto Auto">
+                    <TextBlock>You content here</TextBlock>
+                    <Button Grid.Row="1" Command="{Binding #DialogHost.CloseDialogCommand}">CLOSE</Button>
+                </Grid>
+            </dialogHost:DialogHost.DialogContent>
+            <Button Margin="8" HorizontalAlignment="Center" VerticalAlignment="Bottom"
+                    Command="{Binding #DialogHost.OpenDialogCommand}">OPEN</Button>
+        </dialogHost:DialogHost>
     </Design.PreviewWith>
 
     <Style Selector="dialogHost|DialogHost">
         <Setter Property="HorizontalAlignment" Value="Stretch"></Setter>
         <Setter Property="VerticalAlignment" Value="Stretch"></Setter>
+        <Setter Property="DialogMargin" Value="8"></Setter>
         <Setter Property="Template">
             <ControlTemplate>
                 <Grid Name="DialogHostRoot" Focusable="False">
@@ -36,6 +47,19 @@
                     </Grid>
                     <OverlayLayer Name="PART_OverlayLayer" />
                 </Grid>
+            </ControlTemplate>
+        </Setter>
+        <Setter Property="PopupTemplate">
+            <ControlTemplate>
+                <VisualLayerManager IsPopup="True" Name="PART_DialogPopupRoot">
+                    <Border CornerRadius="2" Background="White">
+                        <ContentPresenter Name="PART_ContentPresenter"
+                                          Background="{TemplateBinding Background}"
+                                          ContentTemplate="{TemplateBinding ContentTemplate}"
+                                          Content="{TemplateBinding Content}"
+                                          Padding="{TemplateBinding Padding}" />
+                    </Border>
+                </VisualLayerManager>
             </ControlTemplate>
         </Setter>
     </Style>

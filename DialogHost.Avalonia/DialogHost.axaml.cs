@@ -67,8 +67,8 @@ namespace DialogHost {
                 o => o.DialogClosingCallback,
                 (o, v) => o.DialogClosingCallback = v);
 
-        public static readonly DirectProperty<DialogHost, DialogOpenedEventHandler> DialogOpenedCallbackProperty =
-            AvaloniaProperty.RegisterDirect<DialogHost, DialogOpenedEventHandler>(
+        public static readonly DirectProperty<DialogHost, DialogOpenedEventHandler?> DialogOpenedCallbackProperty =
+            AvaloniaProperty.RegisterDirect<DialogHost, DialogOpenedEventHandler?>(
                 nameof(DialogOpenedCallback),
                 o => o.DialogOpenedCallback,
                 (o, v) => o.DialogOpenedCallback = v);
@@ -83,6 +83,9 @@ namespace DialogHost {
                 nameof(CloseDialogCommand),
                 o => o.CloseDialogCommand);
 
+        public static readonly StyledProperty<IControlTemplate> PopupTemplateProperty =
+            AvaloniaProperty.Register<DialogHost, IControlTemplate>(nameof(PopupTemplate));
+
         private DialogClosingEventHandler? _asyncShowClosingEventHandler;
         private DialogOpenedEventHandler? _asyncShowOpenedEventHandler;
 
@@ -92,9 +95,9 @@ namespace DialogHost {
 
         private object? _closeOnClickAwayParameter;
 
-        private DialogClosingEventHandler _dialogClosingCallback;
+        private DialogClosingEventHandler? _dialogClosingCallback;
 
-        private DialogOpenedEventHandler _dialogOpenedCallback;
+        private DialogOpenedEventHandler? _dialogOpenedCallback;
 
         private TaskCompletionSource<object?>? _dialogTaskCompletionSource;
 
@@ -117,48 +120,53 @@ namespace DialogHost {
             _openDialogCommand = new DialogHostCommandImpl(o => ShowInternal(o, null, null), o => !IsOpen);
         }
 
-        public DialogOpenedEventHandler DialogOpenedCallback {
-            get { return _dialogOpenedCallback; }
-            set { SetAndRaise(DialogOpenedCallbackProperty, ref _dialogOpenedCallback, value); }
+        public IControlTemplate PopupTemplate {
+            get => GetValue(PopupTemplateProperty);
+            set => SetValue(PopupTemplateProperty, value);
+        }
+
+        public DialogOpenedEventHandler? DialogOpenedCallback {
+            get => _dialogOpenedCallback;
+            set => SetAndRaise(DialogOpenedCallbackProperty, ref _dialogOpenedCallback, value);
         }
 
         public ICommand OpenDialogCommand {
-            get { return _openDialogCommand; }
-            private set { SetAndRaise<ICommand>(OpenDialogCommandProperty, ref _openDialogCommand, value); }
+            get => _openDialogCommand;
+            private set => SetAndRaise<ICommand>(OpenDialogCommandProperty, ref _openDialogCommand, value);
         }
 
         public ICommand CloseDialogCommand {
-            get { return _closeDialogCommand; }
-            private set { SetAndRaise<ICommand>(CloseDialogCommandProperty, ref _closeDialogCommand, value); }
+            get => _closeDialogCommand;
+            private set => SetAndRaise<ICommand>(CloseDialogCommandProperty, ref _closeDialogCommand, value);
         }
 
         public string? Identifier {
-            get { return _identifier; }
-            set { SetAndRaise(IdentifierProperty, ref _identifier, value); }
+            get => _identifier;
+            set => SetAndRaise(IdentifierProperty, ref _identifier, value);
         }
 
         public object DialogContent {
-            get { return GetValue(DialogContentProperty); }
-            set { SetValue(DialogContentProperty, value); }
+            get => GetValue(DialogContentProperty);
+            set => SetValue(DialogContentProperty, value);
         }
 
         public IDataTemplate DialogContentTemplate {
-            get { return GetValue(DialogContentTemplateProperty); }
-            set { SetValue(DialogContentTemplateProperty, value); }
+            get => GetValue(DialogContentTemplateProperty);
+            set => SetValue(DialogContentTemplateProperty, value);
         }
 
         public IBrush OverlayBackground {
-            get { return GetValue(OverlayBackgroundProperty); }
-            set { SetValue(OverlayBackgroundProperty, value); }
+            get => GetValue(OverlayBackgroundProperty);
+            set => SetValue(OverlayBackgroundProperty, value);
         }
 
         public Thickness DialogMargin {
-            get { return GetValue(DialogMarginProperty); }
-            set { SetValue(DialogMarginProperty, value); }
+            get => GetValue(DialogMarginProperty);
+            set => SetValue(DialogMarginProperty, value);
         }
 
         public bool IsOpen {
-            get { return _isOpen; }
+            get => _isOpen;
             set {
                 SetAndRaise(IsOpenProperty, ref _isOpen, value);
                 IsOpenPropertyChangedCallback(this, value);
@@ -166,13 +174,13 @@ namespace DialogHost {
         }
 
         public bool CloseOnClickAway {
-            get { return _closeOnClickAway; }
-            set { SetAndRaise(CloseOnClickAwayProperty, ref _closeOnClickAway, value); }
+            get => _closeOnClickAway;
+            set => SetAndRaise(CloseOnClickAwayProperty, ref _closeOnClickAway, value);
         }
 
         public object? CloseOnClickAwayParameter {
-            get { return _closeOnClickAwayParameter; }
-            set { SetAndRaise(CloseOnClickAwayParameterProperty, ref _closeOnClickAwayParameter, value); }
+            get => _closeOnClickAwayParameter;
+            set => SetAndRaise(CloseOnClickAwayParameterProperty, ref _closeOnClickAwayParameter, value);
         }
 
         /// <summary>
@@ -181,8 +189,8 @@ namespace DialogHost {
         public DialogSession? CurrentSession { get; private set; }
 
         public DialogClosingEventHandler DialogClosingCallback {
-            get { return _dialogClosingCallback; }
-            set { SetAndRaise(DialogClosingCallbackProperty, ref _dialogClosingCallback, value); }
+            get => _dialogClosingCallback;
+            set => SetAndRaise(DialogClosingCallbackProperty, ref _dialogClosingCallback, value);
         }
 
         /// <summary>
@@ -259,7 +267,7 @@ namespace DialogHost {
         /// <param name="closingEventHandler">Allows access to closing event which would otherwise have been subscribed to on a instance.</param>
         /// <returns>Task result is the parameter used to close the dialog, typically what is passed to the <see cref="CloseDialogCommand"/> command.</returns>
         public static async Task<object?> Show(object content, string? dialogIdentifier, DialogOpenedEventHandler? openedEventHandler,
-                                               DialogClosingEventHandler? closingEventHandler) {
+            DialogClosingEventHandler? closingEventHandler) {
             if (content is null) throw new ArgumentNullException(nameof(content));
             return await GetInstance(dialogIdentifier).ShowInternal(content, openedEventHandler, closingEventHandler);
         }
@@ -319,7 +327,7 @@ namespace DialogHost {
         }
 
         internal async Task<object?> ShowInternal(object content, DialogOpenedEventHandler? openedEventHandler,
-                                                  DialogClosingEventHandler? closingEventHandler) {
+            DialogClosingEventHandler? closingEventHandler) {
             if (IsOpen)
                 throw new InvalidOperationException("DialogHost is already open.");
 
@@ -394,7 +402,8 @@ namespace DialogHost {
 
             _overlayLayer = e.NameScope.Find<OverlayLayer>(OverlayLayerName);
             _overlayPopupHost = new DialogOverlayPopupHost(_overlayLayer) {
-                Content = DialogContent, ContentTemplate = DialogContentTemplate
+                Content = DialogContent, ContentTemplate = DialogContentTemplate, Template = PopupTemplate,
+                Padding = DialogMargin
             };
 
             if (IsOpen) {
@@ -402,15 +411,15 @@ namespace DialogHost {
                 _overlayPopupHost?.ConfigurePosition(_overlayLayer, PlacementMode.AnchorAndGravity, new Point());
             }
 
-            #pragma warning disable 8604
             _templateDisposables = new CompositeDisposable() {
                 this.GetObservable(BoundsProperty)
                     .Subscribe(rect => _overlayPopupHost?.ConfigurePosition(_overlayLayer, PlacementMode.AnchorAndGravity, new Point())),
-                _overlayPopupHost.Bind(ContentProperty, this.GetBindingObservable(DialogContentProperty)),
-                _overlayPopupHost.Bind(ContentTemplateProperty, this.GetBindingObservable(DialogContentTemplateProperty)),
-                e.NameScope.Find<Grid>(ContentCoverGridName)?.AddDisposableHandler(PointerReleasedEvent, ContentCoverGrid_OnPointerReleased)
+                _overlayPopupHost!.Bind(ContentProperty, this.GetBindingObservable(DialogContentProperty)),
+                _overlayPopupHost!.Bind(ContentTemplateProperty, this.GetBindingObservable(DialogContentTemplateProperty)),
+                _overlayPopupHost!.Bind(TemplateProperty, this.GetBindingObservable(PopupTemplateProperty)),
+                _overlayPopupHost!.Bind(PaddingProperty, this.GetBindingObservable(DialogMarginProperty)),
+                e.NameScope.Find<Grid>(ContentCoverGridName)?.AddDisposableHandler(PointerReleasedEvent, ContentCoverGrid_OnPointerReleased) ?? Disposable.Empty
             };
-            #pragma warning restore 8604
             base.OnApplyTemplate(e);
         }
 
@@ -426,16 +435,16 @@ namespace DialogHost {
         /// Raised when a dialog is opened.
         /// </summary>
         public event DialogOpenedEventHandler DialogOpened {
-            add { AddHandler(DialogOpenedEvent, value); }
-            remove { RemoveHandler(DialogOpenedEvent, value); }
+            add => AddHandler(DialogOpenedEvent, value);
+            remove => RemoveHandler(DialogOpenedEvent, value);
         }
 
         /// <summary>
         /// Raised just before a dialog is closed.
         /// </summary>
         public event EventHandler<DialogClosingEventArgs> DialogClosing {
-            add { AddHandler(DialogClosingEvent, value); }
-            remove { RemoveHandler(DialogClosingEvent, value); }
+            add => AddHandler(DialogClosingEvent, value);
+            remove => RemoveHandler(DialogClosingEvent, value);
         }
 
         protected void OnDialogClosing(DialogClosingEventArgs eventArgs) => RaiseEvent(eventArgs);
