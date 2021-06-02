@@ -8,48 +8,40 @@
              xmlns:assists="clr-namespace:Material.Styles.Assists;assembly=Material.Styles"
              xmlns:system="clr-namespace:System;assembly=System.Runtime"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             Height="256" Width="256"
+             MinHeight="256" MinWidth="256"
              x:Class="DialogHost.Demo.Views.FruitBowl">
     <materialDesign:DialogHost
         DialogClosing="FruitBowl_OnDialogClosing">
         <materialDesign:DialogHost.DialogContent>
-            <styles:Card>
-                <StackPanel>
-                    <TextBlock Text="Add a new fruit." />
+            <StackPanel>
+                <TextBlock Text="Add a new fruit." />
 
-                    <TextBox
-                        Margin="0 8 0 0"
-                        HorizontalAlignment="Stretch"
-                        x:Name="FruitTextBox" />
+                <TextBox
+                    Margin="0 8 0 0"
+                    HorizontalAlignment="Stretch"
+                    x:Name="FruitTextBox" />
 
-                    <StackPanel
-                        Orientation="Horizontal"
-                        HorizontalAlignment="Right">
-                        <Button
-                            Classes="Flat"
-                            IsDefault="True"
-                            Margin="0 8 8 0"
-                            Content="ACCEPT"
-                            Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=materialDesign:DialogHost}, Path=CloseDialogCommand}"
-                            CommandParameter="{Binding #FruitTextBox.Text}">
-                        </Button>
+                <StackPanel
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Right">
+                    <Button
+                        Classes="Flat"
+                        IsDefault="True"
+                        Margin="0 8 8 0"
+                        Content="ACCEPT"
+                        Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=materialDesign:DialogHost}, Path=CloseDialogCommand}"
+                        CommandParameter="{Binding #FruitTextBox.Text}" />
 
-                        <Button
-                            Classes="Flat"
-                            IsCancel="True"
-                            Margin="0 8 8 0"
-                            Content="CANCEL"
-                            Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=materialDesign:DialogHost}, Path=CloseDialogCommand}">
-                        </Button>
-                    </StackPanel>
+                    <Button
+                        Classes="Flat"
+                        IsCancel="True"
+                        Margin="0 8 8 0"
+                        Content="CANCEL"
+                        Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=materialDesign:DialogHost}, Path=CloseDialogCommand}" />
                 </StackPanel>
-            </styles:Card>
+            </StackPanel>
         </materialDesign:DialogHost.DialogContent>
-        <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="*" />
-                <RowDefinition Height="Auto" />
-            </Grid.RowDefinitions>
+        <Grid RowDefinitions="*,Auto">
 
             <ListBox x:Name="FruitListBox" />
 

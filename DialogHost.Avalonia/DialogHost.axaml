@@ -7,28 +7,30 @@
             <dialogHost:DialogHost.DialogContent>
                 <Grid RowDefinitions="Auto Auto">
                     <TextBlock>You content here</TextBlock>
-                    <Button Grid.Row="1" Command="{Binding #DialogHost.CloseDialogCommand}">CLOSE</Button>
+                    <Button Grid.Row="1" Command="{Binding #DialogHost.CloseDialogCommand}">
+                        CLOSE
+                    </Button>
                 </Grid>
             </dialogHost:DialogHost.DialogContent>
             <Button Margin="8" HorizontalAlignment="Center" VerticalAlignment="Bottom"
-                    Command="{Binding #DialogHost.OpenDialogCommand}">OPEN</Button>
+                    Command="{Binding #DialogHost.OpenDialogCommand}">
+                OPEN
+            </Button>
         </dialogHost:DialogHost>
     </Design.PreviewWith>
 
     <Style Selector="dialogHost|DialogHost">
-        <Setter Property="HorizontalAlignment" Value="Stretch"></Setter>
-        <Setter Property="VerticalAlignment" Value="Stretch"></Setter>
-        <Setter Property="DialogMargin" Value="8"></Setter>
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="VerticalAlignment" Value="Stretch" />
+        <Setter Property="DialogMargin" Value="8" />
         <Setter Property="Template">
             <ControlTemplate>
                 <Grid Name="DialogHostRoot" Focusable="False">
-                    <AdornerLayer>
-                        <ContentPresenter Name="ContentPresenter"
-                                          Content="{TemplateBinding Content}"
-                                          ContentTemplate="{TemplateBinding ContentTemplate}"
-                                          HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                          VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
-                    </AdornerLayer>
+                    <ContentPresenter Name="ContentPresenter"
+                                      Content="{TemplateBinding Content}"
+                                      ContentTemplate="{TemplateBinding ContentTemplate}"
+                                      HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                      VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
                     <Grid Name="PART_ContentCoverGrid"
                           Background="{TemplateBinding OverlayBackground}"
                           Focusable="False">

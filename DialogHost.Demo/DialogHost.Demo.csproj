@@ -9,11 +9,11 @@
         <AvaloniaResource Include="Assets\**" />
     </ItemGroup>
     <ItemGroup>
-        <PackageReference Include="Avalonia" Version="0.10.0" />
-        <PackageReference Include="Avalonia.Desktop" Version="0.10.0" />
-        <PackageReference Include="Avalonia.Diagnostics" Version="0.10.0" />
-        <PackageReference Include="Avalonia.ReactiveUI" Version="0.10.0" />
-        <PackageReference Include="Material.Avalonia" Version="2.1.0" />
+        <PackageReference Include="Avalonia" Version="0.10.5" />
+        <PackageReference Include="Avalonia.Desktop" Version="0.10.5" />
+        <PackageReference Include="Avalonia.Diagnostics" Version="0.10.5" />
+        <PackageReference Include="Avalonia.ReactiveUI" Version="0.10.5" />
+        <PackageReference Include="Material.Avalonia" Version="2.2.0" />
     </ItemGroup>
     <ItemGroup>
       <ProjectReference Include="..\DialogHost.Avalonia\DialogHost.Avalonia.csproj" />

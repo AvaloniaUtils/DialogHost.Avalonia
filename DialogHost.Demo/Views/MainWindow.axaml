@@ -6,32 +6,61 @@
         xmlns:styles="clr-namespace:Material.Styles;assembly=Material.Styles"
         xmlns:dialogHost="clr-namespace:DialogHost;assembly=DialogHost.Avalonia"
         xmlns:views="clr-namespace:DialogHost.Demo.Views"
-        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        xmlns:models="clr-namespace:DialogHost.Demo.Models"
+        mc:Ignorable="d"
         x:Class="DialogHost.Demo.Views.MainWindow"
         Icon="/Assets/avalonia-logo.ico"
+        Width="600" Height="400"
+        MinWidth="600" MinHeight="400"
         Title="DialogHost.Demo">
-
     <Design.DataContext>
         <vm:MainWindowViewModel />
     </Design.DataContext>
-    <dialogHost:DialogHost HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"
-                           Name="MainDialogHost" CloseOnClickAway="True"
-                           Identifier="123"
-                           DialogOpened="MainDialogHost_OnDialogOpened">
-        <dialogHost:DialogHost.DialogContent>
-            <styles:Card Margin="16">
-                <CheckBox Margin="16" IsChecked="{Binding ElementName=MainDialogHost, Path=IsOpen}">Uncheck for close</CheckBox>
-            </styles:Card>
-        </dialogHost:DialogHost.DialogContent>
-        <StackPanel HorizontalAlignment="Center" Margin="16">
-            <CheckBox VerticalAlignment="Center" HorizontalAlignment="Center" Content="Check for open"
-                      IsChecked="{Binding ElementName=MainDialogHost, Path=IsOpen}"/>
-            <Button Click="Button_OnClick">Open via code</Button>
-            <Button Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=dialogHost:DialogHost}, Path=OpenDialogCommand}">Open via command</Button>
-            <Border VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0 8 0 0"
-                    BorderThickness="1" BorderBrush="Black">
-                <views:FruitBowl />
-            </Border>
-        </StackPanel>
+    <dialogHost:DialogHost Identifier="MainDialogHost"
+                           DialogMargin="16">
+        <dialogHost:DialogHost.DialogContentTemplate>
+            <DataTemplate DataType="models:Sample2Model">
+                <StackPanel>
+                    <TextBlock TextAlignment="Center">Your lucky number:</TextBlock>
+                    <TextBlock Classes="Body1"
+                               TextAlignment="Center"
+                               Text="{Binding Number}" />
+                    <Button Margin="0 8 0 0"
+                            Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=dialogHost:DialogHost}, Path=CloseDialogCommand}">
+                        THANKS, CLOSE
+                    </Button>
+                </StackPanel>
+            </DataTemplate>
+        </dialogHost:DialogHost.DialogContentTemplate>
+        <ContentPresenter>
+            <ContentPresenter.Content>
+                <Grid Margin="16"
+                      ColumnDefinitions="* *" RowDefinitions="Auto *"
+                      VerticalAlignment="Center" HorizontalAlignment="Stretch">
+                    <TextBlock TextWrapping="Wrap">SAMPLE 1: Localized dialog encapsulating specific content, launched from a routed command, response handled in code-behind.</TextBlock>
+                    <Border Grid.Column="0" Grid.Row="1" Margin="8 8 8 0"
+                            MinHeight="256" MinWidth="256"
+                            BorderThickness="1" BorderBrush="Black">
+                        <views:FruitBowl />
+                    </Border>
+                    <TextBlock Grid.Row="0" Grid.Column="1" TextWrapping="Wrap">SAMPLE 2: Top level dialog,  using OpenDialog, passing content via the Parameter. You can pass a view model, provided a corresponding DataTemplate can be found in the scope of the root DialogHost.</TextBlock>
+                    <StackPanel Grid.Column="1" Grid.Row="1" Margin="8 8 8 0">
+                        <Button Margin="8" Click="OpenDialogWithView">PASS VIEW</Button>
+                        <Button Margin="8" Click="OpenDialogWithModel">
+                            PASS MODEL
+                        </Button>
+                    </StackPanel>
+                </Grid>
+            </ContentPresenter.Content>
+        </ContentPresenter>
     </dialogHost:DialogHost>
+    <Window.Resources>
+        <StackPanel x:Key="Sample2View">
+            <ProgressBar Classes="Circle" IsIndeterminate="True" />
+            <Button Margin="0 16 0 0"
+                    Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=dialogHost:DialogHost}, Path=CloseDialogCommand}">
+                CLOSE
+            </Button>
+        </StackPanel>
+    </Window.Resources>
 </Window>
