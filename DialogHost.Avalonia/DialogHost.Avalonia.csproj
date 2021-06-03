@@ -12,9 +12,11 @@
         <RepositoryUrl>https://github.com/AvaloniaUtils/DialogHost.Avalonia.git</RepositoryUrl>
         <RepositoryType>Git</RepositoryType>
         <PackageTags>c-sharp xaml multi-platform gui control mvvm dialogs avalonia avaloniaui c-sharp-library</PackageTags>
-        <PackageVersion>0.1.1</PackageVersion>
+        <PackageVersion>0.2.0</PackageVersion>
         <RootNamespace>DialogHost</RootNamespace>
-        <PackageReleaseNotes>Initial release</PackageReleaseNotes>
+        <PackageReleaseNotes>- Add PopupTemplate property
+- Fix DialogMargin
+- Some minor changes in DialogHost style</PackageReleaseNotes>
     </PropertyGroup>
     <ItemGroup>
         <Compile Update="**\*.xaml.cs">
