@@ -32,7 +32,7 @@ namespace DialogHost {
             AvaloniaProperty.Register<DialogHost, IDataTemplate>(nameof(DialogContentTemplate));
 
         public static readonly StyledProperty<IBrush> OverlayBackgroundProperty =
-            AvaloniaProperty.Register<DialogHost, IBrush>(nameof(OverlayBackground), Brushes.Black);
+            AvaloniaProperty.Register<DialogHost, IBrush>(nameof(OverlayBackground));
 
         public static readonly StyledProperty<Thickness> DialogMarginProperty =
             AvaloniaProperty.Register<DialogHost, Thickness>(nameof(DialogMargin));

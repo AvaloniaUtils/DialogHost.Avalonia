@@ -23,6 +23,7 @@
         <Setter Property="HorizontalAlignment" Value="Stretch" />
         <Setter Property="VerticalAlignment" Value="Stretch" />
         <Setter Property="DialogMargin" Value="8" />
+        <Setter Property="OverlayBackground" Value="Black"></Setter>
         <Setter Property="Template">
             <ControlTemplate>
                 <Grid Name="DialogHostRoot" Focusable="False">
@@ -54,7 +55,7 @@
         <Setter Property="PopupTemplate">
             <ControlTemplate>
                 <VisualLayerManager IsPopup="True" Name="PART_DialogPopupRoot">
-                    <Border CornerRadius="2" Background="White">
+                    <Border Name="PART_ContentBackground" CornerRadius="2">
                         <ContentPresenter Name="PART_ContentPresenter"
                                           Background="{TemplateBinding Background}"
                                           ContentTemplate="{TemplateBinding ContentTemplate}"
@@ -64,6 +65,22 @@
                 </VisualLayerManager>
             </ControlTemplate>
         </Setter>
+    </Style>
+    
+    <!-- AvaloniaUI fluent inverse color -->
+    <!-- Will be white for dark theme -->
+    <!-- And black for light theme -->
+    <Style Selector="dialogHost|DialogHost">
+        <Setter Property="OverlayBackground" Value="{DynamicResource SystemControlBackgroundBaseHighBrush}"></Setter>
+    </Style>
+    
+    <!-- Fallback color if avalonia theme not presented -->
+    <Style Selector="dialogHost|DialogHost Border#PART_ContentBackground">
+        <Setter Property="Background" Value="White"></Setter>
+    </Style>
+    <!-- AvaloniaUI fluent background color -->
+    <Style Selector="dialogHost|DialogHost Border#PART_ContentBackground">
+        <Setter Property="Background" Value="{DynamicResource SystemControlBackgroundAltHighBrush}"></Setter>
     </Style>
 
     <Style Selector="dialogHost|DialogHost[IsOpen=True] /template/ Grid#PART_ContentCoverGrid">
