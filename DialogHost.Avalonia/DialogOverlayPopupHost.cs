@@ -110,6 +110,7 @@ namespace DialogHost {
         {
             _overlayLayer.Children.Add(this);
             _shown = true;
+            UpdatePosition();
         }
 
         public void Hide()
