@@ -12,9 +12,11 @@
         <RepositoryUrl>https://github.com/AvaloniaUtils/DialogHost.Avalonia.git</RepositoryUrl>
         <RepositoryType>Git</RepositoryType>
         <PackageTags>c-sharp xaml multi-platform gui control mvvm dialogs avalonia avaloniaui c-sharp-library</PackageTags>
-        <PackageVersion>0.2.1</PackageVersion>
+        <PackageVersion>0.2.2</PackageVersion>
         <RootNamespace>DialogHost</RootNamespace>
-        <PackageReleaseNotes>- Make default popup background color and overlay background color match current avalonia theme</PackageReleaseNotes>
+        <PackageReleaseNotes>- Add position recalculating after resizing window when DialogHost closed
+- Fix positioning in ViewBox
+- Simplify position calculations</PackageReleaseNotes>
     </PropertyGroup>
     <ItemGroup>
         <Compile Update="**\*.xaml.cs">
