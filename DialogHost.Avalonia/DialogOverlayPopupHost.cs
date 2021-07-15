@@ -146,8 +146,10 @@ namespace DialogHost {
                                       PopupPositionerConstraintAdjustment constraintAdjustment = PopupPositionerConstraintAdjustment.All,
                                       Rect? rect = null)
         {
-            _positionerParameters.ConfigurePosition((TopLevel)_overlayLayer.GetVisualRoot(), target, placement, offset, anchor,
-                gravity, constraintAdjustment, rect);
+            // This code handles only PlacementMode.AnchorAndGravity and other default values
+            // Suitable only for current implementation of DialogHost
+            _positionerParameters.AnchorRectangle = new Rect(default, target.Bounds.Size);
+            
             UpdatePosition();
         }
 
