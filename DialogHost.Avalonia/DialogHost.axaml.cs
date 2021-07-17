@@ -403,7 +403,7 @@ namespace DialogHost {
             _overlayLayer = e.NameScope.Find<OverlayLayer>(OverlayLayerName);
             _overlayPopupHost = new DialogOverlayPopupHost(_overlayLayer) {
                 Content = DialogContent, ContentTemplate = DialogContentTemplate, Template = PopupTemplate,
-                Padding = DialogMargin
+                Padding = DialogMargin, ClipToBounds = false
             };
 
             if (IsOpen) {

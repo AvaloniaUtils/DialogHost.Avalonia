@@ -24,6 +24,7 @@
         <Setter Property="VerticalAlignment" Value="Stretch" />
         <Setter Property="DialogMargin" Value="8" />
         <Setter Property="OverlayBackground" Value="Black"></Setter>
+        <Setter Property="dialogHost:DialogHostStyle.CornerRadius" Value="2"></Setter>
         <Setter Property="Template">
             <ControlTemplate>
                 <Grid Name="DialogHostRoot" Focusable="False">
@@ -54,8 +55,10 @@
         </Setter>
         <Setter Property="PopupTemplate">
             <ControlTemplate>
-                <VisualLayerManager IsPopup="True" Name="PART_DialogPopupRoot">
-                    <Border Name="PART_ContentBackground" CornerRadius="2">
+                <VisualLayerManager IsPopup="True" Name="PART_DialogPopupRoot" ClipToBounds="False">
+                    <Border Name="PART_ContentBackground" 
+                            CornerRadius="{Binding Path=(dialogHost:DialogHostStyle.CornerRadius), RelativeSource={RelativeSource FindAncestor, AncestorType=dialogHost:DialogHost}}"
+                            BoxShadow="1.5 1.5 8 #4c000000" ClipToBounds="False">
                         <ContentPresenter Name="PART_ContentPresenter"
                                           Background="{TemplateBinding Background}"
                                           ContentTemplate="{TemplateBinding ContentTemplate}"

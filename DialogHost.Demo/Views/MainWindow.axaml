@@ -17,7 +17,8 @@
         <vm:MainWindowViewModel />
     </Design.DataContext>
     <dialogHost:DialogHost Identifier="MainDialogHost"
-                           DialogMargin="16">
+                           DialogMargin="16"
+                           dialogHost:DialogHostStyle.CornerRadius="8">
         <dialogHost:DialogHost.DialogContentTemplate>
             <DataTemplate DataType="models:Sample2Model">
                 <StackPanel>
@@ -43,7 +44,7 @@
                             BorderThickness="1" BorderBrush="Black">
                         <views:FruitBowl />
                     </Border>
-                    <TextBlock Grid.Row="0" Grid.Column="1" TextWrapping="Wrap">SAMPLE 2: Top level dialog,  using OpenDialog, passing content via the Parameter. You can pass a view model, provided a corresponding DataTemplate can be found in the scope of the root DialogHost.</TextBlock>
+                    <TextBlock Grid.Row="0" Grid.Column="1" TextWrapping="Wrap">SAMPLE 2: Top level dialog with custom corner radius, using OpenDialog, passing content via the Parameter. You can pass a view model, provided a corresponding DataTemplate can be found in the scope of the root DialogHost.</TextBlock>
                     <StackPanel Grid.Column="1" Grid.Row="1" Margin="8 8 8 0">
                         <Button Margin="8" Click="OpenDialogWithView">PASS VIEW</Button>
                         <Button Margin="8" Click="OpenDialogWithModel">
