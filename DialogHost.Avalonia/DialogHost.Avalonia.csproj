@@ -12,10 +12,9 @@
         <RepositoryUrl>https://github.com/AvaloniaUtils/DialogHost.Avalonia.git</RepositoryUrl>
         <RepositoryType>Git</RepositoryType>
         <PackageTags>c-sharp xaml multi-platform gui control mvvm dialogs avalonia avaloniaui c-sharp-library</PackageTags>
-        <PackageVersion>0.3.0</PackageVersion>
+        <PackageVersion>0.3.1</PackageVersion>
         <RootNamespace>DialogHost</RootNamespace>
-        <PackageReleaseNotes>- Add shadow for default DialogHost popup style
-- Add controllable CornerRadius via DialogHostStyle.CornerRadius attached property</PackageReleaseNotes>
+        <PackageReleaseNotes>- Fix unable to open multiple dialogs one by one</PackageReleaseNotes>
     </PropertyGroup>
     <ItemGroup>
         <Compile Update="**\*.xaml.cs">

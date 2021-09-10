@@ -352,6 +352,9 @@ namespace DialogHost {
             if (newValue) {
                 dialogHost.CurrentSession = new DialogSession(dialogHost);
                 dialogHost._restoreFocusDialogClose = FocusManager.Instance.Current;
+                
+                if (dialogHost._overlayPopupHost != null)
+                    dialogHost._overlayPopupHost.IsOpen = true;
 
                 //multiple ways of calling back that the dialog has opened:
                 // * routed event
@@ -381,14 +384,14 @@ namespace DialogHost {
                     dialogHost.CurrentSession = null;
                 }
 
+                if (dialogHost._overlayPopupHost != null)
+                    dialogHost._overlayPopupHost.IsOpen = false;
                 //NB: _dialogTaskCompletionSource is only set in the case where the dialog is shown with Show
                 dialogHost._dialogTaskCompletionSource?.TrySetResult(closeParameter);
 
                 dialogHost._restoreFocusDialogClose?.Focus();
             }
 
-            if (dialogHost._overlayPopupHost != null)
-                dialogHost._overlayPopupHost.IsOpen = newValue;
             dialogHost.RaiseCommandsCanExecuteChanged();
         }
 
