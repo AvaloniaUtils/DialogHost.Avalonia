@@ -39,7 +39,6 @@
                     <Setter Property="ScaleTransform.ScaleY" Value="1" />
                     <Setter Property="ScaleTransform.ScaleX" Value="1" />
                     <Setter Property="Opacity" Value="1" />
-                    <Setter Property="InternalIsShown" Value="True"></Setter>
                 </KeyFrame>
                 <KeyFrame Cue="60%">
                     <Setter Property="ScaleTransform.ScaleY" Value="1" />
@@ -50,7 +49,7 @@
                     <Setter Property="ScaleTransform.ScaleY" Value="0.5" />
                     <Setter Property="ScaleTransform.ScaleX" Value="0.5" />
                     <Setter Property="Opacity" Value="0" />
-                    <Setter Property="InternalIsShown" Value="False"></Setter>
+                    <Setter Property="IsActuallyOpen" Value="False"></Setter>
                 </KeyFrame>
             </Animation>
         </Style.Animations>

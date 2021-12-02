@@ -17,15 +17,15 @@ namespace DialogHost {
                 o => o.IsOpen,
                 (o, v) => o.IsOpen = v);
 
-        public static readonly DirectProperty<DialogOverlayPopupHost, bool> InternalIsShownProperty =
+        public static readonly DirectProperty<DialogOverlayPopupHost, bool> IsActuallyOpenProperty =
             AvaloniaProperty.RegisterDirect<DialogOverlayPopupHost, bool>(
-                nameof(InternalIsShown),
-                o => o.InternalIsShown,
-                (o, v) => o.InternalIsShown = v);
+                nameof(IsActuallyOpen),
+                o => o.IsActuallyOpen,
+                (o, v) => o.IsActuallyOpen = v);
 
         private readonly OverlayLayer _overlayLayer;
 
-        private bool _internalIsShown;
+        private bool _isActuallyOpen;
 
         private bool _isOpen;
         private Point _lastRequestedPosition;
@@ -43,7 +43,7 @@ namespace DialogHost {
             get => _isOpen;
             set {
                 SetAndRaise(IsOpenProperty, ref _isOpen, value);
-                if (value) InternalIsShown = true;
+                if (value) IsActuallyOpen = true;
             }
         }
 
@@ -53,11 +53,14 @@ namespace DialogHost {
         /// <remarks>
         /// Actually you should use <see cref="IsOpen"/> for opening and closing dialog 
         /// </remarks>
-        public bool InternalIsShown {
-            get { return _internalIsShown; }
+        public bool IsActuallyOpen {
+            get => _isActuallyOpen;
             set {
-                var previousValue = _internalIsShown;
-                SetAndRaise(InternalIsShownProperty, ref _internalIsShown, value); 
+                // Styling system artifacts, don't process them
+                if (IsOpen && !value) return;
+                
+                var previousValue = _isActuallyOpen;
+                SetAndRaise(IsActuallyOpenProperty, ref _isActuallyOpen, value); 
                 switch (previousValue) {
                     case true when !value:
                         Hide();
