@@ -23,10 +23,15 @@ namespace DialogHost {
                 o => o.IsActuallyOpen,
                 (o, v) => o.IsActuallyOpen = v);
 
+        public static readonly DirectProperty<DialogOverlayPopupHost, bool> DisableOpeningAnimationProperty =
+            DialogHost.DisableOpeningAnimationProperty.AddOwner<DialogOverlayPopupHost>(
+                host => host.DisableOpeningAnimation,
+                (host, b) => host.DisableOpeningAnimation = b);
+
         private readonly OverlayLayer _overlayLayer;
 
         private bool _isActuallyOpen;
-
+        private bool _disableOpeningAnimation;
         private bool _isOpen;
         private Point _lastRequestedPosition;
         private DialogPopupPositioner _popupPositioner;
@@ -70,6 +75,11 @@ namespace DialogHost {
                         break;
                 }
             }
+        }
+
+        public bool DisableOpeningAnimation {
+            get => _disableOpeningAnimation;
+            set => SetAndRaise(DisableOpeningAnimationProperty, ref _disableOpeningAnimation, value);
         }
 
         /// <inheritdoc/>

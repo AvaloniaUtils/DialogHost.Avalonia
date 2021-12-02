@@ -10,8 +10,8 @@
         mc:Ignorable="d"
         x:Class="DialogHost.Demo.Views.MainWindow"
         Icon="/Assets/avalonia-logo.ico"
-        Width="600" Height="400"
-        MinWidth="600" MinHeight="400"
+        Width="800" Height="400"
+        MinWidth="800" MinHeight="400"
         Title="DialogHost.Demo">
     <Design.DataContext>
         <vm:MainWindowViewModel />
@@ -36,7 +36,7 @@
         <ContentPresenter>
             <ContentPresenter.Content>
                 <Grid Margin="16"
-                      ColumnDefinitions="* *" RowDefinitions="Auto *"
+                      ColumnDefinitions="* * *" RowDefinitions="Auto *"
                       VerticalAlignment="Center" HorizontalAlignment="Stretch">
                     <TextBlock TextWrapping="Wrap">SAMPLE 1: Localized dialog encapsulating specific content, launched from a routed command, response handled in code-behind.</TextBlock>
                     <Border Grid.Column="0" Grid.Row="1" Margin="8 8 8 0"
@@ -44,8 +44,18 @@
                             BorderThickness="1" BorderBrush="Black">
                         <views:FruitBowl />
                     </Border>
-                    <TextBlock Grid.Row="0" Grid.Column="1" TextWrapping="Wrap">SAMPLE 2: Top level dialog with custom corner radius, using OpenDialog, passing content via the Parameter. You can pass a view model, provided a corresponding DataTemplate can be found in the scope of the root DialogHost.</TextBlock>
-                    <StackPanel Grid.Column="1" Grid.Row="1" Margin="8 8 8 0">
+                    <TextBlock Grid.Column="1" Grid.Row="0" TextWrapping="Wrap">SAMPLE 2: Dialog without animation.</TextBlock>
+                    <Border Grid.Column="1" Grid.Row="1" Margin="8 8 8 0"
+                            MinHeight="200" MinWidth="200"
+                            BorderThickness="1" BorderBrush="Black">
+                        <dialogHost:DialogHost Identifier="NoAnimationDialogHost"
+                                               DisableOpeningAnimation="True">
+                            <Button HorizontalAlignment="Center" VerticalAlignment="Center"
+                                    Click="OpenNoAnimationDialog">Open</Button>
+                        </dialogHost:DialogHost>
+                    </Border>
+                    <TextBlock Grid.Column="2" Grid.Row="0" TextWrapping="Wrap">SAMPLE 2: Top level dialog with custom corner radius, using OpenDialog, passing content via the Parameter. You can pass a view model, provided a corresponding DataTemplate can be found in the scope of the root DialogHost.</TextBlock>
+                    <StackPanel Grid.Column="2" Grid.Row="1" Margin="8 8 8 0">
                         <Button Margin="8" Click="OpenDialogWithView">PASS VIEW</Button>
                         <Button Margin="8" Click="OpenDialogWithModel">
                             PASS MODEL
@@ -57,6 +67,13 @@
     </dialogHost:DialogHost>
     <Window.Resources>
         <StackPanel x:Key="Sample2View">
+            <TextBlock>It opened without animation</TextBlock>
+            <Button Margin="0 16 0 0"
+                    Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=dialogHost:DialogHost}, Path=CloseDialogCommand}">
+                CLOSE
+            </Button>
+        </StackPanel>
+        <StackPanel x:Key="Sample3View">
             <ProgressBar Classes="Circle" IsIndeterminate="True" />
             <Button Margin="0 16 0 0"
                     Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=dialogHost:DialogHost}, Path=CloseDialogCommand}">

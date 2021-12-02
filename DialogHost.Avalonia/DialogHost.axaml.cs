@@ -85,6 +85,14 @@ namespace DialogHost {
 
         public static readonly StyledProperty<IControlTemplate> PopupTemplateProperty =
             AvaloniaProperty.Register<DialogHost, IControlTemplate>(nameof(PopupTemplate));
+        
+        public static readonly DirectProperty<DialogHost, bool> DisableOpeningAnimationProperty =
+            AvaloniaProperty.RegisterDirect<DialogHost, bool>(
+                nameof(DisableOpeningAnimation),
+                o => o.DisableOpeningAnimation,
+                (o, v) => o.DisableOpeningAnimation = v);
+
+        private bool _disableOpeningAnimation;
 
         private DialogClosingEventHandler? _asyncShowClosingEventHandler;
         private DialogOpenedEventHandler? _asyncShowOpenedEventHandler;
@@ -181,6 +189,11 @@ namespace DialogHost {
         public object? CloseOnClickAwayParameter {
             get => _closeOnClickAwayParameter;
             set => SetAndRaise(CloseOnClickAwayParameterProperty, ref _closeOnClickAwayParameter, value);
+        }
+
+        public bool DisableOpeningAnimation {
+            get => _disableOpeningAnimation;
+            set => SetAndRaise(DisableOpeningAnimationProperty, ref _disableOpeningAnimation, value);
         }
 
         /// <summary>
@@ -406,7 +419,7 @@ namespace DialogHost {
             _overlayLayer = e.NameScope.Find<OverlayLayer>(OverlayLayerName);
             _overlayPopupHost = new DialogOverlayPopupHost(_overlayLayer) {
                 Content = DialogContent, ContentTemplate = DialogContentTemplate, Template = PopupTemplate,
-                Padding = DialogMargin, ClipToBounds = false
+                Padding = DialogMargin, ClipToBounds = false, DisableOpeningAnimation = DisableOpeningAnimation
             };
 
             if (IsOpen) {
@@ -417,6 +430,7 @@ namespace DialogHost {
             _templateDisposables = new CompositeDisposable() {
                 this.GetObservable(BoundsProperty)
                     .Subscribe(rect => _overlayPopupHost?.ConfigurePosition(_overlayLayer, PlacementMode.AnchorAndGravity, new Point())),
+                _overlayPopupHost!.Bind(DisableOpeningAnimationProperty, this.GetBindingObservable(DisableOpeningAnimationProperty)),
                 _overlayPopupHost!.Bind(ContentProperty, this.GetBindingObservable(DialogContentProperty)),
                 _overlayPopupHost!.Bind(ContentTemplateProperty, this.GetBindingObservable(DialogContentTemplateProperty)),
                 _overlayPopupHost!.Bind(TemplateProperty, this.GetBindingObservable(PopupTemplateProperty)),

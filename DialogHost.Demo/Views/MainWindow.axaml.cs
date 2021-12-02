@@ -23,11 +23,15 @@ namespace DialogHost.Demo.Views {
         }
 
         private void OpenDialogWithView(object? sender, RoutedEventArgs e) {
-            DialogHost.Show(this.Resources["Sample2View"]!, "MainDialogHost");
+            DialogHost.Show(this.Resources["Sample3View"]!, "MainDialogHost");
         }
         
         private void OpenDialogWithModel(object? sender, RoutedEventArgs e) {
             DialogHost.Show(new Sample2Model(new Random().Next(0, 100)), "MainDialogHost");
+        }
+
+        private void OpenNoAnimationDialog(object? sender, RoutedEventArgs e) {
+            DialogHost.Show(this.Resources["Sample2View"]!, "NoAnimationDialogHost");
         }
     }
 }
