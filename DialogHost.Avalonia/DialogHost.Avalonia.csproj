@@ -13,6 +13,7 @@
         <RepositoryType>Git</RepositoryType>
         <PackageTags>c-sharp xaml multi-platform gui control mvvm dialogs avalonia avaloniaui c-sharp-library</PackageTags>
         <PackageVersion>0.3.1</PackageVersion>
+        <AssemblyVersion>0.3.1</AssemblyVersion>
         <RootNamespace>DialogHost</RootNamespace>
         <PackageReleaseNotes>- Fix unable to open multiple dialogs one by one</PackageReleaseNotes>
     </PropertyGroup>
