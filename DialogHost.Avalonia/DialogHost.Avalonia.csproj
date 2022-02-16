@@ -12,7 +12,7 @@
         <RepositoryUrl>https://github.com/AvaloniaUtils/DialogHost.Avalonia.git</RepositoryUrl>
         <RepositoryType>Git</RepositoryType>
         <PackageTags>c-sharp xaml multi-platform gui control mvvm dialogs avalonia avaloniaui c-sharp-library</PackageTags>
-        <PackageVersion>0.3.1</PackageVersion>
+        <Version>0.3.1</Version>
         <RootNamespace>DialogHost</RootNamespace>
         <PackageReleaseNotes>- Fix unable to open multiple dialogs one by one</PackageReleaseNotes>
     </PropertyGroup>
