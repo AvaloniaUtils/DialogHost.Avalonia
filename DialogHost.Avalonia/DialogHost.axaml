@@ -55,17 +55,15 @@
         </Setter>
         <Setter Property="PopupTemplate">
             <ControlTemplate>
-                <VisualLayerManager IsPopup="True" Name="PART_DialogPopupRoot" ClipToBounds="False">
-                    <Border Name="PART_ContentBackground" 
-                            CornerRadius="{Binding Path=(dialogHost:DialogHostStyle.CornerRadius), RelativeSource={RelativeSource FindAncestor, AncestorType=dialogHost:DialogHost}}"
-                            BoxShadow="1.5 1.5 8 #4c000000" ClipToBounds="False">
-                        <ContentPresenter Name="PART_ContentPresenter"
-                                          Background="{TemplateBinding Background}"
-                                          ContentTemplate="{TemplateBinding ContentTemplate}"
-                                          Content="{TemplateBinding Content}"
-                                          Padding="{TemplateBinding Padding}" />
-                    </Border>
-                </VisualLayerManager>
+                <Border Name="PART_ContentBackground" 
+                        CornerRadius="{Binding Path=(dialogHost:DialogHostStyle.CornerRadius), RelativeSource={RelativeSource FindAncestor, AncestorType=dialogHost:DialogHost}}"
+                        BoxShadow="1.5 1.5 8 #4c000000" ClipToBounds="False">
+                    <ContentPresenter Name="PART_ContentPresenter"
+                                      Background="{TemplateBinding Background}"
+                                      ContentTemplate="{TemplateBinding ContentTemplate}"
+                                      Content="{TemplateBinding Content}"
+                                      Padding="{TemplateBinding Padding}" />
+                </Border>
             </ControlTemplate>
         </Setter>
     </Style>
