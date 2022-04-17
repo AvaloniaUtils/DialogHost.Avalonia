@@ -1,16 +1,18 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reactive.Disposables;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Primitives.PopupPositioning;
+using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
 
 namespace DialogHost {
-    public class DialogOverlayPopupHost : ContentControl, IPopupHost, IInteractive, IManagedPopupPositionerPopup {
+    public class DialogOverlayPopupHost : ContentControl, IPopupHost, IInteractive, IManagedPopupPositionerPopup, ICustomKeyboardNavigation {
         public static readonly DirectProperty<DialogOverlayPopupHost, bool> IsOpenProperty =
             AvaloniaProperty.RegisterDirect<DialogOverlayPopupHost, bool>(
                 nameof(IsOpen),
@@ -123,6 +125,7 @@ namespace DialogHost {
         {
             _overlayLayer.Children.Add(this);
             _shown = true;
+            Focus();
             UpdatePosition();
         }
 
@@ -186,6 +189,14 @@ namespace DialogHost {
             {
                 _popupPositioner.Update(_positionerParameters);
             }
+        }
+
+        public (bool handled, IInputElement? next) GetNext(IInputElement element, NavigationDirection direction) {
+            if (!element.Equals(this)) {
+                return (false, null);
+            }
+            var focusable = this.GetVisualDescendants().OfType<IInputElement>().FirstOrDefault(visual => visual.Focusable);
+            return (true, focusable);
         }
     }
 }
