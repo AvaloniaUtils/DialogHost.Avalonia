@@ -12,23 +12,20 @@
         <RepositoryUrl>https://github.com/AvaloniaUtils/DialogHost.Avalonia.git</RepositoryUrl>
         <RepositoryType>Git</RepositoryType>
         <PackageTags>c-sharp xaml multi-platform gui control mvvm dialogs avalonia avaloniaui c-sharp-library</PackageTags>
-        <Version>0.4.0</Version>
+        <Version>0.5.0-rc0</Version>
         <RootNamespace>DialogHost</RootNamespace>
         <PackageReleaseNotes>
-            - Add DisableOpeningAnimation property
-            - Rename InternalIsShown to IsActuallyOpen
+            - Fix focus is drawn with some unwanted offset #7
+            - Make focus should be restricted to the Popup #7
         </PackageReleaseNotes>
     </PropertyGroup>
     <ItemGroup>
-        <Compile Update="**\*.xaml.cs">
+        <Compile Update="**\*.axaml.cs">
             <DependentUpon>%(Filename)</DependentUpon>
         </Compile>
         <AvaloniaResource Include="**\*.xaml">
             <SubType>Designer</SubType>
         </AvaloniaResource>
-        <Compile Update="DialogOverlayPopupHost.cs">
-          <DependentUpon>DialogOverlayPopupHost.axaml</DependentUpon>
-        </Compile>
     </ItemGroup>
     <ItemGroup>
         <PackageReference Include="Avalonia" Version="0.10.13" />
