@@ -1,6 +1,6 @@
 ﻿using Avalonia;
 
-namespace DialogHost {
+namespace DialogHostAvalonia {
     public class DialogHostStyle {
         /// <summary>
         /// Controls CornerRadius DialogHost's popup background.

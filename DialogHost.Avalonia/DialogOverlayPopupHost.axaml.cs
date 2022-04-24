@@ -11,7 +11,7 @@ using Avalonia.Interactivity;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
 
-namespace DialogHost {
+namespace DialogHostAvalonia {
     public class DialogOverlayPopupHost : ContentControl, IPopupHost, IInteractive, IManagedPopupPositionerPopup, ICustomKeyboardNavigation {
         public static readonly DirectProperty<DialogOverlayPopupHost, bool> IsOpenProperty =
             AvaloniaProperty.RegisterDirect<DialogOverlayPopupHost, bool>(

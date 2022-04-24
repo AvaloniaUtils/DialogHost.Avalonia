@@ -3,6 +3,7 @@
         <OutputType>WinExe</OutputType>
         <TargetFramework>net5.0</TargetFramework>
         <Nullable>enable</Nullable>
+        <RootNamespace>DialogHostDemo</RootNamespace>
     </PropertyGroup>
     <ItemGroup>
         <Folder Include="Models\" />

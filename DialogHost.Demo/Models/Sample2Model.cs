@@ -1,4 +1,4 @@
-﻿namespace DialogHost.Demo.Models {
+﻿namespace DialogHostDemo.Models {
     public class Sample2Model {
         public Sample2Model(int number) {
             Number = number;

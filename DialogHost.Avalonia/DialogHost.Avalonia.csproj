@@ -12,11 +12,10 @@
         <RepositoryUrl>https://github.com/AvaloniaUtils/DialogHost.Avalonia.git</RepositoryUrl>
         <RepositoryType>Git</RepositoryType>
         <PackageTags>c-sharp xaml multi-platform gui control mvvm dialogs avalonia avaloniaui c-sharp-library</PackageTags>
-        <Version>0.5.0-rc0</Version>
-        <RootNamespace>DialogHost</RootNamespace>
+        <Version>0.6.0-rc0</Version>
+        <RootNamespace>DialogHostAvalonia</RootNamespace>
         <PackageReleaseNotes>
-            - Fix focus is drawn with some unwanted offset #7
-            - Make focus should be restricted to the Popup #7
+- Rename root namespace to DialogHostAvalonia
         </PackageReleaseNotes>
     </PropertyGroup>
     <ItemGroup>
