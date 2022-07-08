@@ -8,6 +8,7 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Primitives.PopupPositioning;
 using Avalonia.Input;
 using Avalonia.Interactivity;
+using Avalonia.Media;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
 
@@ -117,6 +118,9 @@ namespace DialogHost {
         }
 
         public IVisual HostedVisualTreeRoot => null;
+
+        public bool Topmost { get; set; }
+        public Transform? Transform { get; set; }
 
         public void Dispose() => Hide();
 
