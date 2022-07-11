@@ -368,3 +368,6 @@ MigrationBackup/
 /.idea/.idea.Material.Icons/.idea/
 /Material.Icons.Meta.dll
 /.idea/.idea.Material.Icons.Avalonia/.idea/
+
+# vscode
+.vscode
