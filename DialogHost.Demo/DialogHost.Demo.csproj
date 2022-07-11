@@ -3,6 +3,7 @@
         <OutputType>WinExe</OutputType>
         <TargetFramework>net6.0</TargetFramework>
         <Nullable>enable</Nullable>
+        <RootNamespace>DialogHostDemo</RootNamespace>
     </PropertyGroup>
     <ItemGroup>
         <Folder Include="Models\" />
@@ -13,8 +14,7 @@
         <PackageReference Include="Avalonia.Desktop" Version="0.10.999-cibuild0021683-beta" />
         <PackageReference Include="Avalonia.Diagnostics" Version="0.10.999-cibuild0021683-beta" />
         <PackageReference Include="Avalonia.ReactiveUI" Version="0.10.999-cibuild0021683-beta" />
-        <PackageReference Include="Material.Avalonia" Version="3.0.0-rc0.90-nightly" />
-        <PackageReference Include="Material.Icons.Avalonia" Version="1.0.2" />
+        <PackageReference Include="Avalonia.Themes.Fluent" Version="0.10.999-cibuild0021683-beta" />
     </ItemGroup>
     <ItemGroup>
       <ProjectReference Include="..\DialogHost.Avalonia\DialogHost.Avalonia.csproj" />
