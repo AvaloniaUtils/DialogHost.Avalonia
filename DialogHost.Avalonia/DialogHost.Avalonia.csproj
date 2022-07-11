@@ -8,7 +8,7 @@
         <Authors>SKProCH</Authors>
         <Description>Avalonia Dialog Host control that provides a simple way to display a dialog with information or prompt the user when information is required</Description>
         <PackageProjectUrl>https://github.com/AvaloniaUtils/DialogHost.Avalonia/</PackageProjectUrl>
-        <PackageLicenseUrl>https://github.com/AvaloniaUtils/DialogHost.Avalonia/blob/main/LICENSE</PackageLicenseUrl>
+        <PackageLicense>https://github.com/AvaloniaUtils/DialogHost.Avalonia/blob/main/LICENSE</PackageLicense>
         <RepositoryUrl>https://github.com/AvaloniaUtils/DialogHost.Avalonia.git</RepositoryUrl>
         <RepositoryType>Git</RepositoryType>
         <PackageTags>c-sharp xaml multi-platform gui control mvvm dialogs avalonia avaloniaui c-sharp-library</PackageTags>

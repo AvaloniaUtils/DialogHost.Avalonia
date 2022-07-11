@@ -61,8 +61,8 @@ namespace DialogHost {
         public static readonly RoutedEvent DialogClosingEvent =
             RoutedEvent.Register<DialogHost, DialogClosingEventArgs>(nameof(DialogClosing), RoutingStrategies.Bubble);
 
-        public static readonly DirectProperty<DialogHost, DialogClosingEventHandler> DialogClosingCallbackProperty =
-            AvaloniaProperty.RegisterDirect<DialogHost, DialogClosingEventHandler>(
+        public static readonly DirectProperty<DialogHost, DialogClosingEventHandler?> DialogClosingCallbackProperty =
+            AvaloniaProperty.RegisterDirect<DialogHost, DialogClosingEventHandler?>(
                 nameof(DialogClosingCallback),
                 o => o.DialogClosingCallback,
                 (o, v) => o.DialogClosingCallback = v);
@@ -110,8 +110,6 @@ namespace DialogHost {
         private TaskCompletionSource<object?>? _dialogTaskCompletionSource;
 
         private string? _identifier = default;
-
-        private bool _internalIsOpen;
 
         private bool _isOpen;
 
@@ -201,7 +199,7 @@ namespace DialogHost {
         /// </summary>
         public DialogSession? CurrentSession { get; private set; }
 
-        public DialogClosingEventHandler DialogClosingCallback {
+        public DialogClosingEventHandler? DialogClosingCallback {
             get => _dialogClosingCallback;
             set => SetAndRaise(DialogClosingCallbackProperty, ref _dialogClosingCallback, value);
         }
@@ -339,8 +337,7 @@ namespace DialogHost {
             return targets[0];
         }
 
-        internal async Task<object?> ShowInternal(object content, DialogOpenedEventHandler? openedEventHandler,
-            DialogClosingEventHandler? closingEventHandler) {
+        internal async Task<object?> ShowInternal(object content, DialogOpenedEventHandler? openedEventHandler, DialogClosingEventHandler? closingEventHandler) {
             if (IsOpen)
                 throw new InvalidOperationException("DialogHost is already open.");
 
@@ -364,7 +361,7 @@ namespace DialogHost {
         private static void IsOpenPropertyChangedCallback(DialogHost dialogHost, bool newValue) {
             if (newValue) {
                 dialogHost.CurrentSession = new DialogSession(dialogHost);
-                dialogHost._restoreFocusDialogClose = FocusManager.Instance.Current;
+                dialogHost._restoreFocusDialogClose = FocusManager.Instance?.Current;
                 
                 if (dialogHost._overlayPopupHost != null)
                     dialogHost._overlayPopupHost.IsOpen = true;
@@ -417,6 +414,12 @@ namespace DialogHost {
             _templateDisposables?.Dispose();
 
             _overlayLayer = e.NameScope.Find<OverlayLayer>(OverlayLayerName);
+
+            if (_overlayLayer == null)
+            {
+                throw new NullReferenceException($"template part {OverlayLayerName} not found");
+            }
+
             _overlayPopupHost = new DialogOverlayPopupHost(_overlayLayer) {
                 Content = DialogContent, ContentTemplate = DialogContentTemplate, Template = PopupTemplate,
                 Padding = DialogMargin, ClipToBounds = false, DisableOpeningAnimation = DisableOpeningAnimation
@@ -431,9 +434,9 @@ namespace DialogHost {
                 this.GetObservable(BoundsProperty)
                     .Subscribe(rect => _overlayPopupHost?.ConfigurePosition(_overlayLayer, PlacementMode.AnchorAndGravity, new Point())),
                 _overlayPopupHost!.Bind(DisableOpeningAnimationProperty, this.GetBindingObservable(DisableOpeningAnimationProperty)),
-                _overlayPopupHost!.Bind(ContentProperty, this.GetBindingObservable(DialogContentProperty)),
-                _overlayPopupHost!.Bind(ContentTemplateProperty, this.GetBindingObservable(DialogContentTemplateProperty)),
-                _overlayPopupHost!.Bind(TemplateProperty, this.GetBindingObservable(PopupTemplateProperty)),
+                _overlayPopupHost!.Bind(ContentProperty!, this.GetBindingObservable(DialogContentProperty)),
+                _overlayPopupHost!.Bind(ContentTemplateProperty!, this.GetBindingObservable(DialogContentTemplateProperty)),
+                _overlayPopupHost!.Bind(TemplateProperty!, this.GetBindingObservable(PopupTemplateProperty)),
                 _overlayPopupHost!.Bind(PaddingProperty, this.GetBindingObservable(DialogMarginProperty)),
                 e.NameScope.Find<Grid>(ContentCoverGridName)?.AddDisposableHandler(PointerReleasedEvent, ContentCoverGrid_OnPointerReleased) ?? Disposable.Empty
             };

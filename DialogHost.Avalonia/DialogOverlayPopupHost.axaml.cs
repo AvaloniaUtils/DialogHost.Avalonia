@@ -86,7 +86,7 @@ namespace DialogHost {
         }
 
         /// <inheritdoc/>
-        IInteractive IInteractive.InteractiveParent => Parent;
+        IInteractive? IInteractive.InteractiveParent => Parent;
 
         IReadOnlyList<ManagedPopupPositionerScreenInfo> IManagedPopupPositionerPopup.Screens
         {
@@ -112,12 +112,12 @@ namespace DialogHost {
 
         double IManagedPopupPositionerPopup.Scaling => 1;
 
-        public void SetChild(IControl control)
+        public void SetChild(IControl? control)
         {
             Content = control;
         }
 
-        public IVisual HostedVisualTreeRoot => null;
+        public IVisual? HostedVisualTreeRoot => null;
 
         public bool Topmost { get; set; }
         public Transform? Transform { get; set; }
@@ -161,14 +161,14 @@ namespace DialogHost {
             });
         }
 
-        public void ConfigurePosition(IVisual target, PlacementMode placement, Point offset,
+        public void ConfigurePosition(IVisual? target, PlacementMode placement, Point offset,
                                       PopupAnchor anchor = PopupAnchor.None, PopupGravity gravity = PopupGravity.None,
                                       PopupPositionerConstraintAdjustment constraintAdjustment = PopupPositionerConstraintAdjustment.All,
                                       Rect? rect = null)
         {
             // This code handles only PlacementMode.AnchorAndGravity and other default values
             // Suitable only for current implementation of DialogHost
-            _positionerParameters.AnchorRectangle = new Rect(default, target.Bounds.Size);
+            _positionerParameters.AnchorRectangle = new Rect(default, target?.Bounds.Size ?? default);
             
             UpdatePosition();
         }
