@@ -9,8 +9,13 @@ namespace DialogHost.Demo
     {
         public bool SupportsRecycling => false;
 
-        public IControl Build(object data)
+        public IControl Build(object? data)
         {
+            if (data == null)
+            {
+                return new TextBlock { Text = "data null view cannot be located"};
+            }
+
             var name = data.GetType().FullName!.Replace("ViewModel", "View");
             var type = Type.GetType(name);
 
@@ -24,7 +29,7 @@ namespace DialogHost.Demo
             }
         }
 
-        public bool Match(object data)
+        public bool Match(object? data)
         {
             return data is ViewModelBase;
         }

@@ -5,23 +5,32 @@ using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 
 namespace DialogHost.Demo.Views {
-    public class FruitBowl : UserControl {
-        public AvaloniaList<string> ListBoxSource = new AvaloniaList<string>() {
+    public class FruitBowl : UserControl 
+    {
+        public AvaloniaList<string> ListBoxSource = new AvaloniaList<string>() 
+        {
             "Apple",
             "Banana",
             "Peer"
         };
-        public FruitBowl() {
+
+        public FruitBowl() 
+        {
             InitializeComponent();
         }
 
-        private void InitializeComponent() {
+        private void InitializeComponent() 
+        {
             AvaloniaXamlLoader.Load(this);
-            ListBox fruitListBox = this.FindControl<ListBox>("FruitListBox");
-            fruitListBox.Items = ListBoxSource;
+            var fruitListBox = this.FindControl<ListBox>("FruitListBox");
+            if (fruitListBox != null)
+            {
+                fruitListBox.Items = ListBoxSource;
+            }
         }
 
-        private void FruitBowl_OnDialogClosing(object? sender, DialogClosingEventArgs e) {
+        private void FruitBowl_OnDialogClosing(object? sender, DialogClosingEventArgs e) 
+        {
             Debug.WriteLine($"SAMPLE 1: Closing dialog with parameter: {e.Parameter ?? string.Empty}");
 
             //you can cancel the dialog close:
