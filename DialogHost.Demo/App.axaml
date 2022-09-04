@@ -1,9 +1,9 @@
 <Application xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="using:DialogHost.Demo"
-             x:Class="DialogHost.Demo.App">
+             xmlns:dialogHostDemo="clr-namespace:DialogHostDemo"
+             x:Class="DialogHostDemo.App">
     <Application.DataTemplates>
-        <local:ViewLocator/>
+        <dialogHostDemo:ViewLocator/>
     </Application.DataTemplates>
 
     <Application.Styles>
