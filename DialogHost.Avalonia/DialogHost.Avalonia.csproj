@@ -12,9 +12,10 @@
         <RepositoryUrl>https://github.com/AvaloniaUtils/DialogHost.Avalonia.git</RepositoryUrl>
         <RepositoryType>Git</RepositoryType>
         <PackageTags>c-sharp xaml multi-platform gui control mvvm dialogs avalonia avaloniaui c-sharp-library</PackageTags>
-        <Version>0.6.0-rc1</Version>
+        <Version>0.6.0-rc2</Version>
         <RootNamespace>DialogHostAvalonia</RootNamespace>
         <PackageReleaseNotes>
+- Add support for Avalonia 11
 - Rename root namespace to DialogHostAvalonia
         </PackageReleaseNotes>
     </PropertyGroup>
