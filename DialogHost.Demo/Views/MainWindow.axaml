@@ -3,7 +3,6 @@
         xmlns:vm="using:DialogHost.Demo.ViewModels"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:styles="clr-namespace:Material.Styles;assembly=Material.Styles"
         xmlns:dialogHost="clr-namespace:DialogHost;assembly=DialogHost.Avalonia"
         xmlns:views="clr-namespace:DialogHost.Demo.Views"
         xmlns:models="clr-namespace:DialogHost.Demo.Models"
@@ -19,7 +18,7 @@
   <dialogHost:DialogHost Identifier="MainDialogHost"
                          DialogMargin="16"
                          dialogHost:DialogHostStyle.CornerRadius="8">
-    <dialogHost:DialogHost.DialogContentTemplate>
+    <dialogHost:DialogHost.DataTemplates>
       <DataTemplate DataType="models:Sample2Model">
         <StackPanel>
           <TextBlock TextAlignment="Center">Your lucky number:</TextBlock>
@@ -32,47 +31,43 @@
           </Button>
         </StackPanel>
       </DataTemplate>
-    </dialogHost:DialogHost.DialogContentTemplate>
-    <ContentPresenter>
-      <ContentPresenter.Content>
-        <Grid Margin="16"
-              ColumnDefinitions="* 8 * 8 *" RowDefinitions="Auto 8 *"
-              VerticalAlignment="Center" HorizontalAlignment="Stretch">
-          <TextBlock Grid.Column="0" Grid.Row="0"
-                     TextWrapping="Wrap">
-            SAMPLE 1: Localized dialog encapsulating specific content, launched from a routed command, response handled in code-behind.
-          </TextBlock>
-          <Border Grid.Column="0" Grid.Row="2"
-                  MinHeight="256" MinWidth="256"
-                  BorderThickness="1" BorderBrush="Black">
-            <views:FruitBowl />
-          </Border>
-          <TextBlock Grid.Column="2" Grid.Row="0"
-                     TextWrapping="Wrap">
-            SAMPLE 2: Dialog without animation.
-          </TextBlock>
-          <Border Grid.Column="2" Grid.Row="2"
-                  MinHeight="200" MinWidth="200"
-                  BorderThickness="1" BorderBrush="Black">
-            <dialogHost:DialogHost Identifier="NoAnimationDialogHost"
-                                   DisableOpeningAnimation="True">
-              <Button HorizontalAlignment="Center" VerticalAlignment="Center"
-                      Click="OpenNoAnimationDialog">
-                Open
-              </Button>
-            </dialogHost:DialogHost>
-          </Border>
-          <TextBlock Grid.Column="4" Grid.Row="0"
-                     TextWrapping="Wrap">
-            SAMPLE 3: Top level dialog with custom corner radius, using OpenDialog, passing content via the Parameter. You can pass a view model, provided a corresponding DataTemplate can be found in the scope of the root DialogHost.
-          </TextBlock>
-          <StackPanel Grid.Column="4" Grid.Row="2">
-            <Button Margin="8" Click="OpenDialogWithView">PASS VIEW</Button>
-            <Button Margin="8" Click="OpenDialogWithModel">PASS MODEL</Button>
-          </StackPanel>
-        </Grid>
-      </ContentPresenter.Content>
-    </ContentPresenter>
+    </dialogHost:DialogHost.DataTemplates>
+    <Grid Margin="16"
+          ColumnDefinitions="* 8 * 8 *" RowDefinitions="Auto 8 *"
+          VerticalAlignment="Center" HorizontalAlignment="Stretch">
+      <TextBlock Grid.Column="0" Grid.Row="0"
+                 TextWrapping="Wrap">
+        SAMPLE 1: Localized dialog encapsulating specific content, launched from a routed command, response handled in code-behind.
+      </TextBlock>
+      <Border Grid.Column="0" Grid.Row="2"
+              MinHeight="256" MinWidth="256"
+              BorderThickness="1" BorderBrush="Black">
+        <views:FruitBowl />
+      </Border>
+      <TextBlock Grid.Column="2" Grid.Row="0"
+                 TextWrapping="Wrap">
+        SAMPLE 2: Dialog without animation.
+      </TextBlock>
+      <Border Grid.Column="2" Grid.Row="2"
+              MinHeight="200" MinWidth="200"
+              BorderThickness="1" BorderBrush="Black">
+        <dialogHost:DialogHost Identifier="NoAnimationDialogHost"
+                               DisableOpeningAnimation="True">
+          <Button HorizontalAlignment="Center" VerticalAlignment="Center"
+                  Click="OpenNoAnimationDialog">
+            Open
+          </Button>
+        </dialogHost:DialogHost>
+      </Border>
+      <TextBlock Grid.Column="4" Grid.Row="0"
+                 TextWrapping="Wrap">
+        SAMPLE 3: Top level dialog with custom corner radius, using OpenDialog, passing content via the Parameter. You can pass a view model, provided a corresponding DataTemplate can be found in the scope of the root DialogHost.
+      </TextBlock>
+      <StackPanel Grid.Column="4" Grid.Row="2">
+        <Button Margin="8" Click="OpenDialogWithView">PASS VIEW</Button>
+        <Button Margin="8" Click="OpenDialogWithModel">PASS MODEL</Button>
+      </StackPanel>
+    </Grid>
   </dialogHost:DialogHost>
   <Window.Resources>
     <StackPanel x:Key="Sample2View">
