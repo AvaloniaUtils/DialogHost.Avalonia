@@ -18,7 +18,7 @@
   <dialogHostAvalonia:DialogHost Identifier="MainDialogHost"
                                  DialogMargin="16"
                                  dialogHostAvalonia:DialogHostStyle.CornerRadius="8">
-    <dialogHostAvalonia:DialogHost.DialogContentTemplate>
+    <dialogHostAvalonia:DialogHost.DataTemplates>
       <DataTemplate DataType="models:Sample2Model">
         <StackPanel>
           <TextBlock TextAlignment="Center">Your lucky number:</TextBlock>
@@ -31,7 +31,7 @@
           </Button>
         </StackPanel>
       </DataTemplate>
-    </dialogHostAvalonia:DialogHost.DialogContentTemplate>
+    </dialogHostAvalonia:DialogHost.DataTemplates>
     <Grid Margin="8"
           ColumnDefinitions="* 8 * 8 *" RowDefinitions="Auto 8 *"
           VerticalAlignment="Center" HorizontalAlignment="Stretch">
