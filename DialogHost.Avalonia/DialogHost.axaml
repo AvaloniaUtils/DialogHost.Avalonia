@@ -83,6 +83,10 @@
     <Style Selector="dialogHost|DialogHost Border#PART_ContentBackground">
         <Setter Property="Background" Value="{DynamicResource SystemControlBackgroundAltHighBrush}"></Setter>
     </Style>
+    <!-- AvaloniaUI material background color -->
+    <Style Selector="dialogHost|DialogHost Border#PART_ContentBackground">
+        <Setter Property="Background" Value="{DynamicResource MaterialDesignPaper}" />
+    </Style>
 
     <Style Selector="dialogHost|DialogHost[IsOpen=True] /template/ Grid#PART_ContentCoverGrid">
         <Setter Property="IsHitTestVisible" Value="True" />
