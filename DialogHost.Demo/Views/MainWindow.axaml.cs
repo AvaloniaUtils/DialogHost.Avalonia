@@ -7,9 +7,11 @@ using Avalonia.Controls.Shapes;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media;
-using DialogHost.Demo.Models;
+using DialogHostAvalonia;
+using DialogHostDemo.Models;
+using static DialogHostAvalonia.DialogHost;
 
-namespace DialogHost.Demo.Views {
+namespace DialogHostDemo.Views {
     public class MainWindow : Window {
         public MainWindow() {
             InitializeComponent();
@@ -23,7 +25,7 @@ namespace DialogHost.Demo.Views {
         }
 
         private void OpenDialogWithView(object? sender, RoutedEventArgs e) {
-            DialogHost.Show(this.Resources["Sample3View"]!, "MainDialogHost");
+            DialogHost.Show(Resources["Sample3View"]!, "MainDialogHost");
         }
         
         private void OpenDialogWithModel(object? sender, RoutedEventArgs e) {
@@ -31,7 +33,7 @@ namespace DialogHost.Demo.Views {
         }
 
         private void OpenNoAnimationDialog(object? sender, RoutedEventArgs e) {
-            DialogHost.Show(this.Resources["Sample2View"]!, "NoAnimationDialogHost");
+            DialogHost.Show(Resources["Sample2View"]!, "NoAnimationDialogHost");
         }
     }
 }

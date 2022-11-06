@@ -3,8 +3,9 @@ using Avalonia;
 using Avalonia.Collections;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
+using DialogHostAvalonia;
 
-namespace DialogHost.Demo.Views {
+namespace DialogHostDemo.Views {
     public class FruitBowl : UserControl {
         public AvaloniaList<string> ListBoxSource = new AvaloniaList<string>() {
             "Apple",

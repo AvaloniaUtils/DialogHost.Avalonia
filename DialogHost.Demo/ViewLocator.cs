@@ -1,9 +1,9 @@
 using System;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
-using DialogHost.Demo.ViewModels;
+using DialogHostDemo.ViewModels;
 
-namespace DialogHost.Demo
+namespace DialogHostDemo
 {
     public class ViewLocator : IDataTemplate
     {

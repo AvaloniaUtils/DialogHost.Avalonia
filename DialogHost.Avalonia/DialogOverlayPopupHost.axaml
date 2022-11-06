@@ -1,5 +1,5 @@
 <Styles xmlns="https://github.com/avaloniaui"
-        xmlns:dialogHost="clr-namespace:DialogHost">
+        xmlns:dialogHost="clr-namespace:DialogHostAvalonia">
     <Style Selector="dialogHost|DialogOverlayPopupHost">
         <Setter Property="Background" Value="{DynamicResource ThemeBackgroundBrush}" />
         <Setter Property="KeyboardNavigation.TabNavigation" Value="Cycle" />

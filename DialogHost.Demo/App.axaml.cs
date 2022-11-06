@@ -1,10 +1,10 @@
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
-using DialogHost.Demo.ViewModels;
-using DialogHost.Demo.Views;
+using DialogHostDemo.ViewModels;
+using DialogHostDemo.Views;
 
-namespace DialogHost.Demo
+namespace DialogHostDemo
 {
     public class App : Application
     {

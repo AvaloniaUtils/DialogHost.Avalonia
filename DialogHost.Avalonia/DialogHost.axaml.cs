@@ -12,7 +12,7 @@ using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Media;
 
-namespace DialogHost {
+namespace DialogHostAvalonia {
     public class DialogHost : ContentControl {
         public const string ContentCoverGridName = "PART_ContentCoverGrid";
         public const string OverlayLayerName = "PART_OverlayLayer";
