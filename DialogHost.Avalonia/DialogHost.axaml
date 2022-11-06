@@ -23,8 +23,9 @@
         <Setter Property="HorizontalAlignment" Value="Stretch" />
         <Setter Property="VerticalAlignment" Value="Stretch" />
         <Setter Property="DialogMargin" Value="8" />
-        <Setter Property="OverlayBackground" Value="Black"></Setter>
-        <Setter Property="dialogHost:DialogHostStyle.CornerRadius" Value="2"></Setter>
+        <Setter Property="OverlayBackground" Value="Black" />
+        <Setter Property="dialogHost:DialogHostStyle.ClipToBounds" Value="False" />        
+        <Setter Property="dialogHost:DialogHostStyle.CornerRadius" Value="2" />
         <Setter Property="Template">
             <ControlTemplate>
                 <Grid Name="DialogHostRoot" Focusable="False">
@@ -57,7 +58,8 @@
             <ControlTemplate>
                 <Border Name="PART_ContentBackground" 
                         CornerRadius="{Binding Path=(dialogHost:DialogHostStyle.CornerRadius), RelativeSource={RelativeSource FindAncestor, AncestorType=dialogHost:DialogHost}}"
-                        BoxShadow="1.5 1.5 8 #4c000000" ClipToBounds="False">
+                        BoxShadow="1.5 1.5 8 #4c000000"
+                        ClipToBounds="{Binding Path=(dialogHost:DialogHostStyle.ClipToBounds), RelativeSource={RelativeSource FindAncestor, AncestorType=dialogHost:DialogHost}}">
                     <ContentPresenter Name="PART_ContentPresenter"
                                       Background="{TemplateBinding Background}"
                                       ContentTemplate="{TemplateBinding ContentTemplate}"
