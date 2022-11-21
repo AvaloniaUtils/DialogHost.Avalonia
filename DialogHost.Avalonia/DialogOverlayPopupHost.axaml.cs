@@ -11,6 +11,7 @@ using Avalonia.Interactivity;
 using Avalonia.Media;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
+using DialogHostAvalonia.Positioners;
 
 namespace DialogHostAvalonia {
     public class DialogOverlayPopupHost : ContentControl, IPopupHost, IInteractive, IManagedPopupPositionerPopup, ICustomKeyboardNavigation {
@@ -31,20 +32,26 @@ namespace DialogHostAvalonia {
                 host => host.DisableOpeningAnimation,
                 (host, b) => host.DisableOpeningAnimation = b);
 
+        public static readonly DirectProperty<DialogOverlayPopupHost, IDialogPopupPositioner?> PopupPositionerProperty =
+            DialogHost.PopupPositionerProperty.AddOwner<DialogOverlayPopupHost>(
+                o => o.PopupPositioner,
+                (o, v) => o.PopupPositioner = v);
+
         private readonly OverlayLayer _overlayLayer;
 
         private bool _isActuallyOpen;
         private bool _disableOpeningAnimation;
         private bool _isOpen;
         private Point _lastRequestedPosition;
-        private DialogPopupPositioner _popupPositioner;
-        private PopupPositionerParameters _positionerParameters = new PopupPositionerParameters();
+        private DialogPopupPositionerHost _popupPositionerHost;
+        private IDialogPopupPositioner? _popupPositioner;
+        private PopupPositionerParameters _positionerParameters = new();
         private bool _shown;
 
         public DialogOverlayPopupHost(OverlayLayer overlayLayer)
         {
             _overlayLayer = overlayLayer;
-            _popupPositioner = new DialogPopupPositioner(this);
+            _popupPositionerHost = new DialogPopupPositionerHost(this, _popupPositioner);
         }
 
         public bool IsOpen {
@@ -85,6 +92,15 @@ namespace DialogHostAvalonia {
             set => SetAndRaise(DisableOpeningAnimationProperty, ref _disableOpeningAnimation, value);
         }
 
+        public IDialogPopupPositioner? PopupPositioner {
+            get => _popupPositioner;
+            set {
+                SetAndRaise(PopupPositionerProperty, ref _popupPositioner, value);
+                _popupPositionerHost._dialogPopupPositioner = value;
+                UpdatePosition();
+            }
+        }
+
         /// <inheritdoc/>
         IInteractive IInteractive.InteractiveParent => Parent;
 
@@ -100,6 +116,7 @@ namespace DialogHostAvalonia {
         Rect IManagedPopupPositionerPopup.ParentClientAreaScreenGeometry =>
             new Rect(default, _overlayLayer.Bounds.Size);
 
+        // TODO: Allow manipulation of the popup size
         void IManagedPopupPositionerPopup.MoveAndResize(Point devicePoint, Size virtualSize)
         {
             _lastRequestedPosition = devicePoint;
@@ -171,7 +188,7 @@ namespace DialogHostAvalonia {
         {
             // This code handles only PlacementMode.AnchorAndGravity and other default values
             // Suitable only for current implementation of DialogHost
-            _positionerParameters.AnchorRectangle = new Rect(default, target.Bounds.Size);
+            _positionerParameters.AnchorRectangle = target.Bounds;
             
             UpdatePosition();
         }
@@ -194,7 +211,7 @@ namespace DialogHostAvalonia {
                 return;
             if (_shown)
             {
-                _popupPositioner.Update(_positionerParameters);
+                _popupPositionerHost.Update(_positionerParameters);
             }
         }
 

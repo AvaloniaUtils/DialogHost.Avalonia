@@ -11,6 +11,7 @@ using Avalonia.Controls.Templates;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Media;
+using DialogHostAvalonia.Positioners;
 
 namespace DialogHostAvalonia {
     public class DialogHost : ContentControl {
@@ -92,6 +93,13 @@ namespace DialogHostAvalonia {
                 o => o.DisableOpeningAnimation,
                 (o, v) => o.DisableOpeningAnimation = v);
 
+        public static readonly DirectProperty<DialogHost, IDialogPopupPositioner?> PopupPositionerProperty =
+            AvaloniaProperty.RegisterDirect<DialogHost, IDialogPopupPositioner?>(
+                nameof(PopupPositioner),
+                o => o.PopupPositioner,
+                (o, v) => o.PopupPositioner = v);
+
+        private IDialogPopupPositioner? _popupPositioner;
         private bool _disableOpeningAnimation;
 
         private DialogClosingEventHandler? _asyncShowClosingEventHandler;
@@ -109,9 +117,7 @@ namespace DialogHostAvalonia {
 
         private TaskCompletionSource<object?>? _dialogTaskCompletionSource;
 
-        private string? _identifier = default;
-
-        private bool _internalIsOpen;
+        private string? _identifier;
 
         private bool _isOpen;
 
@@ -194,6 +200,14 @@ namespace DialogHostAvalonia {
         public bool DisableOpeningAnimation {
             get => _disableOpeningAnimation;
             set => SetAndRaise(DisableOpeningAnimationProperty, ref _disableOpeningAnimation, value);
+        }
+
+        /// <summary>
+        /// Allows to override popup positioner
+        /// </summary>
+        public IDialogPopupPositioner? PopupPositioner {
+            get => _popupPositioner;
+            set => SetAndRaise(PopupPositionerProperty, ref _popupPositioner, value);
         }
 
         /// <summary>
@@ -280,7 +294,7 @@ namespace DialogHostAvalonia {
         /// <param name="closingEventHandler">Allows access to closing event which would otherwise have been subscribed to on a instance.</param>
         /// <returns>Task result is the parameter used to close the dialog, typically what is passed to the <see cref="CloseDialogCommand"/> command.</returns>
         public static async Task<object?> Show(object content, string? dialogIdentifier, DialogOpenedEventHandler? openedEventHandler,
-            DialogClosingEventHandler? closingEventHandler) {
+                                               DialogClosingEventHandler? closingEventHandler) {
             if (content is null) throw new ArgumentNullException(nameof(content));
             return await GetInstance(dialogIdentifier).ShowInternal(content, openedEventHandler, closingEventHandler);
         }
@@ -340,7 +354,7 @@ namespace DialogHostAvalonia {
         }
 
         internal async Task<object?> ShowInternal(object content, DialogOpenedEventHandler? openedEventHandler,
-            DialogClosingEventHandler? closingEventHandler) {
+                                                  DialogClosingEventHandler? closingEventHandler) {
             if (IsOpen)
                 throw new InvalidOperationException("DialogHost is already open.");
 
@@ -365,7 +379,7 @@ namespace DialogHostAvalonia {
             if (newValue) {
                 dialogHost.CurrentSession = new DialogSession(dialogHost);
                 dialogHost._restoreFocusDialogClose = FocusManager.Instance.Current;
-                
+
                 if (dialogHost._overlayPopupHost != null)
                     dialogHost._overlayPopupHost.IsOpen = true;
 
@@ -419,7 +433,8 @@ namespace DialogHostAvalonia {
             _overlayLayer = e.NameScope.Find<OverlayLayer>(OverlayLayerName);
             _overlayPopupHost = new DialogOverlayPopupHost(_overlayLayer) {
                 Content = DialogContent, ContentTemplate = DialogContentTemplate, Template = PopupTemplate,
-                Padding = DialogMargin, ClipToBounds = false, DisableOpeningAnimation = DisableOpeningAnimation
+                Padding = DialogMargin, ClipToBounds = false, DisableOpeningAnimation = DisableOpeningAnimation,
+                PopupPositioner = PopupPositioner
             };
 
             if (IsOpen) {
@@ -435,6 +450,7 @@ namespace DialogHostAvalonia {
                 _overlayPopupHost!.Bind(ContentTemplateProperty, this.GetBindingObservable(DialogContentTemplateProperty)),
                 _overlayPopupHost!.Bind(TemplateProperty, this.GetBindingObservable(PopupTemplateProperty)),
                 _overlayPopupHost!.Bind(PaddingProperty, this.GetBindingObservable(DialogMarginProperty)),
+                _overlayPopupHost!.Bind(PopupPositionerProperty, this.GetBindingObservable(PopupPositionerProperty)),
                 e.NameScope.Find<Grid>(ContentCoverGridName)?.AddDisposableHandler(PointerReleasedEvent, ContentCoverGrid_OnPointerReleased) ?? Disposable.Empty
             };
             base.OnApplyTemplate(e);

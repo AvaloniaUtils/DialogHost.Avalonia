@@ -12,13 +12,10 @@
         <RepositoryUrl>https://github.com/AvaloniaUtils/DialogHost.Avalonia.git</RepositoryUrl>
         <RepositoryType>Git</RepositoryType>
         <PackageTags>c-sharp xaml multi-platform gui control mvvm dialogs avalonia avaloniaui c-sharp-library</PackageTags>
-        <Version>0.6.0</Version>
+        <Version>0.7.0-preview1</Version>
         <RootNamespace>DialogHostAvalonia</RootNamespace>
         <PackageReleaseNotes>
-- Add support for Avalonia 11
-- Rename root namespace to DialogHostAvalonia
-- feat: CornerRadius binding support by @kirichenec
-- fix: MaterialDesignPaper backgroud for Material.Avalonia by @kirichenec
+- Add IDialogPopupPositioner to allow manipilation of Dialog placement
         </PackageReleaseNotes>
     </PropertyGroup>
     <ItemGroup>
