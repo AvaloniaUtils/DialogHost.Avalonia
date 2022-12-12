@@ -12,10 +12,11 @@
         <RepositoryUrl>https://github.com/AvaloniaUtils/DialogHost.Avalonia.git</RepositoryUrl>
         <RepositoryType>Git</RepositoryType>
         <PackageTags>c-sharp xaml multi-platform gui control mvvm dialogs avalonia avaloniaui c-sharp-library</PackageTags>
-        <Version>0.7.0-preview1</Version>
+        <Version>0.7.0-preview2</Version>
         <RootNamespace>DialogHostAvalonia</RootNamespace>
         <PackageReleaseNotes>
 - Add IDialogPopupPositioner to allow manipilation of Dialog placement
+- Fix AlignmentDialogPopupPositioner margin doesn't work when align top left corner #17
         </PackageReleaseNotes>
     </PropertyGroup>
     <ItemGroup>

@@ -1,4 +1,5 @@
-﻿using Avalonia;
+﻿using System;
+using Avalonia;
 using Avalonia.Controls.Primitives.PopupPositioning;
 using Avalonia.Layout;
 
@@ -41,8 +42,9 @@ namespace DialogHostAvalonia.Positioners {
 
             var availableSpaceRect = new Rect(parameters.AnchorRectangle.Size);
             var constrainRect = availableSpaceRect.Deflate(margin);
-            var align = new Rect(parameters.Size).Align(constrainRect, GetValue(HorizontalAlignmentProperty), GetValue(VerticalAlignmentProperty));
-            popup.MoveAndResize(align.Position / popup.Scaling, align.Size / popup.Scaling);
+            var aligned = new Rect(parameters.Size).Align(constrainRect, GetValue(HorizontalAlignmentProperty), GetValue(VerticalAlignmentProperty));
+            var final = new Rect(margin.Left + aligned.Left, margin.Top + aligned.Top, aligned.Width, aligned.Height);
+            popup.MoveAndResize(final.Position / popup.Scaling, final.Size / popup.Scaling);
         }
     }
 }
