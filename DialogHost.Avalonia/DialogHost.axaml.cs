@@ -26,11 +26,11 @@ namespace DialogHostAvalonia {
                 o => o.Identifier,
                 (o, v) => o.Identifier = v);
 
-        public static readonly StyledProperty<object> DialogContentProperty =
-            AvaloniaProperty.Register<DialogHost, object>(nameof(DialogContent));
+        public static readonly StyledProperty<object?> DialogContentProperty =
+            AvaloniaProperty.Register<DialogHost, object?>(nameof(DialogContent));
 
-        public static readonly StyledProperty<IDataTemplate> DialogContentTemplateProperty =
-            AvaloniaProperty.Register<DialogHost, IDataTemplate>(nameof(DialogContentTemplate));
+        public static readonly StyledProperty<IDataTemplate?> DialogContentTemplateProperty =
+            AvaloniaProperty.Register<DialogHost, IDataTemplate?>(nameof(DialogContentTemplate));
 
         public static readonly StyledProperty<IBrush> OverlayBackgroundProperty =
             AvaloniaProperty.Register<DialogHost, IBrush>(nameof(OverlayBackground));
@@ -84,8 +84,8 @@ namespace DialogHostAvalonia {
                 nameof(CloseDialogCommand),
                 o => o.CloseDialogCommand);
 
-        public static readonly StyledProperty<IControlTemplate> PopupTemplateProperty =
-            AvaloniaProperty.Register<DialogHost, IControlTemplate>(nameof(PopupTemplate));
+        public static readonly StyledProperty<IControlTemplate?> PopupTemplateProperty =
+            AvaloniaProperty.Register<DialogHost, IControlTemplate?>(nameof(PopupTemplate));
         
         public static readonly DirectProperty<DialogHost, bool> DisableOpeningAnimationProperty =
             AvaloniaProperty.RegisterDirect<DialogHost, bool>(
@@ -130,11 +130,11 @@ namespace DialogHostAvalonia {
         private IDisposable? _templateDisposables;
 
         public DialogHost() {
-            _closeDialogCommand = new DialogHostCommandImpl(InternalClose, o => IsOpen);
-            _openDialogCommand = new DialogHostCommandImpl(o => ShowInternal(o, null, null), o => !IsOpen);
+            _closeDialogCommand = new DialogHostCommandImpl(InternalClose, o => IsOpen, this.GetObservable(IsOpenProperty));
+            _openDialogCommand = new DialogHostCommandImpl(o => ShowInternal(o, null, null), o => !IsOpen, this.GetObservable(IsOpenProperty));
         }
 
-        public IControlTemplate PopupTemplate {
+        public IControlTemplate? PopupTemplate {
             get => GetValue(PopupTemplateProperty);
             set => SetValue(PopupTemplateProperty, value);
         }
@@ -159,12 +159,12 @@ namespace DialogHostAvalonia {
             set => SetAndRaise(IdentifierProperty, ref _identifier, value);
         }
 
-        public object DialogContent {
+        public object? DialogContent {
             get => GetValue(DialogContentProperty);
             set => SetValue(DialogContentProperty, value);
         }
 
-        public IDataTemplate DialogContentTemplate {
+        public IDataTemplate? DialogContentTemplate {
             get => GetValue(DialogContentTemplateProperty);
             set => SetValue(DialogContentTemplateProperty, value);
         }
@@ -420,7 +420,7 @@ namespace DialogHostAvalonia {
         private static void IsOpenPropertyChangedCallback(DialogHost dialogHost, bool newValue) {
             if (newValue) {
                 dialogHost.CurrentSession = new DialogSession(dialogHost);
-                dialogHost._restoreFocusDialogClose = FocusManager.Instance.Current;
+                dialogHost._restoreFocusDialogClose = FocusManager.Instance?.Current;
 
                 if (dialogHost._overlayPopupHost != null)
                     dialogHost._overlayPopupHost.IsOpen = true;

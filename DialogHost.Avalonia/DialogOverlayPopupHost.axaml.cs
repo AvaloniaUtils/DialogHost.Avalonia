@@ -2,10 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Disposables;
+using System.Reactive.Linq;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Primitives.PopupPositioning;
+using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Media;
@@ -14,18 +16,15 @@ using Avalonia.VisualTree;
 using DialogHostAvalonia.Positioners;
 
 namespace DialogHostAvalonia {
-    public class DialogOverlayPopupHost : ContentControl, IPopupHost, IInteractive, IManagedPopupPositionerPopup, ICustomKeyboardNavigation {
+    public class DialogOverlayPopupHost : ContentControl, IPopupHost, IManagedPopupPositionerPopup, ICustomKeyboardNavigation {
         public static readonly DirectProperty<DialogOverlayPopupHost, bool> IsOpenProperty =
             AvaloniaProperty.RegisterDirect<DialogOverlayPopupHost, bool>(
                 nameof(IsOpen),
                 o => o.IsOpen,
                 (o, v) => o.IsOpen = v);
 
-        public static readonly DirectProperty<DialogOverlayPopupHost, bool> IsActuallyOpenProperty =
-            AvaloniaProperty.RegisterDirect<DialogOverlayPopupHost, bool>(
-                nameof(IsActuallyOpen),
-                o => o.IsActuallyOpen,
-                (o, v) => o.IsActuallyOpen = v);
+        public static readonly StyledProperty<bool> IsActuallyOpenProperty =
+            AvaloniaProperty.Register<DialogOverlayPopupHost, bool>(nameof(IsActuallyOpen), true);
 
         public static readonly DirectProperty<DialogOverlayPopupHost, bool> DisableOpeningAnimationProperty =
             DialogHost.DisableOpeningAnimationProperty.AddOwner<DialogOverlayPopupHost>(
@@ -39,7 +38,6 @@ namespace DialogHostAvalonia {
 
         private readonly OverlayLayer _overlayLayer;
 
-        private bool _isActuallyOpen;
         private bool _disableOpeningAnimation;
         private bool _isOpen;
         private Point _lastRequestedPosition;
@@ -58,7 +56,7 @@ namespace DialogHostAvalonia {
             get => _isOpen;
             set {
                 SetAndRaise(IsOpenProperty, ref _isOpen, value);
-                if (value) IsActuallyOpen = true;
+                if (value) Show();
             }
         }
 
@@ -69,22 +67,8 @@ namespace DialogHostAvalonia {
         /// Actually you should use <see cref="IsOpen"/> for opening and closing dialog 
         /// </remarks>
         public bool IsActuallyOpen {
-            get => _isActuallyOpen;
-            set {
-                // Styling system artifacts, don't process them
-                if (IsOpen && !value) return;
-                
-                var previousValue = _isActuallyOpen;
-                SetAndRaise(IsActuallyOpenProperty, ref _isActuallyOpen, value); 
-                switch (previousValue) {
-                    case true when !value:
-                        Hide();
-                        break;
-                    case false when value:
-                        Show();
-                        break;
-                }
-            }
+            get => GetValue(IsActuallyOpenProperty);
+            set => SetValue(IsActuallyOpenProperty, value);
         }
 
         public bool DisableOpeningAnimation {
@@ -100,9 +84,6 @@ namespace DialogHostAvalonia {
                 UpdatePosition();
             }
         }
-
-        /// <inheritdoc/>
-        IInteractive IInteractive.InteractiveParent => Parent;
 
         IReadOnlyList<ManagedPopupPositionerScreenInfo> IManagedPopupPositionerPopup.Screens
         {
@@ -122,14 +103,14 @@ namespace DialogHostAvalonia {
             _lastRequestedPosition = devicePoint;
             Dispatcher.UIThread.Post(() =>
             {
-                OverlayLayer.SetLeft(this, _lastRequestedPosition.X);
-                OverlayLayer.SetTop(this, _lastRequestedPosition.Y);
+                Canvas.SetLeft(this, _lastRequestedPosition.X);
+                Canvas.SetTop(this, _lastRequestedPosition.Y);
             }, DispatcherPriority.Layout);
         }
 
         double IManagedPopupPositionerPopup.Scaling => 1;
 
-        public void SetChild(IControl control)
+        public void SetChild(Control? control)
         {
             Content = control;
         }
@@ -140,7 +121,7 @@ namespace DialogHostAvalonia {
         }
 
         Transform? IPopupHost.Transform { get; set; }
-        public IVisual HostedVisualTreeRoot => null;
+        public Visual? HostedVisualTreeRoot => null;
 
         public void Dispose() => Hide();
 
@@ -159,29 +140,7 @@ namespace DialogHostAvalonia {
             _shown = false;
         }
 
-        public IDisposable BindConstraints(AvaloniaObject popup, StyledProperty<double> widthProperty, StyledProperty<double> minWidthProperty,
-                                           StyledProperty<double> maxWidthProperty, StyledProperty<double> heightProperty, StyledProperty<double> minHeightProperty,
-                                           StyledProperty<double> maxHeightProperty, StyledProperty<bool> topmostProperty)
-        {
-            // Topmost property is not supported
-            var bindings = new List<IDisposable>();
-
-            void Bind(AvaloniaProperty what, AvaloniaProperty to) => bindings.Add(this.Bind(what, popup[~to]));
-            Bind(WidthProperty, widthProperty);
-            Bind(MinWidthProperty, minWidthProperty);
-            Bind(MaxWidthProperty, maxWidthProperty);
-            Bind(HeightProperty, heightProperty);
-            Bind(MinHeightProperty, minHeightProperty);
-            Bind(MaxHeightProperty, maxHeightProperty);
-            
-            return Disposable.Create(() =>
-            {
-                foreach (var x in bindings)
-                    x.Dispose();
-            });
-        }
-
-        public void ConfigurePosition(IVisual target, PlacementMode placement, Point offset,
+        public void ConfigurePosition(Visual target, PlacementMode placement, Point offset,
                                       PopupAnchor anchor = PopupAnchor.None, PopupGravity gravity = PopupGravity.None,
                                       PopupPositionerConstraintAdjustment constraintAdjustment = PopupPositionerConstraintAdjustment.All,
                                       Rect? rect = null)
@@ -221,6 +180,14 @@ namespace DialogHostAvalonia {
             }
             var focusable = this.GetVisualDescendants().OfType<IInputElement>().FirstOrDefault(visual => visual.Focusable);
             return (true, focusable);
+        }
+
+        /// <inheritdoc />
+        protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change) {
+            if (change.Property == IsActuallyOpenProperty && !change.GetNewValue<bool>()) {
+                Hide();
+            }
+            base.OnPropertyChanged(change);
         }
     }
 }
