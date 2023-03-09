@@ -8,8 +8,10 @@
         <Authors>SKProCH</Authors>
         <Description>Avalonia Dialog Host control that provides a simple way to display a dialog with information or prompt the user when information is required</Description>
         <PackageProjectUrl>https://github.com/AvaloniaUtils/DialogHost.Avalonia/</PackageProjectUrl>
-        <PackageLicenseUrl>https://github.com/AvaloniaUtils/DialogHost.Avalonia/blob/main/LICENSE</PackageLicenseUrl>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <RepositoryUrl>https://github.com/AvaloniaUtils/DialogHost.Avalonia.git</RepositoryUrl>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <GenerateDocumentationFile>True</GenerateDocumentationFile>
         <RepositoryType>Git</RepositoryType>
         <PackageTags>c-sharp xaml multi-platform gui control mvvm dialogs avalonia avaloniaui c-sharp-library</PackageTags>
         <Version>0.7.0-preview4</Version>
@@ -21,6 +23,9 @@
 - Add DialogHost.Show overloads accepting a DialogHost instance (instead of string identifier) #18 by profix898
         </PackageReleaseNotes>
     </PropertyGroup>
+    <ItemGroup>
+        <None Include="../README.md" Pack="true" PackagePath="/"/>
+    </ItemGroup>
     <ItemGroup>
         <AvaloniaResource Include="**\*.xaml">
             <SubType>Designer</SubType>
