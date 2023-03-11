@@ -41,7 +41,7 @@
     <Grid RowDefinitions="*,Auto">
       <ListBox x:Name="FruitListBox" />
 
-      <Border Background="LightBlue"
+      <Border Background="{DynamicResource SystemAccentColor}"
               Grid.Row="1">
         <TextBlock
           Margin="16"
@@ -50,10 +50,9 @@
 
       <Button
         Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=dialogHostAvalonia:DialogHost}, Path=OpenDialogCommand}"
-        VerticalAlignment="Bottom"
+        Margin="16 0"
         HorizontalAlignment="Right"
-        Grid.Row="0"
-        Margin="0 0 28 -20"
+        Grid.Row="1"
         Content="{avalonia:MaterialIconExt Kind=Plus, Size=22}" />
     </Grid>
   </dialogHostAvalonia:DialogHost>
