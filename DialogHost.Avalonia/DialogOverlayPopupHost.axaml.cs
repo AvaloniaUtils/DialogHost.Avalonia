@@ -128,8 +128,13 @@ namespace DialogHostAvalonia {
 
         public void Show()
         {
-            _overlayLayer.Children.Add(this);
+            if (!_shown) {
+                _overlayLayer.Children.Add(this);
+            }
             _shown = true;
+            // Set the minimum priority to allow overriding it everywhere
+            SetValue(IsActuallyOpenProperty, true, BindingPriority.Unset);
+            IsActuallyOpen = true;
             Focus();
             UpdatePosition();
         }
