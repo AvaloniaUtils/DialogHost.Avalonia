@@ -14,6 +14,9 @@ Dialogs in Avalonia have always been somewhat tricky. This implementation is des
 
 Dialogs *are asynchronous* so at some point you will have to deal with that in your code.
 
+#### Additional libraries with DialogHost support:
+- [HanumanInstitute.MvvmDialogs](https://github.com/mysteryx93/HanumanInstitute.MvvmDialogs/#avaloniadialoghost) - Library simplifying the concept of opening dialogs from a view model when using MVVM
+
 ## Getting started
 
 1. Install `DialogHost.Avalonia` [nuget package](https://www.nuget.org/packages/DialogHost.Avalonia/)
@@ -55,13 +58,13 @@ popup dialog will be displayed can be targeted; to a specific area of your app, 
 
 When the dialog is open, the underlying content will be dimmed and disabled.
 
-![preview](wiki/images/preview0.png)
+![preview](https://github.com/AvaloniaUtils/DialogHost.Avalonia/raw/main/wiki/images/preview0.png)
 
 `DialogHost.DialogContent` (associated with `DialogHost.DialogContentTemplate`) is your typical XAML content object
 property for setting the content of your dialog. You can infer from this that you can use MVVM to bind content, but
 there are multiple ways of populating the content, showing the dialog, closing the dialog, and processing responses.
 
-![previewGif](wiki/images/preview.gif)
+![previewGif](https://github.com/AvaloniaUtils/DialogHost.Avalonia/raw/main/wiki/images/preview.gif)
 
 
 ---
