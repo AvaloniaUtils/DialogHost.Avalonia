@@ -1,5 +1,12 @@
 <Styles xmlns="https://github.com/avaloniaui"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-    <StyleInclude Source="avares://DialogHost.Avalonia/DialogOverlayPopupHost.axaml" />
-    <StyleInclude Source="avares://DialogHost.Avalonia/DialogHost.axaml" />
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:dialogHostAvalonia="clr-namespace:DialogHostAvalonia">
+  <Styles.Resources>
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+        <MergeResourceInclude Source="avares://DialogHost.Avalonia/DialogHost.axaml" />
+        <MergeResourceInclude Source="avares://DialogHost.Avalonia/DialogOverlayPopupHost.axaml" />
+      </ResourceDictionary.MergedDictionaries>
+    </ResourceDictionary>
+  </Styles.Resources>
 </Styles>
