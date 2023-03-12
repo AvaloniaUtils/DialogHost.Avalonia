@@ -14,9 +14,6 @@ Dialogs in Avalonia have always been somewhat tricky. This implementation is des
 
 Dialogs *are asynchronous* so at some point you will have to deal with that in your code.
 
-#### Additional libraries with DialogHost support:
-- [HanumanInstitute.MvvmDialogs](https://github.com/mysteryx93/HanumanInstitute.MvvmDialogs/#avaloniadialoghost) - Library simplifying the concept of opening dialogs from a view model when using MVVM
-
 ## Getting started
 
 1. Install `DialogHost.Avalonia` [nuget package](https://www.nuget.org/packages/DialogHost.Avalonia/)
@@ -66,6 +63,9 @@ there are multiple ways of populating the content, showing the dialog, closing t
 
 ![previewGif](https://github.com/AvaloniaUtils/DialogHost.Avalonia/raw/main/wiki/images/preview.gif)
 
+### Alternative way
+
+- [HanumanInstitute.MvvmDialogs](https://github.com/mysteryx93/HanumanInstitute.MvvmDialogs/#avaloniadialoghost) allows the use of MVVM design in a simplified way, with DialogHost support. If you opt for that syntax, you do not need most of the documentation below, and the DialogHost container is injected to window automatically at runtime.
 
 ---
 
