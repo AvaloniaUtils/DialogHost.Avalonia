@@ -2,6 +2,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:dialogHostDemo="clr-namespace:DialogHostDemo"
              xmlns:avalonia="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+             xmlns:dialogHostAvalonia="clr-namespace:DialogHostAvalonia;assembly=DialogHost.Avalonia"
              x:Class="DialogHostDemo.App">
     <Application.DataTemplates>
         <dialogHostDemo:ViewLocator/>
@@ -9,7 +10,7 @@
 
     <Application.Styles>
         <FluentTheme />
-        <StyleInclude Source="avares://DialogHost.Avalonia/Styles.xaml" />
         <avalonia:MaterialIconStyles />
+        <dialogHostAvalonia:DialogHostStyles />
     </Application.Styles>
 </Application>

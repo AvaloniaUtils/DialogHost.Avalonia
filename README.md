@@ -17,20 +17,23 @@ Dialogs *are asynchronous* so at some point you will have to deal with that in y
 ## Getting started
 
 1. Install `DialogHost.Avalonia` [nuget package](https://www.nuget.org/packages/DialogHost.Avalonia/)
-2. Add DialogHost styles to your app in `App.xaml`. See the example of `App.xaml`:
-
-```xaml
-<Application ...>
-    ...
-    <Application.Styles>
+   ```shell
+   dotnet add package DialogHost.Avalonia
+   ```
+2. Add DialogHostStyles element to your app styles in `App.axaml`. See the example of `App.axaml`:
+    ```xaml
+    <Application ...
+        xmlns:dialogHostAvalonia="clr-namespace:DialogHostAvalonia;assembly=DialogHost.Avalonia"
+        ...>
+        
         ...
-        <!-- This line \/ required -->
-        <StyleInclude Source="avares://DialogHost.Avalonia/Styles.xaml"/>
-        <!-- This line /\ required -->
-    </Application.Styles>
-    ...
-</Application>
-```
+        <Application.Styles>
+            ...
+            <dialogHostAvalonia:DialogHostStyles />
+        </Application.Styles>
+        ...
+    </Application>
+    ```
 
 3. Start using control
 
