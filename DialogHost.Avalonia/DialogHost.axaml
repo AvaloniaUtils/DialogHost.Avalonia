@@ -29,7 +29,7 @@
     <Setter Property="dialogHostAvalonia:DialogHostStyle.CornerRadius" Value="2" />
     <Setter Property="Template">
       <ControlTemplate>
-        <Grid Name="DialogHostRoot" Focusable="False">
+        <Grid Name="PART_RootContainer" Focusable="False">
           <ContentPresenter Name="ContentPresenter"
                             Content="{TemplateBinding Content}"
                             ContentTemplate="{TemplateBinding ContentTemplate}"
@@ -51,7 +51,18 @@
               </Style>
             </Grid.Styles>
           </Grid>
-          <OverlayLayer Name="PART_OverlayLayer" />
+          <dialogHostAvalonia:TestContainer Name="PART_DialogOverlayPopupHost"
+                         Template="{TemplateBinding PopupTemplate}"
+                         Content="{TemplateBinding DialogContent}"
+                         ContentTemplate="{TemplateBinding DialogContentTemplate}"
+                         Margin="{TemplateBinding DialogMargin}"
+                         VerticalAlignment="Center" HorizontalAlignment="Center">
+            <!-- Workaround make them work properly -->
+            <ContentControl.RenderTransform>
+              <ScaleTransform />
+            </ContentControl.RenderTransform>
+          </dialogHostAvalonia:TestContainer>
+
         </Grid>
       </ControlTemplate>
     </Setter>
@@ -66,9 +77,42 @@
                             Background="{TemplateBinding Background}"
                             ContentTemplate="{TemplateBinding ContentTemplate}"
                             Content="{TemplateBinding Content}"
-                            Padding="{TemplateBinding Padding}" />
+                            Padding="{TemplateBinding Margin}" />
         </Border>
       </ControlTemplate>
+    </Setter>
+    <Setter Property="OpeningAnimation">
+      <Animation Duration="0:0:0.3" Easing="SineEaseInOut" FillMode="Both">
+        <KeyFrame Cue="0%">
+          <Setter Property="ScaleTransform.ScaleY" Value="0" />
+          <Setter Property="ScaleTransform.ScaleX" Value="0" />
+          <Setter Property="Opacity" Value="0" />
+        </KeyFrame>
+        <KeyFrame Cue="100%">
+          <Setter Property="ScaleTransform.ScaleY" Value="1" />
+          <Setter Property="ScaleTransform.ScaleX" Value="1" />
+          <Setter Property="Opacity" Value="1" />
+        </KeyFrame>
+      </Animation>
+    </Setter>
+    <Setter Property="ClosingAnimation">
+      <Animation Duration="0:0:0.3" Easing="SineEaseInOut" FillMode="Both">
+        <KeyFrame Cue="0%">
+          <Setter Property="ScaleTransform.ScaleY" Value="1" />
+          <Setter Property="ScaleTransform.ScaleX" Value="1" />
+          <Setter Property="Opacity" Value="1" />
+        </KeyFrame>
+        <KeyFrame Cue="60%">
+          <Setter Property="ScaleTransform.ScaleY" Value="1" />
+          <Setter Property="ScaleTransform.ScaleX" Value="1" />
+          <Setter Property="Opacity" Value="1" />
+        </KeyFrame>
+        <KeyFrame Cue="100%">
+          <Setter Property="ScaleTransform.ScaleY" Value="0.5" />
+          <Setter Property="ScaleTransform.ScaleX" Value="0.5" />
+          <Setter Property="Opacity" Value="0" />
+        </KeyFrame>
+      </Animation>
     </Setter>
 
     <!-- AvaloniaUI fluent inverse color -->

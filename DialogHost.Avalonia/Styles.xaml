@@ -5,7 +5,6 @@
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
         <MergeResourceInclude Source="avares://DialogHost.Avalonia/DialogHost.axaml" />
-        <MergeResourceInclude Source="avares://DialogHost.Avalonia/DialogOverlayPopupHost.axaml" />
       </ResourceDictionary.MergedDictionaries>
     </ResourceDictionary>
   </Styles.Resources>

@@ -1,22 +1,29 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reactive.Disposables;
+using System.Reactive.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Avalonia;
+using Avalonia.Animation;
 using Avalonia.Controls;
+using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Media;
+using Avalonia.Threading;
 using DialogHostAvalonia.Positioners;
 
 namespace DialogHostAvalonia {
+    [TemplatePart(ContentCoverGridName, typeof(Grid))]
+    [TemplatePart(DialogOverlayPopupHostName, typeof(ContentControl))]
+    [TemplatePart(RootContainerName, typeof(Panel))]
     public class DialogHost : ContentControl {
         public const string ContentCoverGridName = "PART_ContentCoverGrid";
-        public const string OverlayLayerName = "PART_OverlayLayer";
+        public const string DialogOverlayPopupHostName = "PART_DialogOverlayPopupHost";
+        public const string RootContainerName = "PART_RootContainer";
 
         private static readonly HashSet<DialogHost> LoadedInstances = new();
 
@@ -25,6 +32,20 @@ namespace DialogHostAvalonia {
                 nameof(Identifier),
                 o => o.Identifier,
                 (o, v) => o.Identifier = v);
+
+        public static readonly StyledProperty<IAnimation?> ClosingAnimationProperty = AvaloniaProperty.Register<DialogHost, IAnimation?>(nameof(ClosingAnimation));
+
+        public IAnimation? ClosingAnimation {
+            get => GetValue(ClosingAnimationProperty);
+            set => SetValue(ClosingAnimationProperty, value);
+        }
+
+        public static readonly StyledProperty<IAnimation?> OpeningAnimationProperty = AvaloniaProperty.Register<DialogHost, IAnimation?>(nameof(OpeningAnimation));
+
+        public IAnimation? OpeningAnimation {
+            get => GetValue(OpeningAnimationProperty);
+            set => SetValue(OpeningAnimationProperty, value);
+        }
 
         public static readonly StyledProperty<object?> DialogContentProperty =
             AvaloniaProperty.Register<DialogHost, object?>(nameof(DialogContent));
@@ -86,12 +107,6 @@ namespace DialogHostAvalonia {
 
         public static readonly StyledProperty<IControlTemplate?> PopupTemplateProperty =
             AvaloniaProperty.Register<DialogHost, IControlTemplate?>(nameof(PopupTemplate));
-        
-        public static readonly DirectProperty<DialogHost, bool> DisableOpeningAnimationProperty =
-            AvaloniaProperty.RegisterDirect<DialogHost, bool>(
-                nameof(DisableOpeningAnimation),
-                o => o.DisableOpeningAnimation,
-                (o, v) => o.DisableOpeningAnimation = v);
 
         public static readonly DirectProperty<DialogHost, IDialogPopupPositioner?> PopupPositionerProperty =
             AvaloniaProperty.RegisterDirect<DialogHost, IDialogPopupPositioner?>(
@@ -100,7 +115,6 @@ namespace DialogHostAvalonia {
                 (o, v) => o.PopupPositioner = v);
 
         private IDialogPopupPositioner? _popupPositioner;
-        private bool _disableOpeningAnimation;
 
         private DialogClosingEventHandler? _asyncShowClosingEventHandler;
         private DialogOpenedEventHandler? _asyncShowOpenedEventHandler;
@@ -123,8 +137,8 @@ namespace DialogHostAvalonia {
 
         private ICommand _openDialogCommand;
 
-        private OverlayLayer? _overlayLayer;
-        private DialogOverlayPopupHost? _overlayPopupHost;
+        private ContentControl _overlayPopupHost;
+        private Panel _rootContainer;
         private IInputElement? _restoreFocusDialogClose;
 
         private IDisposable? _templateDisposables;
@@ -195,11 +209,6 @@ namespace DialogHostAvalonia {
         public object? CloseOnClickAwayParameter {
             get => _closeOnClickAwayParameter;
             set => SetAndRaise(CloseOnClickAwayParameterProperty, ref _closeOnClickAwayParameter, value);
-        }
-
-        public bool DisableOpeningAnimation {
-            get => _disableOpeningAnimation;
-            set => SetAndRaise(DisableOpeningAnimationProperty, ref _disableOpeningAnimation, value);
         }
 
         /// <summary>
@@ -422,8 +431,7 @@ namespace DialogHostAvalonia {
                 dialogHost.CurrentSession = new DialogSession(dialogHost);
                 dialogHost._restoreFocusDialogClose = FocusManager.Instance?.Current;
 
-                if (dialogHost._overlayPopupHost != null)
-                    dialogHost._overlayPopupHost.IsOpen = true;
+                dialogHost.AttachPopupHost();
 
                 //multiple ways of calling back that the dialog has opened:
                 // * routed event
@@ -434,7 +442,7 @@ namespace DialogHostAvalonia {
                 dialogHost.DialogOpenedCallback?.Invoke(dialogHost, dialogOpenedEventArgs);
                 dialogHost._asyncShowOpenedEventHandler?.Invoke(dialogHost, dialogOpenedEventArgs);
 
-                dialogHost._overlayPopupHost?.ConfigurePosition(dialogHost._overlayLayer, PlacementMode.AnchorAndGravity, new Point());
+                // dialogHost._overlayPopupHost?.ConfigurePosition(dialogHost._overlayLayer, PlacementMode.AnchorAndGravity, new Point());
             }
             else {
                 object? closeParameter = null;
@@ -453,8 +461,8 @@ namespace DialogHostAvalonia {
                     dialogHost.CurrentSession = null;
                 }
 
-                if (dialogHost._overlayPopupHost != null)
-                    dialogHost._overlayPopupHost.IsOpen = false;
+                dialogHost.DetachPopupHost();
+
                 //NB: _dialogTaskCompletionSource is only set in the case where the dialog is shown with Show
                 dialogHost._dialogTaskCompletionSource?.TrySetResult(closeParameter);
 
@@ -462,6 +470,53 @@ namespace DialogHostAvalonia {
             }
 
             dialogHost.RaiseCommandsCanExecuteChanged();
+        }
+
+        private IDisposable? _openingAnimationDisposable;
+        private IDisposable? _closingAnimationDisposable;
+        private void AttachPopupHost() {
+            if (_closingAnimationDisposable != null) {
+                // If closing animation running - stop it and call opening animation after
+                _closingAnimationDisposable.Dispose();
+                _closingAnimationDisposable = null;
+                _openingAnimationDisposable = OpeningAnimation?.Apply(_overlayPopupHost, null, Observable.Return(true), () => {
+                    _openingAnimationDisposable = null;
+                });
+            }
+            else if (_overlayPopupHost.Parent == null) {
+                // If not shown - show and call opening animation after
+                Dispatcher.UIThread.Post(_ => {
+                    _rootContainer.Children.Add(_overlayPopupHost);
+                    _openingAnimationDisposable = OpeningAnimation?.Apply(_overlayPopupHost, null, Observable.Return(true), () => {
+                        _openingAnimationDisposable = null;
+                    });
+                }, DispatcherPriority.Layout);
+            }
+            else {
+                // If shown already and no closing in progress - no nothing
+                return;
+            }
+        }
+
+        private void DetachPopupHost() {
+            // Cancel opening animation if any
+            _openingAnimationDisposable?.Dispose();
+            _openingAnimationDisposable = null;
+
+            if (_overlayPopupHost.Parent != null) {
+                if (ClosingAnimation != null) {
+                    // Starting closing animation if set
+                    _closingAnimationDisposable = ClosingAnimation.Apply(_overlayPopupHost, null, Observable.Return(true), () => {
+                        Dispatcher.UIThread.Post(_ => _rootContainer.Children.Remove(_overlayPopupHost), DispatcherPriority.Layout);
+                        _closingAnimationDisposable = null;
+                    });
+                }
+                else {
+                    // Or just remove popup host
+                    Dispatcher.UIThread.Post(_ => _rootContainer.Children.Remove(_overlayPopupHost), DispatcherPriority.Layout);
+                }
+            }
+            this.InvalidateVisual();
         }
 
         protected void RaiseCommandsCanExecuteChanged() {
@@ -472,29 +527,19 @@ namespace DialogHostAvalonia {
         protected override void OnApplyTemplate(TemplateAppliedEventArgs e) {
             _templateDisposables?.Dispose();
 
-            _overlayLayer = e.NameScope.Find<OverlayLayer>(OverlayLayerName);
-            _overlayPopupHost = new DialogOverlayPopupHost(_overlayLayer) {
-                Content = DialogContent, ContentTemplate = DialogContentTemplate, Template = PopupTemplate,
-                Padding = DialogMargin, ClipToBounds = false, DisableOpeningAnimation = DisableOpeningAnimation,
-                PopupPositioner = PopupPositioner
-            };
+            _rootContainer = e.NameScope.Find<Panel>(RootContainerName)
+                          ?? throw new InvalidOperationException($"{RootContainerName} not found in {nameof(DialogHost)} template");
+            _overlayPopupHost = e.NameScope.Find<ContentControl>(DialogOverlayPopupHostName) 
+                             ?? throw new InvalidOperationException($"{DialogOverlayPopupHostName} not found in {nameof(DialogHost)} template");
+            // Removing the overlay layer initially
+            _rootContainer.Children.Remove(_overlayPopupHost);
+            
+            _templateDisposables = e.NameScope.Find<Grid>(ContentCoverGridName)?.AddDisposableHandler(PointerReleasedEvent, ContentCoverGrid_OnPointerReleased);
 
             if (IsOpen) {
-                _overlayPopupHost.IsOpen = true;
-                _overlayPopupHost?.ConfigurePosition(_overlayLayer, PlacementMode.AnchorAndGravity, new Point());
+                AttachPopupHost();
             }
-
-            _templateDisposables = new CompositeDisposable() {
-                this.GetObservable(BoundsProperty)
-                    .Subscribe(rect => _overlayPopupHost?.ConfigurePosition(_overlayLayer, PlacementMode.AnchorAndGravity, new Point())),
-                _overlayPopupHost!.Bind(DisableOpeningAnimationProperty, this.GetBindingObservable(DisableOpeningAnimationProperty)),
-                _overlayPopupHost!.Bind(ContentProperty, this.GetBindingObservable(DialogContentProperty)),
-                _overlayPopupHost!.Bind(ContentTemplateProperty, this.GetBindingObservable(DialogContentTemplateProperty)),
-                _overlayPopupHost!.Bind(TemplateProperty, this.GetBindingObservable(PopupTemplateProperty)),
-                _overlayPopupHost!.Bind(PaddingProperty, this.GetBindingObservable(DialogMarginProperty)),
-                _overlayPopupHost!.Bind(PopupPositionerProperty, this.GetBindingObservable(PopupPositionerProperty)),
-                e.NameScope.Find<Grid>(ContentCoverGridName)?.AddDisposableHandler(PointerReleasedEvent, ContentCoverGrid_OnPointerReleased) ?? Disposable.Empty
-            };
+            
             base.OnApplyTemplate(e);
         }
 
@@ -555,6 +600,17 @@ namespace DialogHostAvalonia {
         protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e) {
             base.OnDetachedFromVisualTree(e);
             LoadedInstances.Remove(this);
+        }
+    }
+    public class TestContainer : ContentControl {
+        /// <inheritdoc />
+        protected override Size MeasureCore(Size availableSize) {
+            return base.MeasureCore(availableSize);
+        }
+
+        /// <inheritdoc />
+        protected override Size ArrangeOverride(Size finalSize) {
+            return base.ArrangeOverride(finalSize);
         }
     }
 }
