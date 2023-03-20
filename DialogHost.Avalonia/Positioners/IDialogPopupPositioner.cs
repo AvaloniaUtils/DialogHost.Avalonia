@@ -1,4 +1,6 @@
-﻿using Avalonia.Controls.Primitives.PopupPositioning;
+﻿using System;
+using Avalonia;
+using Avalonia.Controls.Primitives.PopupPositioning;
 
 namespace DialogHostAvalonia.Positioners {
     /// <summary>
@@ -8,11 +10,12 @@ namespace DialogHostAvalonia.Positioners {
         /// <summary>
         /// Called when we need to determine popup location (after opening, window resizing, etc)
         /// </summary>
-        /// <remarks>
-        /// Use <see cref="IManagedPopupPositionerPopup.MoveAndResize"/> to manipulate popup
-        /// </remarks>
-        /// <param name="popup">The popup handler</param>
-        /// <param name="parameters">Parameters for popup</param>
-        public void Update(IManagedPopupPositionerPopup popup, PopupPositionerParameters parameters);
+        /// <returns>Rectangle with control bounds</returns>
+        public Rect Arrange(Size size, Size availableSize, double scale);
+        
+        /// <summary>
+        /// Event, which triggered when positioner need to rearrange a popup
+        /// </summary>
+        public event EventHandler? RearrangeRequested;
     }
 }

@@ -1,6 +1,7 @@
 ﻿<ResourceDictionary xmlns="https://github.com/avaloniaui"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:dialogHostAvalonia="clr-namespace:DialogHostAvalonia">
+                    xmlns:dialogHostAvalonia="clr-namespace:DialogHostAvalonia"
+                    xmlns:dialogControls="clr-namespace:DialogHostAvalonia.DialogControls">
   <Design.PreviewWith>
     <dialogHostAvalonia:DialogHost Name="DialogHost" Height="300" Width="300"
                                    Background="Gray">
@@ -51,17 +52,16 @@
               </Style>
             </Grid.Styles>
           </Grid>
-          <dialogHostAvalonia:TestContainer Name="PART_DialogOverlayPopupHost"
-                         Template="{TemplateBinding PopupTemplate}"
-                         Content="{TemplateBinding DialogContent}"
-                         ContentTemplate="{TemplateBinding DialogContentTemplate}"
-                         Margin="{TemplateBinding DialogMargin}"
-                         VerticalAlignment="Center" HorizontalAlignment="Center">
+          <dialogControls:PositionedContentControl Name="PART_DialogOverlayPopupHost"
+                                    Template="{TemplateBinding PopupTemplate}"
+                                    Content="{TemplateBinding DialogContent}"
+                                    ContentTemplate="{TemplateBinding DialogContentTemplate}"
+                                    Margin="{TemplateBinding DialogMargin}">
             <!-- Workaround make them work properly -->
             <ContentControl.RenderTransform>
               <ScaleTransform />
             </ContentControl.RenderTransform>
-          </dialogHostAvalonia:TestContainer>
+          </dialogControls:PositionedContentControl>
 
         </Grid>
       </ControlTemplate>

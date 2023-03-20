@@ -1,4 +1,5 @@
-﻿using Avalonia;
+﻿using System;
+using Avalonia;
 using Avalonia.Controls.Primitives.PopupPositioning;
 
 namespace DialogHostAvalonia.Positioners {
@@ -9,11 +10,13 @@ namespace DialogHostAvalonia.Positioners {
         public static CenteredDialogPopupPositioner Instance { get; } = new();
         
         /// <inheritdoc />
-        public void Update(IManagedPopupPositionerPopup popup, PopupPositionerParameters parameters) {
-            // Simplify calculations
-            var horizontalMargin = (parameters.AnchorRectangle.Width - parameters.Size.Width) / 2;
-            var verticalMargin = (parameters.AnchorRectangle.Height - parameters.Size.Height) / 2;
-            popup.MoveAndResize(new Point(horizontalMargin, verticalMargin), parameters.Size / popup.Scaling);
+        public Rect Arrange(Size size, Size availableSize, double scale) {
+            var horizontalMargin = (availableSize.Width - size.Width) / 2;
+            var verticalMargin = (availableSize.Height - size.Height) / 2;
+            return new Rect(horizontalMargin / scale, verticalMargin / scale, size.Width / scale, size.Height / scale);
         }
+
+        /// <inheritdoc />
+        public event EventHandler? RearrangeRequested;
     }
 }

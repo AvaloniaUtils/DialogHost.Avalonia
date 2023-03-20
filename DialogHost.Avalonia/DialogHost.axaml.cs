@@ -602,15 +602,4 @@ namespace DialogHostAvalonia {
             LoadedInstances.Remove(this);
         }
     }
-    public class TestContainer : ContentControl {
-        /// <inheritdoc />
-        protected override Size MeasureCore(Size availableSize) {
-            return base.MeasureCore(availableSize);
-        }
-
-        /// <inheritdoc />
-        protected override Size ArrangeOverride(Size finalSize) {
-            return base.ArrangeOverride(finalSize);
-        }
-    }
 }
