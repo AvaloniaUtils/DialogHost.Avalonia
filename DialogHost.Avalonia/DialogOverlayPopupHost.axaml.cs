@@ -133,8 +133,7 @@ namespace DialogHostAvalonia {
             }
             _shown = true;
             // Set the minimum priority to allow overriding it everywhere
-            SetValue(IsActuallyOpenProperty, true, BindingPriority.Unset);
-            IsActuallyOpen = true;
+            SetValue(IsActuallyOpenProperty, true, BindingPriority.Style);
             Focus();
             UpdatePosition();
         }

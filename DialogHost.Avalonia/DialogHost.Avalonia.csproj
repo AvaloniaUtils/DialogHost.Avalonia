@@ -14,7 +14,7 @@
         <GenerateDocumentationFile>True</GenerateDocumentationFile>
         <RepositoryType>Git</RepositoryType>
         <PackageTags>c-sharp xaml multi-platform gui control mvvm dialogs avalonia avaloniaui c-sharp-library</PackageTags>
-        <Version>0.7.0-preview5</Version>
+        <Version>0.7.0-preview6</Version>
         <RootNamespace>DialogHostAvalonia</RootNamespace>
         <PackageReleaseNotes>
 - Add compability with Avalonia 11 preview5
@@ -22,6 +22,9 @@
 - Fix AlignmentDialogPopupPositioner margin doesn't work when align top left corner #17
 - Add DialogHost.Show overloads accepting a DialogHost instance (instead of string identifier) #18 by profix898
 - Fix "The control already has a visual parent" #22
+- Fix "Invalid priority $Unset Arg_ParamName_Name" #25
+- Migrate all styles to ControlThemes
+- Add DialogHostStyles class for adding styles more convenient way
         </PackageReleaseNotes>
     </PropertyGroup>
     <ItemGroup>
