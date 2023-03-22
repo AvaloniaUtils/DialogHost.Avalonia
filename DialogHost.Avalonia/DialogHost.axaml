@@ -56,7 +56,8 @@
                                     Template="{TemplateBinding PopupTemplate}"
                                     Content="{TemplateBinding DialogContent}"
                                     ContentTemplate="{TemplateBinding DialogContentTemplate}"
-                                    Margin="{TemplateBinding DialogMargin}">
+                                    Margin="{TemplateBinding DialogMargin}"
+                                    Positioner="{TemplateBinding PopupPositioner}">
             <!-- Workaround make them work properly -->
             <ContentControl.RenderTransform>
               <ScaleTransform />
