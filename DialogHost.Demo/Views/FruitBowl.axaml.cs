@@ -6,7 +6,7 @@ using Avalonia.Markup.Xaml;
 using DialogHostAvalonia;
 
 namespace DialogHostDemo.Views {
-    public class FruitBowl : UserControl {
+    public partial class FruitBowl : UserControl {
         public AvaloniaList<string> ListBoxSource = new AvaloniaList<string>() {
             "Apple",
             "Banana",

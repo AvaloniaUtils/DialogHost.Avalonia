@@ -12,7 +12,7 @@ using DialogHostDemo.Models;
 using static DialogHostAvalonia.DialogHost;
 
 namespace DialogHostDemo.Views {
-    public class MainWindow : Window {
+    public partial class MainWindow : Window {
         public MainWindow() {
             InitializeComponent();
             #if DEBUG

@@ -14,10 +14,10 @@
         <GenerateDocumentationFile>True</GenerateDocumentationFile>
         <RepositoryType>Git</RepositoryType>
         <PackageTags>c-sharp xaml multi-platform gui control mvvm dialogs avalonia avaloniaui c-sharp-library</PackageTags>
-        <Version>0.7.0-preview6</Version>
+        <Version>0.7.0-preview7</Version>
         <RootNamespace>DialogHostAvalonia</RootNamespace>
         <PackageReleaseNotes>
-- Add compability with Avalonia 11 preview5
+- Add compability with Avalonia 11 preview6
 - Add IDialogPopupPositioner to allow manipilation of Dialog placement
 - Fix AlignmentDialogPopupPositioner margin doesn't work when align top left corner #17
 - Add DialogHost.Show overloads accepting a DialogHost instance (instead of string identifier) #18 by profix898
@@ -36,7 +36,7 @@
         </AvaloniaResource>
     </ItemGroup>
     <ItemGroup>
-        <PackageReference Include="Avalonia" Version="11.0.0-preview5" />
+        <PackageReference Include="Avalonia" Version="11.0.0-preview6" />
         <PackageReference Include="System.Reactive" Version="5.0.0" />
     </ItemGroup>
 </Project>
