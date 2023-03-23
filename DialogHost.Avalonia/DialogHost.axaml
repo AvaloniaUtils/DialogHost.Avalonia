@@ -26,8 +26,8 @@
     <Setter Property="VerticalAlignment" Value="Stretch" />
     <Setter Property="DialogMargin" Value="8" />
     <Setter Property="OverlayBackground" Value="Black" />
-    <Setter Property="dialogHostAvalonia:DialogHostStyle.ClipToBounds" Value="False" />
-    <Setter Property="dialogHostAvalonia:DialogHostStyle.CornerRadius" Value="2" />
+    <Setter Property="dialogHostAvalonia:DialogHostDefaultStyle.ClipToBounds" Value="False" />
+    <Setter Property="dialogHostAvalonia:DialogHostDefaultStyle.CornerRadius" Value="2" />
     <Setter Property="Template">
       <ControlTemplate>
         <Grid Name="PART_RootContainer" Focusable="False">
@@ -36,22 +36,10 @@
                             ContentTemplate="{TemplateBinding ContentTemplate}"
                             HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
                             VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
-          <Grid Name="PART_ContentCoverGrid"
-                Background="{TemplateBinding OverlayBackground}"
-                Focusable="False">
-            <Grid.Styles>
-              <Style Selector="Grid#PART_ContentCoverGrid[Opacity=0]">
-                <Setter Property="IsVisible" Value="False" />
-              </Style>
-              <Style Selector="Grid#PART_ContentCoverGrid:not(.notransitions)">
-                <Setter Property="Transitions">
-                  <Transitions>
-                    <DoubleTransition Property="Opacity" Easing="LinearEasing" Duration="0.3" />
-                  </Transitions>
-                </Setter>
-              </Style>
-            </Grid.Styles>
-          </Grid>
+          <Rectangle Name="PART_ContentCoverGrid"
+                Fill="{TemplateBinding OverlayBackground}"
+                IsVisible="{Binding $self.Opacity}"
+                Focusable="False" />
           <dialogControls:PositionedContentControl Name="PART_DialogOverlayPopupHost"
                                     Template="{TemplateBinding PopupTemplate}"
                                     Content="{TemplateBinding DialogContent}"
@@ -70,9 +58,9 @@
     <Setter Property="PopupTemplate">
       <ControlTemplate>
         <Border Name="PART_ContentBackground"
-                CornerRadius="{Binding Path=(dialogHostAvalonia:DialogHostStyle.CornerRadius), RelativeSource={RelativeSource FindAncestor, AncestorType=dialogHostAvalonia:DialogHost}}"
+                CornerRadius="{Binding Path=(dialogHostAvalonia:DialogHostDefaultStyle.CornerRadius), RelativeSource={RelativeSource FindAncestor, AncestorType=dialogHostAvalonia:DialogHost}}"
                 BoxShadow="1.5 1.5 8 #4c000000"
-                ClipToBounds="{Binding Path=(dialogHostAvalonia:DialogHostStyle.ClipToBounds), RelativeSource={RelativeSource FindAncestor, AncestorType=dialogHostAvalonia:DialogHost}}"
+                ClipToBounds="{Binding Path=(dialogHostAvalonia:DialogHostDefaultStyle.ClipToBounds), RelativeSource={RelativeSource FindAncestor, AncestorType=dialogHostAvalonia:DialogHost}}"
                 Background="{Binding Path=Background, RelativeSource={RelativeSource FindAncestor, AncestorType=dialogHostAvalonia:DialogHost}}">
           <ContentPresenter Name="PART_ContentPresenter"
                             Background="{TemplateBinding Background}"
@@ -82,39 +70,50 @@
         </Border>
       </ControlTemplate>
     </Setter>
-    <Setter Property="OpeningAnimation">
-      <Animation Duration="0:0:0.3" Easing="SineEaseInOut" FillMode="Both">
-        <KeyFrame Cue="0%">
-          <Setter Property="ScaleTransform.ScaleY" Value="0" />
-          <Setter Property="ScaleTransform.ScaleX" Value="0" />
-          <Setter Property="Opacity" Value="0" />
-        </KeyFrame>
-        <KeyFrame Cue="100%">
-          <Setter Property="ScaleTransform.ScaleY" Value="1" />
-          <Setter Property="ScaleTransform.ScaleX" Value="1" />
-          <Setter Property="Opacity" Value="1" />
-        </KeyFrame>
-      </Animation>
-    </Setter>
-    <Setter Property="ClosingAnimation">
-      <Animation Duration="0:0:0.3" Easing="SineEaseInOut" FillMode="Both">
-        <KeyFrame Cue="0%">
-          <Setter Property="ScaleTransform.ScaleY" Value="1" />
-          <Setter Property="ScaleTransform.ScaleX" Value="1" />
-          <Setter Property="Opacity" Value="1" />
-        </KeyFrame>
-        <KeyFrame Cue="60%">
-          <Setter Property="ScaleTransform.ScaleY" Value="1" />
-          <Setter Property="ScaleTransform.ScaleX" Value="1" />
-          <Setter Property="Opacity" Value="1" />
-        </KeyFrame>
-        <KeyFrame Cue="100%">
-          <Setter Property="ScaleTransform.ScaleY" Value="0.5" />
-          <Setter Property="ScaleTransform.ScaleX" Value="0.5" />
-          <Setter Property="Opacity" Value="0" />
-        </KeyFrame>
-      </Animation>
-    </Setter>
+    
+    <Style Selector="^[(dialogHostAvalonia|DialogHostDefaultStyle.DisableContentCoverGridAnimations)=False] /template/ Rectangle#PART_ContentCoverGrid">
+      <Setter Property="Transitions">
+        <Transitions>
+          <DoubleTransition Property="Opacity" Easing="LinearEasing" Duration="0.3" />
+        </Transitions>
+      </Setter>
+    </Style>
+
+    <Style Selector="^[(dialogHostAvalonia|DialogHostDefaultStyle.DisableDefaultPopupAnimations)=False]">
+      <Setter Property="OpeningAnimation">
+        <Animation Duration="0:0:0.3" Easing="SineEaseInOut" FillMode="Both">
+          <KeyFrame Cue="0%">
+            <Setter Property="ScaleTransform.ScaleY" Value="0" />
+            <Setter Property="ScaleTransform.ScaleX" Value="0" />
+            <Setter Property="Opacity" Value="0" />
+          </KeyFrame>
+          <KeyFrame Cue="100%">
+            <Setter Property="ScaleTransform.ScaleY" Value="1" />
+            <Setter Property="ScaleTransform.ScaleX" Value="1" />
+            <Setter Property="Opacity" Value="1" />
+          </KeyFrame>
+        </Animation>
+      </Setter>
+      <Setter Property="ClosingAnimation">
+        <Animation Duration="0:0:0.3" Easing="SineEaseInOut" FillMode="Both">
+          <KeyFrame Cue="0%">
+            <Setter Property="ScaleTransform.ScaleY" Value="1" />
+            <Setter Property="ScaleTransform.ScaleX" Value="1" />
+            <Setter Property="Opacity" Value="1" />
+          </KeyFrame>
+          <KeyFrame Cue="60%">
+            <Setter Property="ScaleTransform.ScaleY" Value="1" />
+            <Setter Property="ScaleTransform.ScaleX" Value="1" />
+            <Setter Property="Opacity" Value="1" />
+          </KeyFrame>
+          <KeyFrame Cue="100%">
+            <Setter Property="ScaleTransform.ScaleY" Value="0.5" />
+            <Setter Property="ScaleTransform.ScaleX" Value="0.5" />
+            <Setter Property="Opacity" Value="0" />
+          </KeyFrame>
+        </Animation>
+      </Setter>
+    </Style>
 
     <!-- AvaloniaUI fluent inverse color -->
     <!-- Will be white for dark theme -->
@@ -136,11 +135,11 @@
       <Setter Property="Background" Value="{DynamicResource MaterialDesignPaper}" />
     </Style>
 
-    <Style Selector="^[IsOpen=True] /template/ Grid#PART_ContentCoverGrid">
+    <Style Selector="^[IsOpen=True] /template/ Rectangle#PART_ContentCoverGrid">
       <Setter Property="IsHitTestVisible" Value="True" />
       <Setter Property="Opacity" Value="0.56" />
     </Style>
-    <Style Selector="^[IsOpen=False] /template/ Grid#PART_ContentCoverGrid">
+    <Style Selector="^[IsOpen=False] /template/ Rectangle#PART_ContentCoverGrid">
       <Setter Property="IsHitTestVisible" Value="False" />
       <Setter Property="Opacity" Value="0" />
     </Style>

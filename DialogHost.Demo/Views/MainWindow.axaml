@@ -17,7 +17,7 @@
   </Design.DataContext>
   <dialogHostAvalonia:DialogHost Identifier="MainDialogHost"
                                  DialogMargin="16"
-                                 dialogHostAvalonia:DialogHostStyle.CornerRadius="8"
+                                 dialogHostAvalonia:DialogHostDefaultStyle.CornerRadius="8"
                                  CloseOnClickAway="True">
     <dialogHostAvalonia:DialogHost.DataTemplates>
       <DataTemplate DataType="models:Sample2Model">
@@ -54,7 +54,9 @@
               MinHeight="200" MinWidth="200"
               BorderThickness="1" BorderBrush="Black">
         <dialogHostAvalonia:DialogHost Identifier="NoAnimationDialogHost"
-                                       CloseOnClickAway="True">
+                                       CloseOnClickAway="True"
+                                       dialogHostAvalonia:DialogHostDefaultStyle.DisablePopupAnimations="True"
+                                       dialogHostAvalonia:DialogHostDefaultStyle.DisableContentCoverGridAnimations="True">
           <Button HorizontalAlignment="Center" VerticalAlignment="Center"
                   Click="OpenNoAnimationDialog">
             Open

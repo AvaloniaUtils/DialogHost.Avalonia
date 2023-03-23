@@ -33,14 +33,16 @@ namespace DialogHostAvalonia {
                 o => o.Identifier,
                 (o, v) => o.Identifier = v);
 
-        public static readonly StyledProperty<IAnimation?> ClosingAnimationProperty = AvaloniaProperty.Register<DialogHost, IAnimation?>(nameof(ClosingAnimation));
+        public static readonly StyledProperty<IAnimation?> ClosingAnimationProperty = 
+            AvaloniaProperty.Register<DialogHost, IAnimation?>(nameof(ClosingAnimation));
 
         public IAnimation? ClosingAnimation {
             get => GetValue(ClosingAnimationProperty);
             set => SetValue(ClosingAnimationProperty, value);
         }
 
-        public static readonly StyledProperty<IAnimation?> OpeningAnimationProperty = AvaloniaProperty.Register<DialogHost, IAnimation?>(nameof(OpeningAnimation));
+        public static readonly StyledProperty<IAnimation?> OpeningAnimationProperty = 
+            AvaloniaProperty.Register<DialogHost, IAnimation?>(nameof(OpeningAnimation));
 
         public IAnimation? OpeningAnimation {
             get => GetValue(OpeningAnimationProperty);
@@ -534,7 +536,7 @@ namespace DialogHostAvalonia {
             // Removing the overlay layer initially
             _rootContainer.Children.Remove(_overlayPopupHost);
             
-            _templateDisposables = e.NameScope.Find<Grid>(ContentCoverGridName)?.AddDisposableHandler(PointerReleasedEvent, ContentCoverGrid_OnPointerReleased);
+            _templateDisposables = e.NameScope.Find<InputElement>(ContentCoverGridName)?.AddDisposableHandler(PointerReleasedEvent, ContentCoverGrid_OnPointerReleased);
 
             if (IsOpen) {
                 AttachPopupHost();
