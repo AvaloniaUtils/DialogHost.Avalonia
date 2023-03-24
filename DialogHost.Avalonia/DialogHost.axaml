@@ -58,6 +58,8 @@
     <Setter Property="PopupTemplate">
       <ControlTemplate>
         <Border Name="PART_ContentBackground"
+                BorderBrush="{Binding Path=(dialogHostAvalonia:DialogHostStyle.BorderBrush), RelativeSource={RelativeSource FindAncestor, AncestorType=dialogHostAvalonia:DialogHost}}"
+                BorderThickness="{Binding Path=(dialogHostAvalonia:DialogHostStyle.BorderThickness), RelativeSource={RelativeSource FindAncestor, AncestorType=dialogHostAvalonia:DialogHost}}"
                 CornerRadius="{Binding Path=(dialogHostAvalonia:DialogHostStyle.CornerRadius), RelativeSource={RelativeSource FindAncestor, AncestorType=dialogHostAvalonia:DialogHost}}"
                 BoxShadow="1.5 1.5 8 #4c000000"
                 ClipToBounds="{Binding Path=(dialogHostAvalonia:DialogHostStyle.ClipToBounds), RelativeSource={RelativeSource FindAncestor, AncestorType=dialogHostAvalonia:DialogHost}}"
