@@ -14,7 +14,7 @@
         <GenerateDocumentationFile>True</GenerateDocumentationFile>
         <RepositoryType>Git</RepositoryType>
         <PackageTags>c-sharp xaml multi-platform gui control mvvm dialogs avalonia avaloniaui c-sharp-library</PackageTags>
-        <Version>0.7.0-preview7</Version>
+        <Version>0.7.0-preview8</Version>
         <RootNamespace>DialogHostAvalonia</RootNamespace>
         <PackageReleaseNotes>
 - Add compability with Avalonia 11 preview6
@@ -25,6 +25,7 @@
 - Fix "Invalid priority $Unset Arg_ParamName_Name" #25
 - Migrate all styles to ControlThemes
 - Add DialogHostStyles class for adding styles more convenient way
+- Expose BorderBrushProperty and BorderThicknessProperty properties #26
         </PackageReleaseNotes>
     </PropertyGroup>
     <ItemGroup>
