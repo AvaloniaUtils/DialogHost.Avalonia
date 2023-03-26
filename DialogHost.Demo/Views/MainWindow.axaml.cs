@@ -12,7 +12,7 @@ using DialogHostDemo.Models;
 using static DialogHostAvalonia.DialogHost;
 
 namespace DialogHostDemo.Views {
-    public class MainWindow : Window {
+    public partial class MainWindow : Window {
         public MainWindow() {
             InitializeComponent();
             #if DEBUG
@@ -24,16 +24,16 @@ namespace DialogHostDemo.Views {
             AvaloniaXamlLoader.Load(this);
         }
 
-        private void OpenDialogWithView(object? sender, RoutedEventArgs e) {
-            DialogHost.Show(Resources["Sample3View"]!, "MainDialogHost");
+        private async void OpenDialogWithView(object? sender, RoutedEventArgs e) {
+            await DialogHost.Show(Resources["Sample3View"]!, "MainDialogHost");
         }
         
-        private void OpenDialogWithModel(object? sender, RoutedEventArgs e) {
-            DialogHost.Show(new Sample2Model(new Random().Next(0, 100)), "MainDialogHost");
+        private async void OpenDialogWithModel(object? sender, RoutedEventArgs e) {
+            await DialogHost.Show(new Sample2Model(new Random().Next(0, 100)), "MainDialogHost");
         }
 
-        private void OpenNoAnimationDialog(object? sender, RoutedEventArgs e) {
-            DialogHost.Show(Resources["Sample2View"]!, "NoAnimationDialogHost");
+        private async void OpenNoAnimationDialog(object? sender, RoutedEventArgs e) {
+            await DialogHost.Show(Resources["Sample2View"]!, "NoAnimationDialogHost");
         }
     }
 }

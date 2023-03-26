@@ -1,4 +1,5 @@
 ﻿using Avalonia;
+using Avalonia.Media;
 
 namespace DialogHostAvalonia {
     /// <summary>
@@ -19,6 +20,21 @@ namespace DialogHostAvalonia {
         /// </summary>
         public static readonly AttachedProperty<bool> ClipToBoundsProperty =
             AvaloniaProperty.RegisterAttached<DialogHost, bool>("ClipToBounds", typeof(DialogHostDefaultStyle));
+        
+        /// <summary>
+        /// Controls BorderBrush DialogHost's popup background.
+        /// Works only for default DialogHost theme!
+        /// </summary>
+        public static readonly AttachedProperty<IBrush> BorderBrushProperty =
+            AvaloniaProperty.RegisterAttached<DialogHost, IBrush>("BorderBrush", typeof(DialogHostDefaultStyle));
+
+        /// <summary>
+        /// Controls BorderThickness DialogHost's popup background.
+        /// Works only for default DialogHost theme!
+        /// </summary>
+        public static readonly AttachedProperty<Thickness> BorderThicknessProperty =
+            AvaloniaProperty.RegisterAttached<DialogHost, Thickness>("BorderThickness", typeof(DialogHostDefaultStyle));
+
 
         /// <summary>
         /// Controls should be popup animations will be set to default ones.
@@ -67,6 +83,25 @@ namespace DialogHostAvalonia {
         public static void SetClipToBounds(DialogHost element, bool value)
         {
             element.SetValue(ClipToBoundsProperty, value);
+        }
+        
+        
+        /// <summary>
+        /// Set BorderBrush in DialogHost's popup background.
+        /// Works only for default DialogHost theme!
+        /// </summary>
+        public static void SetBorderBrush(DialogHost element, IBrush value)
+        {
+            element.SetValue(BorderBrushProperty, value);
+        }
+
+        /// <summary>
+        /// Set BorderThickness in DialogHost's popup background.
+        /// Works only for default DialogHost theme!
+        /// </summary>
+        public static void SetBorderThickness(DialogHost element, double value)
+        {
+            element.SetValue(BorderThicknessProperty, value);
         }
         
         /// <summary>

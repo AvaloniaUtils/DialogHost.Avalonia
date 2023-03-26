@@ -61,6 +61,8 @@
                 CornerRadius="{Binding Path=(dialogHostAvalonia:DialogHostDefaultStyle.CornerRadius), RelativeSource={RelativeSource FindAncestor, AncestorType=dialogHostAvalonia:DialogHost}}"
                 BoxShadow="1.5 1.5 8 #4c000000"
                 ClipToBounds="{Binding Path=(dialogHostAvalonia:DialogHostDefaultStyle.ClipToBounds), RelativeSource={RelativeSource FindAncestor, AncestorType=dialogHostAvalonia:DialogHost}}"
+                BorderBrush="{Binding Path=(dialogHostAvalonia:DialogHostDefaultStyle.BorderBrush), RelativeSource={RelativeSource FindAncestor, AncestorType=dialogHostAvalonia:DialogHost}}"
+                BorderThickness="{Binding Path=(dialogHostAvalonia:DialogHostDefaultStyle.BorderThickness), RelativeSource={RelativeSource FindAncestor, AncestorType=dialogHostAvalonia:DialogHost}}"
                 Background="{Binding Path=Background, RelativeSource={RelativeSource FindAncestor, AncestorType=dialogHostAvalonia:DialogHost}}">
           <ContentPresenter Name="PART_ContentPresenter"
                             Background="{TemplateBinding Background}"
