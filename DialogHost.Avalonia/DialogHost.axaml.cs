@@ -17,12 +17,40 @@ using Avalonia.Threading;
 using DialogHostAvalonia.Positioners;
 
 namespace DialogHostAvalonia {
-    [TemplatePart(ContentCoverGridName, typeof(Grid))]
+    /// <summary>
+    /// Main control to display dialogs
+    /// </summary>
+    /// <example>
+    /// DialogHost should wrap around content. How example DialogHost for whole window:
+    /// <code>
+    /// &lt;Window ...&gt;
+    ///   &lt;dialogHostAvalonia:DialogHost Identifier="MainDialogHost"&gt;
+    ///     &lt;!-- Actual window's content --&gt;
+    ///     &lt;!-- For example --&gt;
+    ///     &lt;Grid&gt;
+    ///       &lt;!-- Other content --&gt;
+    ///     &lt;/Grid&gt;
+    ///   &lt;/dialogHostAvalonia:DialogHost&gt;
+    /// &lt;/Window&gt;
+    /// </code>
+    /// </example>
+    [TemplatePart(ContentCoverName, typeof(Grid))]
     [TemplatePart(DialogOverlayPopupHostName, typeof(ContentControl))]
     [TemplatePart(RootContainerName, typeof(Panel))]
     public class DialogHost : ContentControl {
-        public const string ContentCoverGridName = "PART_ContentCoverGrid";
+        /// <summary>
+        /// Element name for content cover element
+        /// </summary>
+        public const string ContentCoverName = "PART_ContentCover";
+
+        /// <summary>
+        /// Element name for DialogOverlayPopupHost
+        /// </summary>
         public const string DialogOverlayPopupHostName = "PART_DialogOverlayPopupHost";
+
+        /// <summary>
+        /// Element name for root container, which suited for adding or removing <see cref="DialogOverlayPopupHostName"/>
+        /// </summary>
         public const string RootContainerName = "PART_RootContainer";
 
         private static readonly HashSet<DialogHost> LoadedInstances = new();
@@ -36,18 +64,8 @@ namespace DialogHostAvalonia {
         public static readonly StyledProperty<IAnimation?> ClosingAnimationProperty = 
             AvaloniaProperty.Register<DialogHost, IAnimation?>(nameof(ClosingAnimation));
 
-        public IAnimation? ClosingAnimation {
-            get => GetValue(ClosingAnimationProperty);
-            set => SetValue(ClosingAnimationProperty, value);
-        }
-
         public static readonly StyledProperty<IAnimation?> OpeningAnimationProperty = 
             AvaloniaProperty.Register<DialogHost, IAnimation?>(nameof(OpeningAnimation));
-
-        public IAnimation? OpeningAnimation {
-            get => GetValue(OpeningAnimationProperty);
-            set => SetValue(OpeningAnimationProperty, value);
-        }
 
         public static readonly StyledProperty<object?> DialogContentProperty =
             AvaloniaProperty.Register<DialogHost, object?>(nameof(DialogContent));
@@ -116,8 +134,6 @@ namespace DialogHostAvalonia {
                 o => o.PopupPositioner,
                 (o, v) => o.PopupPositioner = v);
 
-        private IDialogPopupPositioner? _popupPositioner;
-
         private DialogClosingEventHandler? _asyncShowClosingEventHandler;
         private DialogOpenedEventHandler? _asyncShowOpenedEventHandler;
 
@@ -126,6 +142,7 @@ namespace DialogHostAvalonia {
         private bool _closeOnClickAway;
 
         private object? _closeOnClickAwayParameter;
+        private IDisposable? _closingAnimationDisposable;
 
         private DialogClosingEventHandler? _dialogClosingCallback;
 
@@ -139,15 +156,29 @@ namespace DialogHostAvalonia {
 
         private ICommand _openDialogCommand;
 
+        private IDisposable? _openingAnimationDisposable;
+
         private ContentControl _overlayPopupHost;
-        private Panel _rootContainer;
+
+        private IDialogPopupPositioner? _popupPositioner;
         private IInputElement? _restoreFocusDialogClose;
+        private Panel _rootContainer;
 
         private IDisposable? _templateDisposables;
 
         public DialogHost() {
             _closeDialogCommand = new DialogHostCommandImpl(InternalClose, o => IsOpen, this.GetObservable(IsOpenProperty));
             _openDialogCommand = new DialogHostCommandImpl(o => ShowInternal(o, null, null), o => !IsOpen, this.GetObservable(IsOpenProperty));
+        }
+
+        public IAnimation? ClosingAnimation {
+            get => GetValue(ClosingAnimationProperty);
+            set => SetValue(ClosingAnimationProperty, value);
+        }
+
+        public IAnimation? OpeningAnimation {
+            get => GetValue(OpeningAnimationProperty);
+            set => SetValue(OpeningAnimationProperty, value);
         }
 
         public IControlTemplate? PopupTemplate {
@@ -309,7 +340,7 @@ namespace DialogHostAvalonia {
             if (content is null) throw new ArgumentNullException(nameof(content));
             return GetInstance(dialogIdentifier).ShowInternal(content, openedEventHandler, closingEventHandler);
         }
-        
+
         /// <summary>
         /// Shows a modal dialog. To use, a <see cref="DialogHost"/> instance must be in a visual tree (typically this may be specified towards the root of a Window's XAML).
         /// </summary>
@@ -353,7 +384,7 @@ namespace DialogHostAvalonia {
             if (instance is null) throw new ArgumentNullException(nameof(instance));
             return instance.ShowInternal(content, openedEventHandler, closingEventHandler);
         }
-        
+
         /// <summary>Close a modal dialog.</summary>
         /// <param name="dialogIdentifier">of the instance where the dialog should be closed. Typically this will match an identifier set in XAML.</param>
         public static void Close(string? dialogIdentifier)
@@ -473,9 +504,6 @@ namespace DialogHostAvalonia {
 
             dialogHost.RaiseCommandsCanExecuteChanged();
         }
-
-        private IDisposable? _openingAnimationDisposable;
-        private IDisposable? _closingAnimationDisposable;
         private void AttachPopupHost() {
             if (_closingAnimationDisposable != null) {
                 // If closing animation running - stop it and call opening animation after
@@ -536,7 +564,7 @@ namespace DialogHostAvalonia {
             // Removing the overlay layer initially
             _rootContainer.Children.Remove(_overlayPopupHost);
             
-            _templateDisposables = e.NameScope.Find<InputElement>(ContentCoverGridName)?.AddDisposableHandler(PointerReleasedEvent, ContentCoverGrid_OnPointerReleased);
+            _templateDisposables = e.NameScope.Find<InputElement>(ContentCoverName)?.AddDisposableHandler(PointerReleasedEvent, ContentCoverGrid_OnPointerReleased);
 
             if (IsOpen) {
                 AttachPopupHost();
