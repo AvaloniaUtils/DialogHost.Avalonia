@@ -79,11 +79,11 @@ namespace DialogHostAvalonia {
         public static readonly StyledProperty<Thickness> DialogMarginProperty =
             AvaloniaProperty.Register<DialogHost, Thickness>(nameof(DialogMargin));
 
-        public static readonly DirectProperty<DialogHost, bool> IsOpenProperty =
-            AvaloniaProperty.RegisterDirect<DialogHost, bool>(
-                nameof(IsOpen),
-                o => o.IsOpen,
-                (o, v) => o.IsOpen = v);
+        /// <summary>
+        /// Defines the <see cref="IsOpen"/> property
+        /// </summary>
+        public static readonly StyledProperty<bool> IsOpenProperty =
+            AvaloniaProperty.Register<DialogHost, bool>(nameof(IsOpen));
 
         public static readonly RoutedEvent DialogOpenedEvent =
             RoutedEvent.Register<DialogHost, DialogOpenedEventArgs>(nameof(DialogOpened), RoutingStrategies.Bubble);
@@ -152,8 +152,6 @@ namespace DialogHostAvalonia {
 
         private string? _identifier;
 
-        private bool _isOpen;
-
         private ICommand _openDialogCommand;
 
         private IDisposable? _openingAnimationDisposable;
@@ -165,6 +163,10 @@ namespace DialogHostAvalonia {
         private Panel _rootContainer;
 
         private IDisposable? _templateDisposables;
+
+        static DialogHost() {
+            IsOpenProperty.Changed.AddClassHandler<DialogHost>(IsOpenPropertyChangedCallback);
+        }
 
         public DialogHost() {
             _closeDialogCommand = new DialogHostCommandImpl(InternalClose, o => IsOpen, this.GetObservable(IsOpenProperty));
@@ -226,12 +228,12 @@ namespace DialogHostAvalonia {
             set => SetValue(DialogMarginProperty, value);
         }
 
+        /// <summary>
+        /// Get or set is dialog currently open or not
+        /// </summary>
         public bool IsOpen {
-            get => _isOpen;
-            set {
-                SetAndRaise(IsOpenProperty, ref _isOpen, value);
-                IsOpenPropertyChangedCallback(this, value);
-            }
+            get => GetValue(IsOpenProperty);
+            set => SetValue(IsOpenProperty, value);
         }
 
         public bool CloseOnClickAway {
@@ -459,8 +461,8 @@ namespace DialogHostAvalonia {
             return result;
         }
 
-        private static void IsOpenPropertyChangedCallback(DialogHost dialogHost, bool newValue) {
-            if (newValue) {
+        private static void IsOpenPropertyChangedCallback(DialogHost dialogHost, AvaloniaPropertyChangedEventArgs args) {
+            if (args.GetNewValue<bool>()) {
                 dialogHost.CurrentSession = new DialogSession(dialogHost);
                 dialogHost._restoreFocusDialogClose = FocusManager.Instance?.Current;
 
