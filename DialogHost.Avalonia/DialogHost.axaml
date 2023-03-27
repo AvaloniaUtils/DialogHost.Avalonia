@@ -1,6 +1,7 @@
 ﻿<ResourceDictionary xmlns="https://github.com/avaloniaui"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:dialogHostAvalonia="clr-namespace:DialogHostAvalonia">
+                    xmlns:dialogHostAvalonia="clr-namespace:DialogHostAvalonia"
+                    xmlns:utilities="clr-namespace:DialogHostAvalonia.Utilities">
   <Design.PreviewWith>
     <dialogHostAvalonia:DialogHost Name="DialogHost" Height="300" Width="300"
                                    Background="Gray">
@@ -24,7 +25,8 @@
     <Setter Property="HorizontalAlignment" Value="Stretch" />
     <Setter Property="VerticalAlignment" Value="Stretch" />
     <Setter Property="DialogMargin" Value="8" />
-    <Setter Property="OverlayBackground" Value="Black" />
+    <Setter Property="OverlayBackground" Value="{utilities:MultiDynamicResource DefaultBrush=Black, ResourceKeys=SystemControlBackgroundBaseHighBrush}" />
+    <Setter Property="Background" Value="{utilities:MultiDynamicResource DefaultBrush=Black, ResourceKeys=SystemControlBackgroundAltHighBrush;MaterialDesignPaper}"></Setter>
     <Setter Property="dialogHostAvalonia:DialogHostStyle.ClipToBounds" Value="False" />
     <Setter Property="dialogHostAvalonia:DialogHostStyle.CornerRadius" Value="2" />
     <Setter Property="Template">
@@ -72,26 +74,6 @@
         </Border>
       </ControlTemplate>
     </Setter>
-
-    <!-- AvaloniaUI fluent inverse color -->
-    <!-- Will be white for dark theme -->
-    <!-- And black for light theme -->
-    <Style Selector="^">
-      <Setter Property="OverlayBackground" Value="{DynamicResource SystemControlBackgroundBaseHighBrush}"></Setter>
-    </Style>
-
-    <!-- Fallback color if avalonia theme not presented -->
-    <Style Selector="^">
-      <Setter Property="Background" Value="White"></Setter>
-    </Style>
-    <!-- AvaloniaUI fluent background color -->
-    <Style Selector="^">
-      <Setter Property="Background" Value="{DynamicResource SystemControlBackgroundAltHighBrush}"></Setter>
-    </Style>
-    <!-- AvaloniaUI material background color -->
-    <Style Selector="^">
-      <Setter Property="Background" Value="{DynamicResource MaterialDesignPaper}" />
-    </Style>
 
     <Style Selector="^[IsOpen=True] /template/ Grid#PART_ContentCoverGrid">
       <Setter Property="IsHitTestVisible" Value="True" />
