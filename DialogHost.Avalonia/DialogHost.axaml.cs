@@ -55,8 +55,6 @@ namespace DialogHostAvalonia {
         /// </summary>
         public const string RootContainerName = "PART_RootContainer";
 
-        private static readonly HashSet<DialogHost> LoadedInstances = new();
-
         /// <summary>
         /// Defines the <see cref="Identifier"/> property
         /// </summary>
@@ -67,16 +65,40 @@ namespace DialogHostAvalonia {
                 (o, v) => o.Identifier = v);
 
         /// <summary>
+        /// Gets or sets the <see cref="DialogHost"/> unique identifier
+        /// </summary>
+        public string? Identifier {
+            get => _identifier;
+            set => SetAndRaise(IdentifierProperty, ref _identifier, value);
+        }
+
+        /// <summary>
         /// Defines the <see cref="ClosingAnimation"/> property
         /// </summary>
-        public static readonly StyledProperty<IAnimation?> ClosingAnimationProperty = 
+        public static readonly StyledProperty<IAnimation?> ClosingAnimationProperty =
             AvaloniaProperty.Register<DialogHost, IAnimation?>(nameof(ClosingAnimation));
+
+        /// <summary>
+        /// Gets or sets popup closing animation
+        /// </summary>
+        public IAnimation? ClosingAnimation {
+            get => GetValue(ClosingAnimationProperty);
+            set => SetValue(ClosingAnimationProperty, value);
+        }
 
         /// <summary>
         /// Defines the <see cref="OpeningAnimation"/> property
         /// </summary>
-        public static readonly StyledProperty<IAnimation?> OpeningAnimationProperty = 
+        public static readonly StyledProperty<IAnimation?> OpeningAnimationProperty =
             AvaloniaProperty.Register<DialogHost, IAnimation?>(nameof(OpeningAnimation));
+
+        /// <summary>
+        /// Gets or sets popup opening animation
+        /// </summary>
+        public IAnimation? OpeningAnimation {
+            get => GetValue(OpeningAnimationProperty);
+            set => SetValue(OpeningAnimationProperty, value);
+        }
 
         /// <summary>
         /// Defines the <see cref="DialogContent"/> property
@@ -85,10 +107,26 @@ namespace DialogHostAvalonia {
             AvaloniaProperty.Register<DialogHost, object?>(nameof(DialogContent));
 
         /// <summary>
+        /// Gets or sets content to display in popup
+        /// </summary>
+        public object? DialogContent {
+            get => GetValue(DialogContentProperty);
+            set => SetValue(DialogContentProperty, value);
+        }
+
+        /// <summary>
         /// Defines the <see cref="DialogContentTemplate"/> property
         /// </summary>
         public static readonly StyledProperty<IDataTemplate?> DialogContentTemplateProperty =
             AvaloniaProperty.Register<DialogHost, IDataTemplate?>(nameof(DialogContentTemplate));
+
+        /// <summary>
+        /// Gets or sets the data template used to display the content of the control.
+        /// </summary>
+        public IDataTemplate? DialogContentTemplate {
+            get => GetValue(DialogContentTemplateProperty);
+            set => SetValue(DialogContentTemplateProperty, value);
+        }
 
         /// <summary>
         /// Defines the <see cref="OverlayBackground"/> property
@@ -97,10 +135,26 @@ namespace DialogHostAvalonia {
             AvaloniaProperty.Register<DialogHost, IBrush>(nameof(OverlayBackground));
 
         /// <summary>
+        /// Gets or sets <see cref="IBrush"/> for <see cref="ContentCoverName"/>
+        /// </summary>
+        public IBrush OverlayBackground {
+            get => GetValue(OverlayBackgroundProperty);
+            set => SetValue(OverlayBackgroundProperty, value);
+        }
+
+        /// <summary>
         /// Defines the <see cref="DialogMargin"/> property
         /// </summary>
         public static readonly StyledProperty<Thickness> DialogMarginProperty =
             AvaloniaProperty.Register<DialogHost, Thickness>(nameof(DialogMargin));
+
+        /// <summary>
+        /// Gets or sets popup margins
+        /// </summary>
+        public Thickness DialogMargin {
+            get => GetValue(DialogMarginProperty);
+            set => SetValue(DialogMarginProperty, value);
+        }
 
         /// <summary>
         /// Defines the <see cref="IsOpen"/> property
@@ -109,57 +163,34 @@ namespace DialogHostAvalonia {
             AvaloniaProperty.Register<DialogHost, bool>(nameof(IsOpen));
 
         /// <summary>
+        /// Get or set is dialog currently open or not
+        /// </summary>
+        public bool IsOpen {
+            get => GetValue(IsOpenProperty);
+            set => SetValue(IsOpenProperty, value);
+        }
+
+        #region DialogOpened* Properties
+
+        /// <summary>
         /// Defines the <see cref="DialogOpened"/> event
         /// </summary>
         public static readonly RoutedEvent DialogOpenedEvent =
             RoutedEvent.Register<DialogHost, DialogOpenedEventArgs>(nameof(DialogOpened), RoutingStrategies.Bubble);
 
         /// <summary>
-        /// Defines the <see cref="CloseOnClickAway"/> property
+        /// Raised when a dialog is opened.
         /// </summary>
-        public static readonly StyledProperty<bool> CloseOnClickAwayProperty =
-            AvaloniaProperty.Register<DialogHost, bool>(nameof(CloseOnClickAway));
-
-        /// <summary>
-        /// Defines the <see cref="CloseOnClickAwayParameter"/> property
-        /// </summary>
-        public static readonly StyledProperty<object?> CloseOnClickAwayParameterProperty =
-            AvaloniaProperty.Register<DialogHost, object?>(nameof(CloseOnClickAwayParameter));
-
-        /// <summary>
-        /// Defines the <see cref="DialogClosing"/> event
-        /// </summary>
-        public static readonly RoutedEvent DialogClosingEvent =
-            RoutedEvent.Register<DialogHost, DialogClosingEventArgs>(nameof(DialogClosing), RoutingStrategies.Bubble);
-        
-        /// <summary>
-        /// Defines the <see cref="DialogClosed"/> event
-        /// </summary>
-        public static readonly RoutedEvent DialogClosedEvent =
-            RoutedEvent.Register<DialogHost, DialogClosingEventArgs>(nameof(DialogClosed), RoutingStrategies.Bubble);
-
-        /// <summary>
-        /// Defines the <see cref="DialogClosedCallback"/> property
-        /// </summary>
-        public static readonly StyledProperty<DialogClosedEventHandler?> DialogClosedCallbackProperty 
-            = AvaloniaProperty.Register<DialogHost, DialogClosedEventHandler?>(nameof(DialogClosedCallback));
-
-        /// <summary>
-        /// Gets or sets callback which will be invoked when dialog closed
-        /// </summary>
-        public DialogClosedEventHandler? DialogClosedCallback {
-            get => GetValue(DialogClosedCallbackProperty);
-            set => SetValue(DialogClosedCallbackProperty, value);
+        public event DialogOpenedEventHandler DialogOpened {
+            add => AddHandler(DialogOpenedEvent, value);
+            remove => RemoveHandler(DialogOpenedEvent, value);
         }
 
         /// <summary>
-        /// Defines the <see cref="DialogClosingCallback"/> property
+        /// Called when dialog is opened
         /// </summary>
-        public static readonly DirectProperty<DialogHost, DialogClosingEventHandler?> DialogClosingCallbackProperty =
-            AvaloniaProperty.RegisterDirect<DialogHost, DialogClosingEventHandler?>(
-                nameof(DialogClosingCallback),
-                o => o.DialogClosingCallback,
-                (o, v) => o.DialogClosingCallback = v);
+        /// <param name="dialogOpenedEventArgs">Event arguments</param>
+        protected void OnDialogOpened(DialogOpenedEventArgs dialogOpenedEventArgs) => RaiseEvent(dialogOpenedEventArgs);
 
         /// <summary>
         /// Defines the <see cref="DialogOpenedCallback"/> property
@@ -171,95 +202,6 @@ namespace DialogHostAvalonia {
                 (o, v) => o.DialogOpenedCallback = v);
 
         /// <summary>
-        /// Defines the <see cref="OpenDialogCommand"/> property
-        /// </summary>
-        public static readonly DirectProperty<DialogHost, ICommand> OpenDialogCommandProperty =
-            AvaloniaProperty.RegisterDirect<DialogHost, ICommand>(
-                nameof(OpenDialogCommand),
-                o => o.OpenDialogCommand);
-
-        /// <summary>
-        /// Defines the <see cref="CloseDialogCommand"/> property
-        /// </summary>
-        public static readonly DirectProperty<DialogHost, ICommand> CloseDialogCommandProperty =
-            AvaloniaProperty.RegisterDirect<DialogHost, ICommand>(
-                nameof(CloseDialogCommand),
-                o => o.CloseDialogCommand);
-
-        /// <summary>
-        /// Defines the <see cref="PopupTemplate"/> property
-        /// </summary>
-        public static readonly StyledProperty<IControlTemplate?> PopupTemplateProperty =
-            AvaloniaProperty.Register<DialogHost, IControlTemplate?>(nameof(PopupTemplate));
-
-        /// <summary>
-        /// Defines the <see cref="PopupPositioner"/> property
-        /// </summary>
-        public static readonly StyledProperty<IDialogPopupPositioner?> PopupPositionerProperty =
-            AvaloniaProperty.Register<DialogHost, IDialogPopupPositioner?>(nameof(PopupPositioner));
-
-        private DialogClosingEventHandler? _asyncShowClosingEventHandler;
-        private DialogClosedEventHandler? _asyncShowClosedEventHandler;
-        private DialogOpenedEventHandler? _asyncShowOpenedEventHandler;
-
-        private ICommand _closeDialogCommand;
-
-        private IDisposable? _closingAnimationDisposable;
-
-        private DialogClosingEventHandler? _dialogClosingCallback;
-
-        private DialogOpenedEventHandler? _dialogOpenedCallback;
-
-        private TaskCompletionSource<object?>? _dialogTaskCompletionSource;
-
-        private string? _identifier;
-
-        private ICommand _openDialogCommand;
-
-        private IDisposable? _openingAnimationDisposable;
-
-        private ContentControl _overlayPopupHost = null!;
-
-        private IInputElement? _restoreFocusDialogClose;
-        private Panel _rootContainer = null!;
-
-        private IDisposable? _templateDisposables;
-
-        static DialogHost() {
-            IsOpenProperty.Changed.AddClassHandler<DialogHost>(IsOpenPropertyChangedCallback);
-        }
-
-        /// <inheritdoc />
-        public DialogHost() {
-            _closeDialogCommand = new DialogHostCommandImpl(InternalClose, _ => IsOpen, this.GetObservable(IsOpenProperty));
-            _openDialogCommand = new DialogHostCommandImpl(o => _ = ShowInternal(o, null, null, null), _ => !IsOpen, this.GetObservable(IsOpenProperty));
-        }
-
-        /// <summary>
-        /// Gets or sets popup closing animation
-        /// </summary>
-        public IAnimation? ClosingAnimation {
-            get => GetValue(ClosingAnimationProperty);
-            set => SetValue(ClosingAnimationProperty, value);
-        }
-
-        /// <summary>
-        /// Gets or sets popup opening animation
-        /// </summary>
-        public IAnimation? OpeningAnimation {
-            get => GetValue(OpeningAnimationProperty);
-            set => SetValue(OpeningAnimationProperty, value);
-        }
-
-        /// <summary>
-        /// Gets or sets the template used for popup
-        /// </summary>
-        public IControlTemplate? PopupTemplate {
-            get => GetValue(PopupTemplateProperty);
-            set => SetValue(PopupTemplateProperty, value);
-        }
-
-        /// <summary>
         /// Gets or set dialog opening callback
         /// </summary>
         public DialogOpenedEventHandler? DialogOpenedCallback {
@@ -267,69 +209,92 @@ namespace DialogHostAvalonia {
             set => SetAndRaise(DialogOpenedCallbackProperty, ref _dialogOpenedCallback, value);
         }
 
+        #endregion
+
+        #region DialogClosing* Properties
+
         /// <summary>
-        /// Gets command, what can be executed to open dialog
+        /// Defines the <see cref="DialogClosing"/> event
         /// </summary>
-        public ICommand OpenDialogCommand {
-            get => _openDialogCommand;
-            private set => SetAndRaise(OpenDialogCommandProperty, ref _openDialogCommand, value);
+        public static readonly RoutedEvent DialogClosingEvent =
+            RoutedEvent.Register<DialogHost, DialogClosingEventArgs>(nameof(DialogClosing), RoutingStrategies.Bubble);
+
+        /// <summary>
+        /// Raised just before a dialog is closed.
+        /// </summary>
+        public event EventHandler<DialogClosingEventArgs> DialogClosing {
+            add => AddHandler(DialogClosingEvent, value);
+            remove => RemoveHandler(DialogClosingEvent, value);
         }
 
         /// <summary>
-        /// Gets command, what can be executed to close dialog
+        /// Called when dialog is closing
         /// </summary>
-        public ICommand CloseDialogCommand {
-            get => _closeDialogCommand;
-            private set => SetAndRaise(CloseDialogCommandProperty, ref _closeDialogCommand, value);
+        /// <param name="eventArgs">Event arguments</param>
+        protected void OnDialogClosing(DialogClosingEventArgs eventArgs) => RaiseEvent(eventArgs);
+
+        /// <summary>
+        /// Defines the <see cref="DialogClosingCallback"/> property
+        /// </summary>
+        public static readonly DirectProperty<DialogHost, DialogClosingEventHandler?> DialogClosingCallbackProperty =
+            AvaloniaProperty.RegisterDirect<DialogHost, DialogClosingEventHandler?>(
+                nameof(DialogClosingCallback),
+                o => o.DialogClosingCallback,
+                (o, v) => o.DialogClosingCallback = v);
+
+        /// <summary>
+        /// Gets or sets callback which will be invoked when dialog attempting to close
+        /// </summary>
+        public DialogClosingEventHandler? DialogClosingCallback {
+            get => _dialogClosingCallback;
+            set => SetAndRaise(DialogClosingCallbackProperty, ref _dialogClosingCallback, value);
+        }
+
+        #endregion
+
+        #region DialogClosed* Properties
+
+        /// <summary>
+        /// Defines the <see cref="DialogClosed"/> event
+        /// </summary>
+        public static readonly RoutedEvent DialogClosedEvent =
+            RoutedEvent.Register<DialogHost, DialogClosingEventArgs>(nameof(DialogClosed), RoutingStrategies.Bubble);
+
+        /// <summary>
+        /// Raised just after a dialog is closed.
+        /// </summary>
+        public event EventHandler<DialogClosedEventArgs> DialogClosed {
+            add => AddHandler(DialogClosedEvent, value);
+            remove => RemoveHandler(DialogClosedEvent, value);
         }
 
         /// <summary>
-        /// Gets or sets the <see cref="DialogHost"/> unique identifier
+        /// Called when dialog is closed
         /// </summary>
-        public string? Identifier {
-            get => _identifier;
-            set => SetAndRaise(IdentifierProperty, ref _identifier, value);
-        }
+        /// <param name="dialogOpenedEventArgs">Event arguments</param>
+        protected void OnDialogClosed(DialogClosedEventArgs dialogOpenedEventArgs) => RaiseEvent(dialogOpenedEventArgs);
 
         /// <summary>
-        /// Gets or sets content to display in popup
+        /// Defines the <see cref="DialogClosedCallback"/> property
         /// </summary>
-        public object? DialogContent {
-            get => GetValue(DialogContentProperty);
-            set => SetValue(DialogContentProperty, value);
-        }
+        public static readonly StyledProperty<DialogClosedEventHandler?> DialogClosedCallbackProperty
+            = AvaloniaProperty.Register<DialogHost, DialogClosedEventHandler?>(nameof(DialogClosedCallback));
 
         /// <summary>
-        /// Gets or sets the data template used to display the content of the control.
+        /// Gets or sets callback which will be invoked when dialog closed
         /// </summary>
-        public IDataTemplate? DialogContentTemplate {
-            get => GetValue(DialogContentTemplateProperty);
-            set => SetValue(DialogContentTemplateProperty, value);
+        public DialogClosedEventHandler? DialogClosedCallback {
+            get => GetValue(DialogClosedCallbackProperty);
+            set => SetValue(DialogClosedCallbackProperty, value);
         }
 
-        /// <summary>
-        /// Gets or sets <see cref="IBrush"/> for <see cref="ContentCoverName"/>
-        /// </summary>
-        public IBrush OverlayBackground {
-            get => GetValue(OverlayBackgroundProperty);
-            set => SetValue(OverlayBackgroundProperty, value);
-        }
+        #endregion
 
         /// <summary>
-        /// Gets or sets popup margins
+        /// Defines the <see cref="CloseOnClickAway"/> property
         /// </summary>
-        public Thickness DialogMargin {
-            get => GetValue(DialogMarginProperty);
-            set => SetValue(DialogMarginProperty, value);
-        }
-
-        /// <summary>
-        /// Get or set is dialog currently open or not
-        /// </summary>
-        public bool IsOpen {
-            get => GetValue(IsOpenProperty);
-            set => SetValue(IsOpenProperty, value);
-        }
+        public static readonly StyledProperty<bool> CloseOnClickAwayProperty =
+            AvaloniaProperty.Register<DialogHost, bool>(nameof(CloseOnClickAway));
 
         /// <summary>
         /// Gets or sets value, indicating is dialog can be dismissed by clicking on the content cover outside the popup
@@ -338,6 +303,12 @@ namespace DialogHostAvalonia {
             get => GetValue(CloseOnClickAwayProperty);
             set => SetValue(CloseOnClickAwayProperty, value);
         }
+
+        /// <summary>
+        /// Defines the <see cref="CloseOnClickAwayParameter"/> property
+        /// </summary>
+        public static readonly StyledProperty<object?> CloseOnClickAwayParameterProperty =
+            AvaloniaProperty.Register<DialogHost, object?>(nameof(CloseOnClickAwayParameter));
 
         /// <summary>
         /// Gets or sets value, what will be used as dialog result if user close dialog via clicking on content cover outside the popup
@@ -351,6 +322,58 @@ namespace DialogHostAvalonia {
         }
 
         /// <summary>
+        /// Defines the <see cref="OpenDialogCommand"/> property
+        /// </summary>
+        public static readonly DirectProperty<DialogHost, ICommand> OpenDialogCommandProperty =
+            AvaloniaProperty.RegisterDirect<DialogHost, ICommand>(
+                nameof(OpenDialogCommand),
+                o => o.OpenDialogCommand);
+
+        /// <summary>
+        /// Gets command, what can be executed to open dialog
+        /// </summary>
+        public ICommand OpenDialogCommand {
+            get => _openDialogCommand;
+            private set => SetAndRaise(OpenDialogCommandProperty, ref _openDialogCommand, value);
+        }
+
+        /// <summary>
+        /// Defines the <see cref="CloseDialogCommand"/> property
+        /// </summary>
+        public static readonly DirectProperty<DialogHost, ICommand> CloseDialogCommandProperty =
+            AvaloniaProperty.RegisterDirect<DialogHost, ICommand>(
+                nameof(CloseDialogCommand),
+                o => o.CloseDialogCommand);
+
+        /// <summary>
+        /// Gets command, what can be executed to close dialog
+        /// </summary>
+        public ICommand CloseDialogCommand {
+            get => _closeDialogCommand;
+            private set => SetAndRaise(CloseDialogCommandProperty, ref _closeDialogCommand, value);
+        }
+
+        /// <summary>
+        /// Defines the <see cref="PopupTemplate"/> property
+        /// </summary>
+        public static readonly StyledProperty<IControlTemplate?> PopupTemplateProperty =
+            AvaloniaProperty.Register<DialogHost, IControlTemplate?>(nameof(PopupTemplate));
+
+        /// <summary>
+        /// Gets or sets the template used for popup
+        /// </summary>
+        public IControlTemplate? PopupTemplate {
+            get => GetValue(PopupTemplateProperty);
+            set => SetValue(PopupTemplateProperty, value);
+        }
+
+        /// <summary>
+        /// Defines the <see cref="PopupPositioner"/> property
+        /// </summary>
+        public static readonly StyledProperty<IDialogPopupPositioner?> PopupPositionerProperty =
+            AvaloniaProperty.Register<DialogHost, IDialogPopupPositioner?>(nameof(PopupPositioner));
+
+        /// <summary>
         /// Allows to override popup positioner
         /// </summary>
         public IDialogPopupPositioner? PopupPositioner {
@@ -358,18 +381,7 @@ namespace DialogHostAvalonia {
             set => SetValue(PopupPositionerProperty, value);
         }
 
-        /// <summary>
-        /// Gets a DialogSession for the currently open dialog for managing it programmatically. If no dialog is open, CurrentSession will return null
-        /// </summary>
-        public DialogSession? CurrentSession { get; private set; }
-
-        /// <summary>
-        /// Gets or sets callback which will be invoked when dialog attempting to close
-        /// </summary>
-        public DialogClosingEventHandler? DialogClosingCallback {
-            get => _dialogClosingCallback;
-            set => SetAndRaise(DialogClosingCallbackProperty, ref _dialogClosingCallback, value);
-        }
+        #region Static methods: Show, Close, etc
 
         /// <summary>
         /// Shows a modal dialog. To use, a <see cref="DialogHost"/> instance must be in a visual tree (typically this may be specified towards the root of a Window's XAML).
@@ -385,7 +397,7 @@ namespace DialogHostAvalonia {
                                          DialogClosingEventHandler? closingEventHandler = null,
                                          DialogClosedEventHandler? closedEventHandler = null) {
             if (content is null) throw new ArgumentNullException(nameof(content));
-            return GetInstance(dialogIdentifier).ShowInternal(content, openedEventHandler, closingEventHandler, closedEventHandler);
+            return GetInstance(dialogIdentifier).Show(content, openedEventHandler, closingEventHandler, closedEventHandler);
         }
 
         /// <summary>
@@ -397,29 +409,13 @@ namespace DialogHostAvalonia {
         /// <param name="closingEventHandler">Allows access to closing event which would otherwise have been subscribed to on a instance.</param>
         /// <param name="closedEventHandler">Allows access to closed event which would otherwise have been subscribed to on a instance.</param>
         /// <returns>Task result is the parameter used to close the dialog, typically what is passed to the <see cref="CloseDialogCommand"/> command.</returns>
-        public static Task<object?> Show(object content, DialogHost instance, 
+        public static Task<object?> Show(object content, DialogHost instance,
                                          DialogOpenedEventHandler? openedEventHandler = null,
                                          DialogClosingEventHandler? closingEventHandler = null,
                                          DialogClosedEventHandler? closedEventHandler = null) {
             if (content is null) throw new ArgumentNullException(nameof(content));
             if (instance is null) throw new ArgumentNullException(nameof(instance));
-            return instance.ShowInternal(content, openedEventHandler, closingEventHandler, closedEventHandler);
-        }
-
-        /// <summary>
-        /// Shows a modal dialog in the this <see cref="DialogHost"/>
-        /// </summary>
-        /// <param name="content">Content to show (can be a control or view model).</param>
-        /// <param name="openedEventHandler">Allows access to opened event which would otherwise have been subscribed to on a instance.</param>
-        /// <param name="closingEventHandler">Allows access to closing event which would otherwise have been subscribed to on a instance.</param>
-        /// <param name="closedEventHandler">Allows access to closed event which would otherwise have been subscribed to on a instance.</param>
-        /// <returns>Task result is the parameter used to close the dialog, typically what is passed to the <see cref="CloseDialogCommand"/> command.</returns>
-        public Task<object?> Show(object content,
-                                  DialogOpenedEventHandler? openedEventHandler = null,
-                                  DialogClosingEventHandler? closingEventHandler = null,
-                                  DialogClosedEventHandler? closedEventHandler = null) {
-            if (content is null) throw new ArgumentNullException(nameof(content));
-            return ShowInternal(content, openedEventHandler, closingEventHandler, closedEventHandler);
+            return instance.Show(content, openedEventHandler, closingEventHandler, closedEventHandler);
         }
 
         /// <summary>Close a modal dialog.</summary>
@@ -459,29 +455,75 @@ namespace DialogHostAvalonia {
         /// <returns></returns>
         public static bool IsDialogOpen(string? dialogIdentifier) => GetDialogSession(dialogIdentifier)?.IsEnded == false;
 
+        private static readonly HashSet<DialogHost> LoadedInstances = new();
         private static DialogHost GetInstance(string? dialogIdentifier) {
             if (LoadedInstances.Count == 0)
                 throw new InvalidOperationException("No loaded DialogHost instances.");
 
             var targets = LoadedInstances.Where(dh => dialogIdentifier == null || Equals(dh.Identifier, dialogIdentifier)).ToList();
             if (targets.Count == 0)
-                throw new InvalidOperationException(
-                    $"No loaded DialogHost have an {nameof(Identifier)} property matching {nameof(dialogIdentifier)} ('{dialogIdentifier}') argument.");
+                throw new InvalidOperationException($"No loaded DialogHost have an {nameof(Identifier)} property matching {nameof(dialogIdentifier)} ('{dialogIdentifier}') argument.");
             if (targets.Count > 1)
-                throw new InvalidOperationException(
-                    "Multiple viable DialogHosts. Specify a unique Identifier on each DialogHost, especially where multiple Windows are a concern.");
+                throw new InvalidOperationException("Multiple viable DialogHosts. Specify a unique Identifier on each DialogHost, especially where multiple Windows are a concern.");
 
             return targets[0];
         }
 
-        internal async Task<object?> ShowInternal(object content, DialogOpenedEventHandler? openedEventHandler,
-                                                  DialogClosingEventHandler? closingEventHandler, DialogClosedEventHandler? closedEventHandler) {
+        #endregion
+
+        private DialogClosedEventHandler? _asyncShowClosedEventHandler;
+        private DialogClosingEventHandler? _asyncShowClosingEventHandler;
+        private DialogOpenedEventHandler? _asyncShowOpenedEventHandler;
+
+        private ICommand _closeDialogCommand;
+        private ICommand _openDialogCommand;
+
+        private IDisposable? _openingAnimationDisposable;
+        private IDisposable? _closingAnimationDisposable;
+        private TaskCompletionSource<object?>? _dialogTaskCompletionSource;
+
+        private DialogClosingEventHandler? _dialogClosingCallback;
+        private DialogOpenedEventHandler? _dialogOpenedCallback;
+
+        private string? _identifier;
+        private IDisposable? _templateDisposables;
+        private ContentControl _overlayPopupHost = null!;
+        private IInputElement? _restoreFocusDialogClose;
+        private Panel _rootContainer = null!;
+
+        static DialogHost() {
+            IsOpenProperty.Changed.AddClassHandler<DialogHost>(IsOpenPropertyChangedCallback);
+        }
+
+        /// <inheritdoc />
+        public DialogHost() {
+            _closeDialogCommand = new DialogHostCommandImpl(InternalClose, _ => IsOpen, this.GetObservable(IsOpenProperty));
+            _openDialogCommand = new DialogHostCommandImpl(o => _ = Show(o, null, null, null), _ => !IsOpen, this.GetObservable(IsOpenProperty));
+        }
+
+        /// <summary>
+        /// Gets a DialogSession for the currently open dialog for managing it programmatically. If no dialog is open, CurrentSession will return null
+        /// </summary>
+        public DialogSession? CurrentSession { get; private set; }
+
+        /// <summary>
+        /// Shows a modal dialog in the this <see cref="DialogHost"/>
+        /// </summary>
+        /// <param name="content">Content to show (can be a control or view model).</param>
+        /// <param name="openedEventHandler">Allows access to opened event which would otherwise have been subscribed to on a instance.</param>
+        /// <param name="closingEventHandler">Allows access to closing event which would otherwise have been subscribed to on a instance.</param>
+        /// <param name="closedEventHandler">Allows access to closed event which would otherwise have been subscribed to on a instance.</param>
+        /// <returns>Task result is the parameter used to close the dialog, typically what is passed to the <see cref="CloseDialogCommand"/> command.</returns>
+        public async Task<object?> Show(object content,
+                                        DialogOpenedEventHandler? openedEventHandler,
+                                        DialogClosingEventHandler? closingEventHandler,
+                                        DialogClosedEventHandler? closedEventHandler) {
             if (IsOpen)
                 throw new InvalidOperationException("DialogHost is already open.");
 
             _dialogTaskCompletionSource = new TaskCompletionSource<object?>();
 
-            DialogContent = content;
+            DialogContent = content ?? throw new ArgumentNullException(nameof(content));
 
             _asyncShowOpenedEventHandler = openedEventHandler;
             _asyncShowClosingEventHandler = closingEventHandler;
@@ -495,6 +537,29 @@ namespace DialogHostAvalonia {
             _asyncShowClosedEventHandler = null;
 
             return result;
+        }
+
+        internal void InternalClose(object? parameter) {
+            var currentSession = CurrentSession ?? throw new InvalidOperationException($"{nameof(DialogHost)} does not have a current session");
+
+            currentSession.CloseParameter = parameter;
+            currentSession.IsEnded = true;
+
+            //multiple ways of calling back that the dialog is closing:
+            // * routed event
+            // * straight forward IsOpen dependency property 
+            // * handler provided to the async show method
+            var dialogClosingEventArgs = new DialogClosingEventArgs(currentSession, DialogClosingEvent);
+            OnDialogClosing(dialogClosingEventArgs);
+            DialogClosingCallback?.Invoke(this, dialogClosingEventArgs);
+            _asyncShowClosingEventHandler?.Invoke(this, dialogClosingEventArgs);
+
+            if (dialogClosingEventArgs.IsCancelled) {
+                currentSession.IsEnded = false;
+                return;
+            }
+
+            IsOpen = false;
         }
 
         private static void IsOpenPropertyChangedCallback(DialogHost dialogHost, AvaloniaPropertyChangedEventArgs args) {
@@ -550,6 +615,7 @@ namespace DialogHostAvalonia {
 
             dialogHost.RaiseCommandsCanExecuteChanged();
         }
+
         private void AttachPopupHost() {
             if (_closingAnimationDisposable != null) {
                 // If closing animation running - stop it and call opening animation after
@@ -608,17 +674,17 @@ namespace DialogHostAvalonia {
 
             _rootContainer = e.NameScope.Find<Panel>(RootContainerName)
                           ?? throw new InvalidOperationException($"{RootContainerName} not found in {nameof(DialogHost)} template");
-            _overlayPopupHost = e.NameScope.Find<ContentControl>(DialogOverlayPopupHostName) 
+            _overlayPopupHost = e.NameScope.Find<ContentControl>(DialogOverlayPopupHostName)
                              ?? throw new InvalidOperationException($"{DialogOverlayPopupHostName} not found in {nameof(DialogHost)} template");
             // Removing the overlay layer initially
             _rootContainer.Children.Remove(_overlayPopupHost);
-            
+
             _templateDisposables = e.NameScope.Find<InputElement>(ContentCoverName)?.AddDisposableHandler(PointerReleasedEvent, ContentCoverGrid_OnPointerReleased);
 
             if (IsOpen) {
                 AttachPopupHost();
             }
-            
+
             base.OnApplyTemplate(e);
         }
 
@@ -626,71 +692,6 @@ namespace DialogHostAvalonia {
             if (CloseOnClickAway && CurrentSession != null) {
                 InternalClose(CloseOnClickAwayParameter);
             }
-        }
-
-        /// <summary>
-        /// Called when dialog is opened
-        /// </summary>
-        /// <param name="dialogOpenedEventArgs">Event arguments</param>
-        protected void OnDialogOpened(DialogOpenedEventArgs dialogOpenedEventArgs) => RaiseEvent(dialogOpenedEventArgs);
-        
-        /// <summary>
-        /// Called when dialog is closed
-        /// </summary>
-        /// <param name="dialogOpenedEventArgs">Event arguments</param>
-        protected void OnDialogClosed(DialogClosedEventArgs dialogOpenedEventArgs) => RaiseEvent(dialogOpenedEventArgs);
-
-        /// <summary>
-        /// Raised when a dialog is opened.
-        /// </summary>
-        public event DialogOpenedEventHandler DialogOpened {
-            add => AddHandler(DialogOpenedEvent, value);
-            remove => RemoveHandler(DialogOpenedEvent, value);
-        }
-
-        /// <summary>
-        /// Raised just before a dialog is closed.
-        /// </summary>
-        public event EventHandler<DialogClosingEventArgs> DialogClosing {
-            add => AddHandler(DialogClosingEvent, value);
-            remove => RemoveHandler(DialogClosingEvent, value);
-        }
-        
-        /// <summary>
-        /// Raised just after a dialog is closed.
-        /// </summary>
-        public event EventHandler<DialogClosedEventArgs> DialogClosed {
-            add => AddHandler(DialogClosedEvent, value);
-            remove => RemoveHandler(DialogClosedEvent, value);
-        }
-
-        /// <summary>
-        /// Called when dialog is closing
-        /// </summary>
-        /// <param name="eventArgs">Event arguments</param>
-        protected void OnDialogClosing(DialogClosingEventArgs eventArgs) => RaiseEvent(eventArgs);
-
-        internal void InternalClose(object? parameter) {
-            var currentSession = CurrentSession ?? throw new InvalidOperationException($"{nameof(DialogHost)} does not have a current session");
-
-            currentSession.CloseParameter = parameter;
-            currentSession.IsEnded = true;
-
-            //multiple ways of calling back that the dialog is closing:
-            // * routed event
-            // * straight forward IsOpen dependency property 
-            // * handler provided to the async show method
-            var dialogClosingEventArgs = new DialogClosingEventArgs(currentSession, DialogClosingEvent);
-            OnDialogClosing(dialogClosingEventArgs);
-            DialogClosingCallback?.Invoke(this, dialogClosingEventArgs);
-            _asyncShowClosingEventHandler?.Invoke(this, dialogClosingEventArgs);
-
-            if (dialogClosingEventArgs.IsCancelled) {
-                currentSession.IsEnded = false;
-                return;
-            }
-
-            IsOpen = false;
         }
 
         /// <inheritdoc />

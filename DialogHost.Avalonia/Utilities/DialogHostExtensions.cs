@@ -29,7 +29,7 @@ namespace DialogHostAvalonia.Utilities {
                                                             DialogOpenedEventHandler? openedEventHandler = null,
                                                             DialogClosingEventHandler? closingEventHandler = null,
                                                             DialogClosedEventHandler? closedEventHandler = null)
-            => GetFirstDialogHost(window).ShowInternal(content, openedEventHandler, closingEventHandler, closedEventHandler);
+            => GetFirstDialogHost(window).Show(content, openedEventHandler, closingEventHandler, closedEventHandler);
 
         /// <summary>
         /// Shows a dialog using the parent/ancestor <see cref="DialogHost"/> of the a given <see cref="Visual"/>.
@@ -47,7 +47,7 @@ namespace DialogHostAvalonia.Utilities {
                                                             DialogOpenedEventHandler? openedEventHandler = null,
                                                             DialogClosingEventHandler? closingEventHandler = null,
                                                             DialogClosedEventHandler? closedEventHandler = null)
-            => GetOwningDialogHost(childDependencyObject).ShowInternal(content, openedEventHandler, closingEventHandler, closedEventHandler);
+            => GetOwningDialogHost(childDependencyObject).Show(content, openedEventHandler, closingEventHandler, closedEventHandler);
 
         private static DialogHost GetFirstDialogHost(Window window)
         {
