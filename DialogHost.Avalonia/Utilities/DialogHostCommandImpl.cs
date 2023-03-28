@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Input;
 
-namespace DialogHostAvalonia {
+namespace DialogHostAvalonia.Utilities {
     internal class DialogHostCommandImpl : ICommand {
         private Func<object, bool> _canExecuteFunc;
         private Action<object> _executeFunc;

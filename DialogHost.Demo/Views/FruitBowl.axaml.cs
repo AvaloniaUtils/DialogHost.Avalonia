@@ -4,6 +4,7 @@ using Avalonia.Collections;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using DialogHostAvalonia;
+using DialogHostAvalonia.DialogEvents;
 
 namespace DialogHostDemo.Views {
     public partial class FruitBowl : UserControl {

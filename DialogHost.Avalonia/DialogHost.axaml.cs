@@ -14,7 +14,9 @@ using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Media;
 using Avalonia.Threading;
+using DialogHostAvalonia.DialogEvents;
 using DialogHostAvalonia.Positioners;
+using DialogHostAvalonia.Utilities;
 
 namespace DialogHostAvalonia {
     /// <summary>

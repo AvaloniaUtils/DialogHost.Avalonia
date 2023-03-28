@@ -1,4 +1,5 @@
 ﻿using System;
+using DialogHostAvalonia.DialogEvents;
 
 namespace DialogHostAvalonia {
     /// <summary>

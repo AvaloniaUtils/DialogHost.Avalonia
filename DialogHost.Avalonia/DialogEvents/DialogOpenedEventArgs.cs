@@ -1,7 +1,7 @@
 ﻿using System;
 using Avalonia.Interactivity;
 
-namespace DialogHostAvalonia {
+namespace DialogHostAvalonia.DialogEvents {
     /// <summary>
     /// Arguments for <see cref="DialogHost.OnDialogOpened"/>
     /// </summary>
