@@ -117,20 +117,14 @@ namespace DialogHostAvalonia {
         /// <summary>
         /// Defines the <see cref="CloseOnClickAway"/> property
         /// </summary>
-        public static readonly DirectProperty<DialogHost, bool> CloseOnClickAwayProperty =
-            AvaloniaProperty.RegisterDirect<DialogHost, bool>(
-                nameof(CloseOnClickAway),
-                o => o.CloseOnClickAway,
-                (o, v) => o.CloseOnClickAway = v);
+        public static readonly StyledProperty<bool> CloseOnClickAwayProperty =
+            AvaloniaProperty.Register<DialogHost, bool>(nameof(CloseOnClickAway));
 
         /// <summary>
         /// Defines the <see cref="CloseOnClickAwayParameter"/> property
         /// </summary>
-        public static readonly DirectProperty<DialogHost, object?> CloseOnClickAwayParameterProperty =
-            AvaloniaProperty.RegisterDirect<DialogHost, object?>(
-                nameof(CloseOnClickAwayParameter),
-                o => o.CloseOnClickAwayParameter,
-                (o, v) => o.CloseOnClickAwayParameter = v);
+        public static readonly StyledProperty<object?> CloseOnClickAwayParameterProperty =
+            AvaloniaProperty.Register<DialogHost, object?>(nameof(CloseOnClickAwayParameter));
 
         /// <summary>
         /// Defines the <see cref="DialogClosing"/> event
@@ -192,9 +186,6 @@ namespace DialogHostAvalonia {
 
         private ICommand _closeDialogCommand;
 
-        private bool _closeOnClickAway;
-
-        private object? _closeOnClickAwayParameter;
         private IDisposable? _closingAnimationDisposable;
 
         private DialogClosingEventHandler? _dialogClosingCallback;
@@ -327,8 +318,8 @@ namespace DialogHostAvalonia {
         /// Gets or sets value, indicating is dialog can be dismissed by clicking on the content cover outside the popup
         /// </summary>
         public bool CloseOnClickAway {
-            get => _closeOnClickAway;
-            set => SetAndRaise(CloseOnClickAwayProperty, ref _closeOnClickAway, value);
+            get => GetValue(CloseOnClickAwayProperty);
+            set => SetValue(CloseOnClickAwayProperty, value);
         }
 
         /// <summary>
@@ -338,8 +329,8 @@ namespace DialogHostAvalonia {
         /// Popup can be closed this way only if <see cref="CloseOnClickAway"/> is set to <c>true</c>
         /// </remarks>
         public object? CloseOnClickAwayParameter {
-            get => _closeOnClickAwayParameter;
-            set => SetAndRaise(CloseOnClickAwayParameterProperty, ref _closeOnClickAwayParameter, value);
+            get => GetValue(CloseOnClickAwayParameterProperty);
+            set => SetValue(CloseOnClickAwayParameterProperty, value);
         }
 
         /// <summary>
