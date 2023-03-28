@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
@@ -14,8 +13,6 @@ using Avalonia.Controls.Templates;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Media;
-using Avalonia.Metadata;
-using Avalonia.Styling;
 using Avalonia.Threading;
 using DialogHostAvalonia.Positioners;
 
@@ -58,27 +55,48 @@ namespace DialogHostAvalonia {
 
         private static readonly HashSet<DialogHost> LoadedInstances = new();
 
+        /// <summary>
+        /// Defines the <see cref="Identifier"/> property
+        /// </summary>
         public static readonly DirectProperty<DialogHost, string?> IdentifierProperty =
             AvaloniaProperty.RegisterDirect<DialogHost, string?>(
                 nameof(Identifier),
                 o => o.Identifier,
                 (o, v) => o.Identifier = v);
 
+        /// <summary>
+        /// Defines the <see cref="ClosingAnimation"/> property
+        /// </summary>
         public static readonly StyledProperty<IAnimation?> ClosingAnimationProperty = 
             AvaloniaProperty.Register<DialogHost, IAnimation?>(nameof(ClosingAnimation));
 
+        /// <summary>
+        /// Defines the <see cref="OpeningAnimation"/> property
+        /// </summary>
         public static readonly StyledProperty<IAnimation?> OpeningAnimationProperty = 
             AvaloniaProperty.Register<DialogHost, IAnimation?>(nameof(OpeningAnimation));
 
+        /// <summary>
+        /// Defines the <see cref="DialogContent"/> property
+        /// </summary>
         public static readonly StyledProperty<object?> DialogContentProperty =
             AvaloniaProperty.Register<DialogHost, object?>(nameof(DialogContent));
 
+        /// <summary>
+        /// Defines the <see cref="DialogContentTemplate"/> property
+        /// </summary>
         public static readonly StyledProperty<IDataTemplate?> DialogContentTemplateProperty =
             AvaloniaProperty.Register<DialogHost, IDataTemplate?>(nameof(DialogContentTemplate));
 
+        /// <summary>
+        /// Defines the <see cref="OverlayBackground"/> property
+        /// </summary>
         public static readonly StyledProperty<IBrush> OverlayBackgroundProperty =
             AvaloniaProperty.Register<DialogHost, IBrush>(nameof(OverlayBackground));
 
+        /// <summary>
+        /// Defines the <see cref="DialogMargin"/> property
+        /// </summary>
         public static readonly StyledProperty<Thickness> DialogMarginProperty =
             AvaloniaProperty.Register<DialogHost, Thickness>(nameof(DialogMargin));
 
@@ -88,49 +106,79 @@ namespace DialogHostAvalonia {
         public static readonly StyledProperty<bool> IsOpenProperty =
             AvaloniaProperty.Register<DialogHost, bool>(nameof(IsOpen));
 
+        /// <summary>
+        /// Defines the <see cref="DialogOpened"/> event
+        /// </summary>
         public static readonly RoutedEvent DialogOpenedEvent =
             RoutedEvent.Register<DialogHost, DialogOpenedEventArgs>(nameof(DialogOpened), RoutingStrategies.Bubble);
 
+        /// <summary>
+        /// Defines the <see cref="CloseOnClickAway"/> property
+        /// </summary>
         public static readonly DirectProperty<DialogHost, bool> CloseOnClickAwayProperty =
             AvaloniaProperty.RegisterDirect<DialogHost, bool>(
                 nameof(CloseOnClickAway),
                 o => o.CloseOnClickAway,
                 (o, v) => o.CloseOnClickAway = v);
 
+        /// <summary>
+        /// Defines the <see cref="CloseOnClickAwayParameter"/> property
+        /// </summary>
         public static readonly DirectProperty<DialogHost, object?> CloseOnClickAwayParameterProperty =
             AvaloniaProperty.RegisterDirect<DialogHost, object?>(
                 nameof(CloseOnClickAwayParameter),
                 o => o.CloseOnClickAwayParameter,
                 (o, v) => o.CloseOnClickAwayParameter = v);
 
+        /// <summary>
+        /// Defines the <see cref="DialogClosing"/> event
+        /// </summary>
         public static readonly RoutedEvent DialogClosingEvent =
             RoutedEvent.Register<DialogHost, DialogClosingEventArgs>(nameof(DialogClosing), RoutingStrategies.Bubble);
 
-        public static readonly DirectProperty<DialogHost, DialogClosingEventHandler> DialogClosingCallbackProperty =
-            AvaloniaProperty.RegisterDirect<DialogHost, DialogClosingEventHandler>(
+        /// <summary>
+        /// Defines the <see cref="DialogClosingCallback"/> property
+        /// </summary>
+        public static readonly DirectProperty<DialogHost, DialogClosingEventHandler?> DialogClosingCallbackProperty =
+            AvaloniaProperty.RegisterDirect<DialogHost, DialogClosingEventHandler?>(
                 nameof(DialogClosingCallback),
                 o => o.DialogClosingCallback,
                 (o, v) => o.DialogClosingCallback = v);
 
+        /// <summary>
+        /// Defines the <see cref="DialogOpenedCallback"/> property
+        /// </summary>
         public static readonly DirectProperty<DialogHost, DialogOpenedEventHandler?> DialogOpenedCallbackProperty =
             AvaloniaProperty.RegisterDirect<DialogHost, DialogOpenedEventHandler?>(
                 nameof(DialogOpenedCallback),
                 o => o.DialogOpenedCallback,
                 (o, v) => o.DialogOpenedCallback = v);
 
+        /// <summary>
+        /// Defines the <see cref="OpenDialogCommand"/> property
+        /// </summary>
         public static readonly DirectProperty<DialogHost, ICommand> OpenDialogCommandProperty =
             AvaloniaProperty.RegisterDirect<DialogHost, ICommand>(
                 nameof(OpenDialogCommand),
                 o => o.OpenDialogCommand);
 
+        /// <summary>
+        /// Defines the <see cref="CloseDialogCommand"/> property
+        /// </summary>
         public static readonly DirectProperty<DialogHost, ICommand> CloseDialogCommandProperty =
             AvaloniaProperty.RegisterDirect<DialogHost, ICommand>(
                 nameof(CloseDialogCommand),
                 o => o.CloseDialogCommand);
 
+        /// <summary>
+        /// Defines the <see cref="PopupTemplate"/> property
+        /// </summary>
         public static readonly StyledProperty<IControlTemplate?> PopupTemplateProperty =
             AvaloniaProperty.Register<DialogHost, IControlTemplate?>(nameof(PopupTemplate));
 
+        /// <summary>
+        /// Defines the <see cref="PopupPositioner"/> property
+        /// </summary>
         public static readonly DirectProperty<DialogHost, IDialogPopupPositioner?> PopupPositionerProperty =
             AvaloniaProperty.RegisterDirect<DialogHost, IDialogPopupPositioner?>(
                 nameof(PopupPositioner),
@@ -159,11 +207,11 @@ namespace DialogHostAvalonia {
 
         private IDisposable? _openingAnimationDisposable;
 
-        private ContentControl _overlayPopupHost;
+        private ContentControl _overlayPopupHost = null!;
 
         private IDialogPopupPositioner? _popupPositioner;
         private IInputElement? _restoreFocusDialogClose;
-        private Panel _rootContainer;
+        private Panel _rootContainer = null!;
 
         private IDisposable? _templateDisposables;
 
@@ -171,61 +219,95 @@ namespace DialogHostAvalonia {
             IsOpenProperty.Changed.AddClassHandler<DialogHost>(IsOpenPropertyChangedCallback);
         }
 
+        /// <inheritdoc />
         public DialogHost() {
-            _closeDialogCommand = new DialogHostCommandImpl(InternalClose, o => IsOpen, this.GetObservable(IsOpenProperty));
-            _openDialogCommand = new DialogHostCommandImpl(o => ShowInternal(o, null, null), o => !IsOpen, this.GetObservable(IsOpenProperty));
+            _closeDialogCommand = new DialogHostCommandImpl(InternalClose, _ => IsOpen, this.GetObservable(IsOpenProperty));
+            _openDialogCommand = new DialogHostCommandImpl(o => _ = ShowInternal(o, null, null), _ => !IsOpen, this.GetObservable(IsOpenProperty));
         }
 
+        /// <summary>
+        /// Gets or sets popup closing animation
+        /// </summary>
         public IAnimation? ClosingAnimation {
             get => GetValue(ClosingAnimationProperty);
             set => SetValue(ClosingAnimationProperty, value);
         }
 
+        /// <summary>
+        /// Gets or sets popup opening animation
+        /// </summary>
         public IAnimation? OpeningAnimation {
             get => GetValue(OpeningAnimationProperty);
             set => SetValue(OpeningAnimationProperty, value);
         }
 
+        /// <summary>
+        /// Gets or sets the template used for popup
+        /// </summary>
         public IControlTemplate? PopupTemplate {
             get => GetValue(PopupTemplateProperty);
             set => SetValue(PopupTemplateProperty, value);
         }
 
+        /// <summary>
+        /// Gets or set dialog opening callback
+        /// </summary>
         public DialogOpenedEventHandler? DialogOpenedCallback {
             get => _dialogOpenedCallback;
             set => SetAndRaise(DialogOpenedCallbackProperty, ref _dialogOpenedCallback, value);
         }
 
+        /// <summary>
+        /// Gets command, what can be executed to open dialog
+        /// </summary>
         public ICommand OpenDialogCommand {
             get => _openDialogCommand;
-            private set => SetAndRaise<ICommand>(OpenDialogCommandProperty, ref _openDialogCommand, value);
+            private set => SetAndRaise(OpenDialogCommandProperty, ref _openDialogCommand, value);
         }
 
+        /// <summary>
+        /// Gets command, what can be executed to close dialog
+        /// </summary>
         public ICommand CloseDialogCommand {
             get => _closeDialogCommand;
-            private set => SetAndRaise<ICommand>(CloseDialogCommandProperty, ref _closeDialogCommand, value);
+            private set => SetAndRaise(CloseDialogCommandProperty, ref _closeDialogCommand, value);
         }
 
+        /// <summary>
+        /// Gets or sets the <see cref="DialogHost"/> unique identifier
+        /// </summary>
         public string? Identifier {
             get => _identifier;
             set => SetAndRaise(IdentifierProperty, ref _identifier, value);
         }
 
+        /// <summary>
+        /// Gets or sets content to display in popup
+        /// </summary>
         public object? DialogContent {
             get => GetValue(DialogContentProperty);
             set => SetValue(DialogContentProperty, value);
         }
 
+        /// <summary>
+        /// Gets or sets the data template used to display the content of the control.
+        /// </summary>
         public IDataTemplate? DialogContentTemplate {
             get => GetValue(DialogContentTemplateProperty);
             set => SetValue(DialogContentTemplateProperty, value);
         }
 
+        /// <summary>
+        /// Gets or sets <see cref="IBrush"/> for <see cref="ContentCoverName"/>
+        /// </summary>
         public IBrush OverlayBackground {
             get => GetValue(OverlayBackgroundProperty);
             set => SetValue(OverlayBackgroundProperty, value);
         }
 
+        /// <summary>
+        /// Gets or sets popup margins
+        /// </summary>
         public Thickness DialogMargin {
             get => GetValue(DialogMarginProperty);
             set => SetValue(DialogMarginProperty, value);
@@ -239,11 +321,20 @@ namespace DialogHostAvalonia {
             set => SetValue(IsOpenProperty, value);
         }
 
+        /// <summary>
+        /// Gets or sets value, indicating is dialog can be dismissed by clicking on the content cover outside the popup
+        /// </summary>
         public bool CloseOnClickAway {
             get => _closeOnClickAway;
             set => SetAndRaise(CloseOnClickAwayProperty, ref _closeOnClickAway, value);
         }
 
+        /// <summary>
+        /// Gets or sets value, what will be used as dialog result if user close dialog via clicking on content cover outside the popup
+        /// </summary>
+        /// <remarks>
+        /// Popup can be closed this way only if <see cref="CloseOnClickAway"/> is set to <c>true</c>
+        /// </remarks>
         public object? CloseOnClickAwayParameter {
             get => _closeOnClickAwayParameter;
             set => SetAndRaise(CloseOnClickAwayParameterProperty, ref _closeOnClickAwayParameter, value);
@@ -258,11 +349,14 @@ namespace DialogHostAvalonia {
         }
 
         /// <summary>
-        /// Returns a DialogSession for the currently open dialog for managing it programmatically. If no dialog is open, CurrentSession will return null
+        /// Gets a DialogSession for the currently open dialog for managing it programmatically. If no dialog is open, CurrentSession will return null
         /// </summary>
         public DialogSession? CurrentSession { get; private set; }
 
-        public DialogClosingEventHandler DialogClosingCallback {
+        /// <summary>
+        /// Gets or sets callback which will be invoked when dialog attempting to close
+        /// </summary>
+        public DialogClosingEventHandler? DialogClosingCallback {
             get => _dialogClosingCallback;
             set => SetAndRaise(DialogClosingCallbackProperty, ref _dialogClosingCallback, value);
         }
@@ -529,7 +623,6 @@ namespace DialogHostAvalonia {
             }
             else {
                 // If shown already and no closing in progress - no nothing
-                return;
             }
         }
 
@@ -551,14 +644,18 @@ namespace DialogHostAvalonia {
                     Dispatcher.UIThread.Post(_ => _rootContainer.Children.Remove(_overlayPopupHost), DispatcherPriority.Layout);
                 }
             }
-            this.InvalidateVisual();
+            InvalidateVisual();
         }
 
+        /// <summary>
+        /// Notify <see cref="OpenDialogCommand"/> and <see cref="CloseDialogCommand"/> about "Can execute" status change
+        /// </summary>
         protected void RaiseCommandsCanExecuteChanged() {
             (_openDialogCommand as DialogHostCommandImpl)?.OnCanExecuteChanged();
             (_closeDialogCommand as DialogHostCommandImpl)?.OnCanExecuteChanged();
         }
 
+        /// <inheritdoc />
         protected override void OnApplyTemplate(TemplateAppliedEventArgs e) {
             _templateDisposables?.Dispose();
 
@@ -584,6 +681,10 @@ namespace DialogHostAvalonia {
             }
         }
 
+        /// <summary>
+        /// Called when dialog is opened
+        /// </summary>
+        /// <param name="dialogOpenedEventArgs">Event arguments</param>
         protected void OnDialogOpened(DialogOpenedEventArgs dialogOpenedEventArgs) => RaiseEvent(dialogOpenedEventArgs);
 
         /// <summary>
@@ -602,6 +703,10 @@ namespace DialogHostAvalonia {
             remove => RemoveHandler(DialogClosingEvent, value);
         }
 
+        /// <summary>
+        /// Called when dialog is closing
+        /// </summary>
+        /// <param name="eventArgs">Event arguments</param>
         protected void OnDialogClosing(DialogClosingEventArgs eventArgs) => RaiseEvent(eventArgs);
 
         internal void InternalClose(object? parameter) {
@@ -627,11 +732,13 @@ namespace DialogHostAvalonia {
             IsOpen = false;
         }
 
+        /// <inheritdoc />
         protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e) {
             base.OnAttachedToVisualTree(e);
             LoadedInstances.Add(this);
         }
 
+        /// <inheritdoc />
         protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e) {
             base.OnDetachedFromVisualTree(e);
             LoadedInstances.Remove(this);

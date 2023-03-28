@@ -1,10 +1,12 @@
 ﻿using System;
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Layout;
 using DialogHostAvalonia.Positioners;
 
 namespace DialogHostAvalonia.DialogControls {
+    /// <summary>
+    /// <see cref="ContentControl"/> with positioning support for <see cref="DialogHost"/>
+    /// </summary>
     public class PositionedContentControl : ContentControl {
         static PositionedContentControl() {
             AffectsArrange<PositionedContentControl>(PositionerProperty);
@@ -19,9 +21,15 @@ namespace DialogHostAvalonia.DialogControls {
             });
         }
 
+        /// <summary>
+        /// Defines the <see cref="Positioner"/> property
+        /// </summary>
         public static readonly StyledProperty<IDialogPopupPositioner?> PositionerProperty = 
             AvaloniaProperty.Register<PositionedContentControl, IDialogPopupPositioner?>(nameof(Positioner));
 
+        /// <summary>
+        /// Gets or sets a popup positioner
+        /// </summary>
         public IDialogPopupPositioner? Positioner {
             get => GetValue(PositionerProperty);
             set => SetValue(PositionerProperty, value);

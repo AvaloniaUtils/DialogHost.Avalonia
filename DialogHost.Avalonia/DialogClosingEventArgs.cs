@@ -2,7 +2,11 @@
 using Avalonia.Interactivity;
 
 namespace DialogHostAvalonia {
+    /// <summary>
+    /// Arguments for <see cref="DialogHost.OnDialogClosing"/>
+    /// </summary>
     public class DialogClosingEventArgs : RoutedEventArgs {
+        /// <inheritdoc />
         public DialogClosingEventArgs(DialogSession session, RoutedEvent routedEvent)
             : base(routedEvent)
             => Session = session ?? throw new ArgumentNullException(nameof(session));

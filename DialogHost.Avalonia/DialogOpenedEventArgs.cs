@@ -2,7 +2,11 @@
 using Avalonia.Interactivity;
 
 namespace DialogHostAvalonia {
+    /// <summary>
+    /// Arguments for <see cref="DialogHost.OnDialogOpened"/>
+    /// </summary>
     public class DialogOpenedEventArgs : RoutedEventArgs {
+        /// <inheritdoc />
         public DialogOpenedEventArgs(DialogSession session, RoutedEvent routedEvent)
         {
             if (session == null) throw new ArgumentNullException(nameof(session));

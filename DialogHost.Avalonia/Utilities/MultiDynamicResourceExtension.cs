@@ -19,16 +19,16 @@ namespace DialogHostAvalonia.Utilities {
         private object? _anchor;
         private BindingPriority _priority;
 
-        public IBrush DefaultBrush { get; set; }
+        public IBrush DefaultBrush { get; set; } = null!;
 
-        public object ResourceKeys { get; set; }
-        
+        public object ResourceKeys { get; set; } = null!;
+
         public IBinding ProvideValue(IServiceProvider serviceProvider)
         {
             if (serviceProvider.IsInControlTemplate())
                 _priority = BindingPriority.Template;
 
-            var provideTarget = serviceProvider.GetService<IProvideValueTarget>();
+            var provideTarget = serviceProvider.GetService<IProvideValueTarget>()!;
 
             if (!(provideTarget.TargetObject is StyledElement))
             {
@@ -60,7 +60,7 @@ namespace DialogHostAvalonia.Utilities {
                 var testObservable = new MultiDynamicResourceObservable(source, DefaultBrush);
                 return InstancedBinding.OneWay(testObservable, _priority);
             }
-            else if (_anchor is IResourceProvider resourceProvider)
+            if (_anchor is IResourceProvider resourceProvider)
             {
                 var source = resourceKeys.Select(key => resourceProvider.GetResourceObservable(key, GetConverter(targetProperty)));
                 var testObservable = new MultiDynamicResourceObservable(source, DefaultBrush);

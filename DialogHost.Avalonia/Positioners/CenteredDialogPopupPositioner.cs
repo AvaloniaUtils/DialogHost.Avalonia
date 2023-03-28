@@ -1,12 +1,14 @@
 ﻿using System;
 using Avalonia;
-using Avalonia.Controls.Primitives.PopupPositioning;
 
 namespace DialogHostAvalonia.Positioners {
     /// <summary>
     /// Positions the popup at the screen center
     /// </summary>
     public class CenteredDialogPopupPositioner : IDialogPopupPositioner {
+        /// <summary>
+        /// Singleton instance of <see cref="CenteredDialogPopupPositioner"/>
+        /// </summary>
         public static CenteredDialogPopupPositioner Instance { get; } = new();
         
         /// <inheritdoc />

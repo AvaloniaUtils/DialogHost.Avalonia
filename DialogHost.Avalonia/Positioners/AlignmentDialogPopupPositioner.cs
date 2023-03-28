@@ -1,6 +1,5 @@
 ﻿using System;
 using Avalonia;
-using Avalonia.Controls.Primitives.PopupPositioning;
 using Avalonia.Layout;
 
 namespace DialogHostAvalonia.Positioners {
