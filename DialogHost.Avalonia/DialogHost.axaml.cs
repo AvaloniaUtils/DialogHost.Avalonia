@@ -175,11 +175,8 @@ namespace DialogHostAvalonia {
         /// <summary>
         /// Defines the <see cref="PopupPositioner"/> property
         /// </summary>
-        public static readonly DirectProperty<DialogHost, IDialogPopupPositioner?> PopupPositionerProperty =
-            AvaloniaProperty.RegisterDirect<DialogHost, IDialogPopupPositioner?>(
-                nameof(PopupPositioner),
-                o => o.PopupPositioner,
-                (o, v) => o.PopupPositioner = v);
+        public static readonly StyledProperty<IDialogPopupPositioner?> PopupPositionerProperty =
+            AvaloniaProperty.Register<DialogHost, IDialogPopupPositioner?>(nameof(PopupPositioner));
 
         private DialogClosingEventHandler? _asyncShowClosingEventHandler;
         private DialogOpenedEventHandler? _asyncShowOpenedEventHandler;
@@ -202,7 +199,6 @@ namespace DialogHostAvalonia {
 
         private ContentControl _overlayPopupHost = null!;
 
-        private IDialogPopupPositioner? _popupPositioner;
         private IInputElement? _restoreFocusDialogClose;
         private Panel _rootContainer = null!;
 
@@ -337,8 +333,8 @@ namespace DialogHostAvalonia {
         /// Allows to override popup positioner
         /// </summary>
         public IDialogPopupPositioner? PopupPositioner {
-            get => _popupPositioner;
-            set => SetAndRaise(PopupPositionerProperty, ref _popupPositioner, value);
+            get => GetValue(PopupPositionerProperty);
+            set => SetValue(PopupPositionerProperty, value);
         }
 
         /// <summary>
