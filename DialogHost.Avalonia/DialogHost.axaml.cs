@@ -375,88 +375,15 @@ namespace DialogHostAvalonia {
         /// Shows a modal dialog. To use, a <see cref="DialogHost"/> instance must be in a visual tree (typically this may be specified towards the root of a Window's XAML).
         /// </summary>
         /// <param name="content">Content to show (can be a control or view model).</param>
-        /// <returns>Task result is the parameter used to close the dialog, typically what is passed to the <see cref="CloseDialogCommand"/> command.</returns>
-        public static Task<object?> Show(object content)
-            => Show(content, dialogIdentifier: null);
-
-        /// <summary>
-        /// Shows a modal dialog. To use, a <see cref="DialogHost"/> instance must be in a visual tree (typically this may be specified towards the root of a Window's XAML).
-        /// </summary>
-        /// <param name="content">Content to show (can be a control or view model).</param>        
-        /// <param name="openedEventHandler">Allows access to opened event which would otherwise have been subscribed to on a instance.</param>        
-        /// <returns>Task result is the parameter used to close the dialog, typically what is passed to the <see cref="CloseDialogCommand"/> command.</returns>
-        public static Task<object?> Show(object content, DialogOpenedEventHandler openedEventHandler)
-            => Show(content, (string?) null, openedEventHandler, null, null);
-
-        /// <summary>
-        /// Shows a modal dialog. To use, a <see cref="DialogHost"/> instance must be in a visual tree (typically this may be specified towards the root of a Window's XAML).
-        /// </summary>
-        /// <param name="content">Content to show (can be a control or view model).</param>
-        /// <param name="closingEventHandler">Allows access to closing event which would otherwise have been subscribed to on a instance.</param>
-        /// <returns>Task result is the parameter used to close the dialog, typically what is passed to the <see cref="CloseDialogCommand"/> command.</returns>
-        public static Task<object?> Show(object content, DialogClosingEventHandler closingEventHandler)
-            => Show(content, (string?) null, null, closingEventHandler, null);
-
-        /// <summary>
-        /// Shows a modal dialog. To use, a <see cref="DialogHost"/> instance must be in a visual tree (typically this may be specified towards the root of a Window's XAML).
-        /// </summary>
-        /// <param name="content">Content to show (can be a control or view model).</param>        
-        /// <param name="openedEventHandler">Allows access to opened event which would otherwise have been subscribed to on a instance.</param>
-        /// <param name="closingEventHandler">Allows access to closing event which would otherwise have been subscribed to on a instance.</param>
-        /// <returns>Task result is the parameter used to close the dialog, typically what is passed to the <see cref="CloseDialogCommand"/> command.</returns>
-        public static Task<object?> Show(object content, DialogOpenedEventHandler? openedEventHandler, DialogClosingEventHandler? closingEventHandler)
-            => Show(content, (string?) null, openedEventHandler, closingEventHandler, null);
-
-        /// <summary>
-        /// Shows a modal dialog. To use, a <see cref="DialogHost"/> instance must be in a visual tree (typically this may be specified towards the root of a Window's XAML).
-        /// </summary>
-        /// <param name="content">Content to show (can be a control or view model).</param>
-        /// <param name="dialogIdentifier"><see cref="Identifier"/> of the instance where the dialog should be shown. Typically this will match an identifier set in XAML. <c>null</c> is allowed.</param>
-        /// <returns>Task result is the parameter used to close the dialog, typically what is passed to the <see cref="CloseDialogCommand"/> command.</returns>
-        public static Task<object?> Show(object content, string? dialogIdentifier)
-            => Show(content, dialogIdentifier, null, null, null);
-
-        /// <summary>
-        /// Shows a modal dialog. To use, a <see cref="DialogHost"/> instance must be in a visual tree (typically this may be specified towards the root of a Window's XAML).
-        /// </summary>
-        /// <param name="content">Content to show (can be a control or view model).</param>
         /// <param name="dialogIdentifier"><see cref="Identifier"/> of the instance where the dialog should be shown. Typically this will match an identifier set in XAML. <c>null</c> is allowed.</param>
         /// <param name="openedEventHandler">Allows access to opened event which would otherwise have been subscribed to on a instance.</param>
-        /// <returns>Task result is the parameter used to close the dialog, typically what is passed to the <see cref="CloseDialogCommand"/> command.</returns>
-        public static Task<object?> Show(object content, string? dialogIdentifier, DialogOpenedEventHandler openedEventHandler)
-            => Show(content, dialogIdentifier, openedEventHandler, null, null);
-
-        /// <summary>
-        /// Shows a modal dialog. To use, a <see cref="DialogHost"/> instance must be in a visual tree (typically this may be specified towards the root of a Window's XAML).
-        /// </summary>
-        /// <param name="content">Content to show (can be a control or view model).</param>
-        /// <param name="dialogIdentifier"><see cref="Identifier"/> of the instance where the dialog should be shown. Typically this will match an identifier set in XAML. <c>null</c> is allowed.</param>        
         /// <param name="closingEventHandler">Allows access to closing event which would otherwise have been subscribed to on a instance.</param>
-        /// <returns>Task result is the parameter used to close the dialog, typically what is passed to the <see cref="CloseDialogCommand"/> command.</returns>
-        public static Task<object?> Show(object content, string? dialogIdentifier, DialogClosingEventHandler closingEventHandler)
-            => Show(content, dialogIdentifier, null, closingEventHandler, null);
-        
-        /// <summary>
-        /// Shows a modal dialog. To use, a <see cref="DialogHost"/> instance must be in a visual tree (typically this may be specified towards the root of a Window's XAML).
-        /// </summary>
-        /// <param name="content">Content to show (can be a control or view model).</param>
-        /// <param name="dialogIdentifier"><see cref="Identifier"/> of the instance where the dialog should be shown. Typically this will match an identifier set in XAML. <c>null</c> is allowed.</param>        
         /// <param name="closedEventHandler">Allows access to closed event which would otherwise have been subscribed to on a instance.</param>
         /// <returns>Task result is the parameter used to close the dialog, typically what is passed to the <see cref="CloseDialogCommand"/> command.</returns>
-        public static Task<object?> Show(object content, string? dialogIdentifier, DialogClosedEventHandler closedEventHandler)
-            => Show(content, dialogIdentifier, null, null, closedEventHandler);
-
-        /// <summary>
-        /// Shows a modal dialog. To use, a <see cref="DialogHost"/> instance must be in a visual tree (typically this may be specified towards the root of a Window's XAML).
-        /// </summary>
-        /// <param name="content">Content to show (can be a control or view model).</param>
-        /// <param name="dialogIdentifier"><see cref="Identifier"/> of the instance where the dialog should be shown. Typically this will match an identifier set in XAML. <c>null</c> is allowed.</param>
-        /// <param name="openedEventHandler">Allows access to opened event which would otherwise have been subscribed to on a instance.</param>
-        /// <param name="closingEventHandler">Allows access to closing event which would otherwise have been subscribed to on a instance.</param>
-        /// <param name="closedEventHandler"></param>
-        /// <returns>Task result is the parameter used to close the dialog, typically what is passed to the <see cref="CloseDialogCommand"/> command.</returns>
-        public static Task<object?> Show(object content, string? dialogIdentifier, DialogOpenedEventHandler? openedEventHandler,
-                                         DialogClosingEventHandler? closingEventHandler, DialogClosedEventHandler? closedEventHandler) {
+        public static Task<object?> Show(object content, string? dialogIdentifier = null,
+                                         DialogOpenedEventHandler? openedEventHandler = null,
+                                         DialogClosingEventHandler? closingEventHandler = null,
+                                         DialogClosedEventHandler? closedEventHandler = null) {
             if (content is null) throw new ArgumentNullException(nameof(content));
             return GetInstance(dialogIdentifier).ShowInternal(content, openedEventHandler, closingEventHandler, closedEventHandler);
         }
@@ -466,54 +393,33 @@ namespace DialogHostAvalonia {
         /// </summary>
         /// <param name="content">Content to show (can be a control or view model).</param>
         /// <param name="instance">Instance of <see cref="DialogHost"/> where the dialog should be shown.</param>
-        /// <returns>Task result is the parameter used to close the dialog, typically what is passed to the <see cref="CloseDialogCommand"/> command.</returns>
-        public static Task<object?> Show(object content, DialogHost instance)
-            => Show(content, instance, null, null, null);
-
-        /// <summary>
-        /// Shows a modal dialog. To use, a <see cref="DialogHost"/> instance must be in a visual tree (typically this may be specified towards the root of a Window's XAML).
-        /// </summary>
-        /// <param name="content">Content to show (can be a control or view model).</param>
-        /// <param name="instance">Instance of <see cref="DialogHost"/> where the dialog should be shown.</param>
-        /// <param name="openedEventHandler">Allows access to opened event which would otherwise have been subscribed to on a instance.</param>
-        /// <returns>Task result is the parameter used to close the dialog, typically what is passed to the <see cref="CloseDialogCommand"/> command.</returns>
-        public static Task<object?> Show(object content, DialogHost instance, DialogOpenedEventHandler openedEventHandler)
-            => Show(content, instance, openedEventHandler, null, null);
-
-        /// <summary>
-        /// Shows a modal dialog. To use, a <see cref="DialogHost"/> instance must be in a visual tree (typically this may be specified towards the root of a Window's XAML).
-        /// </summary>
-        /// <param name="content">Content to show (can be a control or view model).</param>
-        /// <param name="instance">Instance of <see cref="DialogHost"/> where the dialog should be shown.</param>
-        /// <param name="closingEventHandler">Allows access to closing event which would otherwise have been subscribed to on a instance.</param>
-        /// <returns>Task result is the parameter used to close the dialog, typically what is passed to the <see cref="CloseDialogCommand"/> command.</returns>
-        public static Task<object?> Show(object content, DialogHost instance, DialogClosingEventHandler closingEventHandler)
-            => Show(content, instance, null, closingEventHandler, null);
-        
-        /// <summary>
-        /// Shows a modal dialog. To use, a <see cref="DialogHost"/> instance must be in a visual tree (typically this may be specified towards the root of a Window's XAML).
-        /// </summary>
-        /// <param name="content">Content to show (can be a control or view model).</param>
-        /// <param name="instance">Instance of <see cref="DialogHost"/> where the dialog should be shown.</param>
-        /// <param name="closedEventHandler">Allows access to closed event which would otherwise have been subscribed to on a instance.</param>
-        /// <returns>Task result is the parameter used to close the dialog, typically what is passed to the <see cref="CloseDialogCommand"/> command.</returns>
-        public static Task<object?> Show(object content, DialogHost instance, DialogClosedEventHandler closedEventHandler)
-            => Show(content, instance, null, null, closedEventHandler);
-
-        /// <summary>
-        /// Shows a modal dialog. To use, a <see cref="DialogHost"/> instance must be in a visual tree (typically this may be specified towards the root of a Window's XAML).
-        /// </summary>
-        /// <param name="content">Content to show (can be a control or view model).</param>
-        /// <param name="instance">Instance of <see cref="DialogHost"/> where the dialog should be shown.</param>
         /// <param name="openedEventHandler">Allows access to opened event which would otherwise have been subscribed to on a instance.</param>
         /// <param name="closingEventHandler">Allows access to closing event which would otherwise have been subscribed to on a instance.</param>
         /// <param name="closedEventHandler">Allows access to closed event which would otherwise have been subscribed to on a instance.</param>
         /// <returns>Task result is the parameter used to close the dialog, typically what is passed to the <see cref="CloseDialogCommand"/> command.</returns>
-        public static Task<object?> Show(object content, DialogHost instance, DialogOpenedEventHandler? openedEventHandler,
-                                         DialogClosingEventHandler? closingEventHandler, DialogClosedEventHandler? closedEventHandler) {
+        public static Task<object?> Show(object content, DialogHost instance, 
+                                         DialogOpenedEventHandler? openedEventHandler = null,
+                                         DialogClosingEventHandler? closingEventHandler = null,
+                                         DialogClosedEventHandler? closedEventHandler = null) {
             if (content is null) throw new ArgumentNullException(nameof(content));
             if (instance is null) throw new ArgumentNullException(nameof(instance));
             return instance.ShowInternal(content, openedEventHandler, closingEventHandler, closedEventHandler);
+        }
+
+        /// <summary>
+        /// Shows a modal dialog in the this <see cref="DialogHost"/>
+        /// </summary>
+        /// <param name="content">Content to show (can be a control or view model).</param>
+        /// <param name="openedEventHandler">Allows access to opened event which would otherwise have been subscribed to on a instance.</param>
+        /// <param name="closingEventHandler">Allows access to closing event which would otherwise have been subscribed to on a instance.</param>
+        /// <param name="closedEventHandler">Allows access to closed event which would otherwise have been subscribed to on a instance.</param>
+        /// <returns>Task result is the parameter used to close the dialog, typically what is passed to the <see cref="CloseDialogCommand"/> command.</returns>
+        public Task<object?> Show(object content,
+                                  DialogOpenedEventHandler? openedEventHandler = null,
+                                  DialogClosingEventHandler? closingEventHandler = null,
+                                  DialogClosedEventHandler? closedEventHandler = null) {
+            if (content is null) throw new ArgumentNullException(nameof(content));
+            return ShowInternal(content, openedEventHandler, closingEventHandler, closedEventHandler);
         }
 
         /// <summary>Close a modal dialog.</summary>
@@ -522,7 +428,7 @@ namespace DialogHostAvalonia {
             => Close(dialogIdentifier, null);
 
         /// <summary>
-        ///  Close a modal dialog.
+        /// Close a modal dialog.
         /// </summary>
         /// <param name="dialogIdentifier"> of the instance where the dialog should be closed. Typically this will match an identifier set in XAML. </param>
         /// <param name="parameter"> to provide to close handler</param>
@@ -575,8 +481,7 @@ namespace DialogHostAvalonia {
 
             _dialogTaskCompletionSource = new TaskCompletionSource<object?>();
 
-            if (content != null)
-                DialogContent = content;
+            DialogContent = content;
 
             _asyncShowOpenedEventHandler = openedEventHandler;
             _asyncShowClosingEventHandler = closingEventHandler;
