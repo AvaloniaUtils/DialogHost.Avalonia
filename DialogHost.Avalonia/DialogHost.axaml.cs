@@ -195,15 +195,19 @@ namespace DialogHostAvalonia {
         /// <summary>
         /// Defines the <see cref="DialogOpenedCallback"/> property
         /// </summary>
-        public static readonly StyledProperty<DialogOpenedEventHandler?> DialogOpenedCallbackProperty =
-            AvaloniaProperty.Register<DialogHost, DialogOpenedEventHandler?>(nameof(DialogOpenedCallback));
+        public static readonly DirectProperty<DialogHost, DialogOpenedEventHandler?> DialogOpenedCallbackProperty =
+            AvaloniaProperty.RegisterDirect<DialogHost, DialogOpenedEventHandler?>(nameof(DialogOpenedCallback),
+                host => host.DialogOpenedCallback,
+                (host, handler) => host.DialogOpenedCallback = handler);
+
+        private DialogOpenedEventHandler? _dialogOpenedEventHandler;
 
         /// <summary>
         /// Gets or set dialog opening callback
         /// </summary>
         public DialogOpenedEventHandler? DialogOpenedCallback {
-            get => GetValue(DialogOpenedCallbackProperty);
-            set => SetValue(DialogOpenedCallbackProperty, value);
+            get => _dialogOpenedEventHandler;
+            set => SetAndRaise(DialogOpenedCallbackProperty, ref _dialogOpenedEventHandler, value);
         }
 
         #endregion
@@ -233,15 +237,19 @@ namespace DialogHostAvalonia {
         /// <summary>
         /// Defines the <see cref="DialogClosingCallback"/> property
         /// </summary>
-        public static readonly StyledProperty<DialogClosingEventHandler?> DialogClosingCallbackProperty =
-            AvaloniaProperty.Register<DialogHost, DialogClosingEventHandler?>(nameof(DialogClosingCallback));
+        public static readonly DirectProperty<DialogHost, DialogClosingEventHandler?> DialogClosingCallbackProperty =
+            AvaloniaProperty.RegisterDirect<DialogHost, DialogClosingEventHandler?>(nameof(DialogClosingCallback),
+                host => host.DialogClosingCallback,
+                (host, handler) => host.DialogClosingCallback = handler);
+
+        private DialogClosingEventHandler? _dialogClosingEventHandler;
 
         /// <summary>
         /// Gets or sets callback which will be invoked when dialog attempting to close
         /// </summary>
         public DialogClosingEventHandler? DialogClosingCallback {
-            get => GetValue(DialogClosingCallbackProperty);
-            set => SetValue(DialogClosingCallbackProperty, value);
+            get => _dialogClosingEventHandler;
+            set => SetAndRaise(DialogClosingCallbackProperty, ref _dialogClosingEventHandler, value);
         }
 
         #endregion
@@ -271,15 +279,19 @@ namespace DialogHostAvalonia {
         /// <summary>
         /// Defines the <see cref="DialogClosedCallback"/> property
         /// </summary>
-        public static readonly StyledProperty<DialogClosedEventHandler?> DialogClosedCallbackProperty
-            = AvaloniaProperty.Register<DialogHost, DialogClosedEventHandler?>(nameof(DialogClosedCallback));
+        public static readonly DirectProperty<DialogHost, DialogClosedEventHandler?> DialogClosedCallbackProperty
+            = AvaloniaProperty.RegisterDirect<DialogHost, DialogClosedEventHandler?>(nameof(DialogClosedCallback),
+                host => host.DialogClosedCallback,
+                (host, handler) => host.DialogClosedCallback = handler);
+
+        private DialogClosedEventHandler? _dialogClosedEventHandler;
 
         /// <summary>
         /// Gets or sets callback which will be invoked when dialog closed
         /// </summary>
         public DialogClosedEventHandler? DialogClosedCallback {
-            get => GetValue(DialogClosedCallbackProperty);
-            set => SetValue(DialogClosedCallbackProperty, value);
+            get => _dialogClosedEventHandler;
+            set => SetAndRaise(DialogClosedCallbackProperty, ref _dialogClosedEventHandler, value);
         }
 
         #endregion
