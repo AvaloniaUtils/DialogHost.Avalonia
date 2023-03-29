@@ -11,26 +11,24 @@
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <RepositoryUrl>https://github.com/AvaloniaUtils/DialogHost.Avalonia.git</RepositoryUrl>
         <PackageReadmeFile>README.md</PackageReadmeFile>
+        <PackageIcon>icon.png</PackageIcon>
         <GenerateDocumentationFile>True</GenerateDocumentationFile>
         <RepositoryType>Git</RepositoryType>
         <PackageTags>c-sharp xaml multi-platform gui control mvvm dialogs avalonia avaloniaui c-sharp-library</PackageTags>
-        <Version>0.7.0-preview9</Version>
+        <Version>0.7.0</Version>
         <RootNamespace>DialogHostAvalonia</RootNamespace>
         <PackageReleaseNotes>
 - Add compability with Avalonia 11 preview6
 - Add IDialogPopupPositioner to allow manipilation of Dialog placement
-- Fix AlignmentDialogPopupPositioner margin doesn't work when align top left corner #17
 - Add DialogHost.Show overloads accepting a DialogHost instance (instead of string identifier) #18 by profix898
-- Fix "The control already has a visual parent" #22
-- Fix "Invalid priority $Unset Arg_ParamName_Name" #25
 - Migrate all styles to ControlThemes
 - Add DialogHostStyles class for adding styles more convenient way
 - Expose BorderBrushProperty and BorderThicknessProperty properties #26
-- Fix popup background
         </PackageReleaseNotes>
     </PropertyGroup>
     <ItemGroup>
-        <None Include="../README.md" Pack="true" PackagePath="/" />
+        <None Include="../README.md" Pack="true" PackagePath="/"/>
+        <None Include="../wiki/icon.png" Pack="true" PackagePath="/"/>
     </ItemGroup>
     <ItemGroup>
         <AvaloniaResource Include="**\*.xaml">
