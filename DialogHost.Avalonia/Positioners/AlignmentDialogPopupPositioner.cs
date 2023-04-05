@@ -35,14 +35,17 @@ namespace DialogHostAvalonia.Positioners {
             set => SetValue(MarginProperty, value);
         }
 
-        // TODO: Changes in properties ^ should call this method 
+        // TODO: Changes in properties ^ should call this method
         /// <inheritdoc />
         public void Update(IManagedPopupPositionerPopup popup, PopupPositionerParameters parameters) {
             var margin = GetValue(MarginProperty);
 
             var availableSpaceRect = new Rect(parameters.AnchorRectangle.Size);
             var constrainRect = availableSpaceRect.Deflate(margin);
-            var aligned = new Rect(parameters.Size).Align(constrainRect, GetValue(HorizontalAlignmentProperty), GetValue(VerticalAlignmentProperty));
+            var rect = new Rect(parameters.Size);
+            if (GetValue(HorizontalAlignmentProperty) == HorizontalAlignment.Stretch) rect = rect.WithWidth(0);
+            if (GetValue(VerticalAlignmentProperty) == VerticalAlignment.Stretch) rect = rect.WithHeight(0);
+            var aligned = rect.Align(constrainRect, GetValue(HorizontalAlignmentProperty), GetValue(VerticalAlignmentProperty));
             var final = new Rect(margin.Left + aligned.Left, margin.Top + aligned.Top, aligned.Width, aligned.Height);
             popup.MoveAndResize(final.Position / popup.Scaling, final.Size / popup.Scaling);
         }

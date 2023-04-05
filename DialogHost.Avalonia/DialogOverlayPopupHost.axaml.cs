@@ -64,7 +64,7 @@ namespace DialogHostAvalonia {
         /// Controls <see cref="Show"/> and <see cref="Hide"/> calls. Used for closing animations
         /// </summary>
         /// <remarks>
-        /// Actually you should use <see cref="IsOpen"/> for opening and closing dialog 
+        /// Actually you should use <see cref="IsOpen"/> for opening and closing dialog
         /// </remarks>
         public bool IsActuallyOpen {
             get => GetValue(IsActuallyOpenProperty);
@@ -105,6 +105,8 @@ namespace DialogHostAvalonia {
             {
                 Canvas.SetLeft(this, _lastRequestedPosition.X);
                 Canvas.SetTop(this, _lastRequestedPosition.Y);
+                Width = virtualSize.Width;
+                Height = virtualSize.Height;
             }, DispatcherPriority.Layout);
         }
 
@@ -152,7 +154,7 @@ namespace DialogHostAvalonia {
             // This code handles only PlacementMode.AnchorAndGravity and other default values
             // Suitable only for current implementation of DialogHost
             _positionerParameters.AnchorRectangle = target.Bounds;
-            
+
             UpdatePosition();
         }
 
