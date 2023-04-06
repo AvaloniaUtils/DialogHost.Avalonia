@@ -34,6 +34,10 @@ Dialogs *are asynchronous* so at some point you will have to deal with that in y
         ...
     </Application>
     ```
+    For version below `0.7` instead of `<dialogHostAvalonia:DialogHostStyles />` use `StyleInclude`:
+    ```xaml
+    <StyleInclude Source="avares://DialogHost.Avalonia/Styles.xaml"/>
+    ```
 
 3. Start using control
 
