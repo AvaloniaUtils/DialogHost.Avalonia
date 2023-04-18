@@ -41,6 +41,7 @@ namespace DialogHostAvalonia {
         private bool _disableOpeningAnimation;
         private bool _isOpen;
         private Point _lastRequestedPosition;
+        private Size _lastRequestedSize;
         private DialogPopupPositionerHost _popupPositionerHost;
         private IDialogPopupPositioner? _popupPositioner;
         private PopupPositionerParameters _positionerParameters = new();
@@ -101,12 +102,13 @@ namespace DialogHostAvalonia {
         void IManagedPopupPositionerPopup.MoveAndResize(Point devicePoint, Size virtualSize)
         {
             _lastRequestedPosition = devicePoint;
+            _lastRequestedSize = virtualSize;
             Dispatcher.UIThread.Post(() =>
             {
                 Canvas.SetLeft(this, _lastRequestedPosition.X);
                 Canvas.SetTop(this, _lastRequestedPosition.Y);
-                Width = virtualSize.Width;
-                Height = virtualSize.Height;
+                Canvas.SetRight(this, _lastRequestedPosition.X + _lastRequestedSize.Width);
+                Canvas.SetBottom(this, _lastRequestedPosition.Y + _lastRequestedSize.Height);
             }, DispatcherPriority.Layout);
         }
 
