@@ -41,6 +41,7 @@ namespace DialogHostAvalonia {
         private bool _disableOpeningAnimation;
         private bool _isOpen;
         private Point _lastRequestedPosition;
+        private Size _lastRequestedSize;
         private DialogPopupPositionerHost _popupPositionerHost;
         private IDialogPopupPositioner? _popupPositioner;
         private PopupPositionerParameters _positionerParameters = new();
@@ -64,7 +65,7 @@ namespace DialogHostAvalonia {
         /// Controls <see cref="Show"/> and <see cref="Hide"/> calls. Used for closing animations
         /// </summary>
         /// <remarks>
-        /// Actually you should use <see cref="IsOpen"/> for opening and closing dialog 
+        /// Actually you should use <see cref="IsOpen"/> for opening and closing dialog
         /// </remarks>
         public bool IsActuallyOpen {
             get => GetValue(IsActuallyOpenProperty);
@@ -101,10 +102,13 @@ namespace DialogHostAvalonia {
         void IManagedPopupPositionerPopup.MoveAndResize(Point devicePoint, Size virtualSize)
         {
             _lastRequestedPosition = devicePoint;
+            _lastRequestedSize = virtualSize;
             Dispatcher.UIThread.Post(() =>
             {
                 Canvas.SetLeft(this, _lastRequestedPosition.X);
                 Canvas.SetTop(this, _lastRequestedPosition.Y);
+                Canvas.SetRight(this, _lastRequestedPosition.X + _lastRequestedSize.Width);
+                Canvas.SetBottom(this, _lastRequestedPosition.Y + _lastRequestedSize.Height);
             }, DispatcherPriority.Layout);
         }
 
@@ -152,7 +156,7 @@ namespace DialogHostAvalonia {
             // This code handles only PlacementMode.AnchorAndGravity and other default values
             // Suitable only for current implementation of DialogHost
             _positionerParameters.AnchorRectangle = target.Bounds;
-            
+
             UpdatePosition();
         }
 
