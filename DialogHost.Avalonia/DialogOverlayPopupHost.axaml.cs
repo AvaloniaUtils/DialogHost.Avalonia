@@ -44,8 +44,7 @@ namespace DialogHostAvalonia {
         private Size _lastRequestedSize;
         private DialogPopupPositionerHost _popupPositionerHost;
         private IDialogPopupPositioner? _popupPositioner;
-        private PopupPositionerParameters _positionerParameters = new();
-        private bool _shown;
+        private PopupPositionerParameters _positionerParameters;
 
         public DialogOverlayPopupHost(OverlayLayer overlayLayer)
         {
@@ -132,12 +131,11 @@ namespace DialogHostAvalonia {
 
         public void Show()
         {
-            if (!_shown) {
+            if (Parent == null) {
                 _overlayLayer.Children.Add(this);
             }
-            _shown = true;
             // Set the minimum priority to allow overriding it everywhere
-            SetValue(IsActuallyOpenProperty, true, BindingPriority.Style);
+            ClearValue(IsActuallyOpenProperty);
             Focus();
             UpdatePosition();
         }
@@ -145,7 +143,6 @@ namespace DialogHostAvalonia {
         public void Hide()
         {
             _overlayLayer.Children.Remove(this);
-            _shown = false;
         }
 
         public void ConfigurePosition(Visual target, PlacementMode placement, Point offset,
@@ -176,7 +173,7 @@ namespace DialogHostAvalonia {
             // Don't bother the positioner with layout system artifacts
             if (_positionerParameters.Size.Width == 0 || _positionerParameters.Size.Height == 0)
                 return;
-            if (_shown)
+            if (Parent != null)
             {
                 _popupPositionerHost.Update(_positionerParameters);
             }

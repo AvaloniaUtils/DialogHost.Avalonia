@@ -15,10 +15,10 @@
         <GenerateDocumentationFile>True</GenerateDocumentationFile>
         <RepositoryType>Git</RepositoryType>
         <PackageTags>c-sharp xaml multi-platform gui control mvvm dialogs avalonia avaloniaui c-sharp-library</PackageTags>
-        <Version>0.7.1</Version>
+        <Version>0.7.2</Version>
         <RootNamespace>DialogHostAvalonia</RootNamespace>
         <PackageReleaseNotes>
-- Fix AlignmentDialogPopupPositioner does not support Stretch alignment #28. Thanks @megazyz
+- Fix Dialog is still present in the visual tree after second opening #30
         </PackageReleaseNotes>
     </PropertyGroup>
     <ItemGroup>
