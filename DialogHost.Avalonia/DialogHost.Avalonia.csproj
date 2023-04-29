@@ -15,11 +15,11 @@
         <GenerateDocumentationFile>True</GenerateDocumentationFile>
         <RepositoryType>Git</RepositoryType>
         <PackageTags>c-sharp xaml multi-platform gui control mvvm dialogs avalonia avaloniaui c-sharp-library</PackageTags>
-        <Version>0.7.2</Version>
+        <Version>0.7.3</Version>
         <RootNamespace>DialogHostAvalonia</RootNamespace>
         <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
         <PackageReleaseNotes>
-- Fix Dialog is still present in the visual tree after second opening #30
+- Enable compiled bindings
         </PackageReleaseNotes>
     </PropertyGroup>
     <ItemGroup>
