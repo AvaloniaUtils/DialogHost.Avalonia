@@ -14,29 +14,13 @@ namespace DialogHostAvalonia.Utilities {
     /// <summary>
     /// Allows to bind to several different DynamicResources
     /// </summary>
-    internal class MultiDynamicResourceExtension : IBinding
-    {
-        private object? _anchor;
-        private BindingPriority _priority;
-
+    internal class MultiDynamicResourceExtension : Binding, IBinding {
         public IBrush DefaultBrush { get; set; }
 
         public object ResourceKeys { get; set; }
         
         public IBinding ProvideValue(IServiceProvider serviceProvider)
         {
-            if (serviceProvider.IsInControlTemplate())
-                _priority = BindingPriority.Template;
-
-            var provideTarget = serviceProvider.GetService<IProvideValueTarget>();
-
-            if (!(provideTarget.TargetObject is StyledElement))
-            {
-                _anchor = serviceProvider.GetFirstParent<StyledElement>() ??
-                          serviceProvider.GetFirstParent<IResourceProvider>() ??
-                          (object?)serviceProvider.GetFirstParent<IResourceHost>();
-            }
-
             return this;
         }
 
@@ -52,19 +36,19 @@ namespace DialogHostAvalonia.Utilities {
 
             var resourceKeys = resourceKey.Split(';');
             
-            var control = target as IResourceHost ?? _anchor as IResourceHost;
+            var control = target as IResourceHost ?? DefaultAnchor?.Target as IResourceHost;
 
             if (control != null)
             {
                 var source = resourceKeys.Select(key => control.GetResourceObservable(key, GetConverter(targetProperty)));
                 var testObservable = new MultiDynamicResourceObservable(source, DefaultBrush);
-                return InstancedBinding.OneWay(testObservable, _priority);
+                return InstancedBinding.OneWay(testObservable, Priority);
             }
-            else if (_anchor is IResourceProvider resourceProvider)
+            if (DefaultAnchor?.Target is IResourceProvider resourceProvider)
             {
                 var source = resourceKeys.Select(key => resourceProvider.GetResourceObservable(key, GetConverter(targetProperty)));
                 var testObservable = new MultiDynamicResourceObservable(source, DefaultBrush);
-                return InstancedBinding.OneWay(testObservable, _priority);
+                return InstancedBinding.OneWay(testObservable, Priority);
             }
 
             return null;

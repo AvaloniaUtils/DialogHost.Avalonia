@@ -8,6 +8,7 @@ using System.Windows.Input;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
+using Avalonia.Controls.Shapes;
 using Avalonia.Controls.Templates;
 using Avalonia.Input;
 using Avalonia.Interactivity;
@@ -18,8 +19,8 @@ using DialogHostAvalonia.Positioners;
 
 namespace DialogHostAvalonia {
     public class DialogHost : ContentControl {
-        public const string ContentCoverGridName = "PART_ContentCoverGrid";
-        public const string OverlayLayerName = "PART_OverlayLayer";
+        public const string ContentCoverName = "PART_ContentCover";
+        public const string DialogHostRoot = "PART_DialogHostRoot";
 
         private static readonly HashSet<DialogHost> LoadedInstances = new();
 
@@ -126,7 +127,7 @@ namespace DialogHostAvalonia {
 
         private ICommand _openDialogCommand;
 
-        private OverlayLayer? _overlayLayer;
+        private Grid? _root;
         private DialogOverlayPopupHost? _overlayPopupHost;
         private IInputElement? _restoreFocusDialogClose;
 
@@ -423,7 +424,7 @@ namespace DialogHostAvalonia {
         private static void IsOpenPropertyChangedCallback(DialogHost dialogHost, bool newValue) {
             if (newValue) {
                 dialogHost.CurrentSession = new DialogSession(dialogHost);
-                dialogHost._restoreFocusDialogClose = FocusManager.Instance?.Current;
+                dialogHost._restoreFocusDialogClose = TopLevel.GetTopLevel(dialogHost)?.FocusManager?.GetFocusedElement();
 
                 if (dialogHost._overlayPopupHost != null)
                     dialogHost._overlayPopupHost.IsOpen = true;
@@ -437,7 +438,7 @@ namespace DialogHostAvalonia {
                 dialogHost.DialogOpenedCallback?.Invoke(dialogHost, dialogOpenedEventArgs);
                 dialogHost._asyncShowOpenedEventHandler?.Invoke(dialogHost, dialogOpenedEventArgs);
 
-                dialogHost._overlayPopupHost?.ConfigurePosition(dialogHost._overlayLayer, PlacementMode.AnchorAndGravity, new Point());
+                // dialogHost._overlayPopupHost?.ConfigurePosition(dialogHost._root, PlacementMode.AnchorAndGravity, new Point());
             }
             else {
                 object? closeParameter = null;
@@ -475,8 +476,8 @@ namespace DialogHostAvalonia {
         protected override void OnApplyTemplate(TemplateAppliedEventArgs e) {
             _templateDisposables?.Dispose();
 
-            _overlayLayer = e.NameScope.Find<OverlayLayer>(OverlayLayerName);
-            _overlayPopupHost = new DialogOverlayPopupHost(_overlayLayer) {
+            _root = e.NameScope.Find<Grid>(DialogHostRoot) ?? throw new InvalidOperationException($"No Grid with name {DialogHostRoot} found");
+            _overlayPopupHost = new DialogOverlayPopupHost(_root) {
                 Content = DialogContent, ContentTemplate = DialogContentTemplate, Template = PopupTemplate,
                 Padding = DialogMargin, ClipToBounds = false, DisableOpeningAnimation = DisableOpeningAnimation,
                 PopupPositioner = PopupPositioner
@@ -484,19 +485,19 @@ namespace DialogHostAvalonia {
 
             if (IsOpen) {
                 _overlayPopupHost.IsOpen = true;
-                _overlayPopupHost?.ConfigurePosition(_overlayLayer, PlacementMode.AnchorAndGravity, new Point());
+                // _overlayPopupHost?.ConfigurePosition(_root, PlacementMode.AnchorAndGravity, new Point());
             }
 
             _templateDisposables = new CompositeDisposable() {
-                this.GetObservable(BoundsProperty)
-                    .Subscribe(rect => _overlayPopupHost?.ConfigurePosition(_overlayLayer, PlacementMode.AnchorAndGravity, new Point())),
+                // this.GetObservable(BoundsProperty)
+                    // .Subscribe(rect => _overlayPopupHost?.ConfigurePosition(_root, PlacementMode.AnchorAndGravity, new Point())),
                 _overlayPopupHost!.Bind(DisableOpeningAnimationProperty, this.GetBindingObservable(DisableOpeningAnimationProperty)),
                 _overlayPopupHost!.Bind(ContentProperty, this.GetBindingObservable(DialogContentProperty)),
                 _overlayPopupHost!.Bind(ContentTemplateProperty, this.GetBindingObservable(DialogContentTemplateProperty)),
                 _overlayPopupHost!.Bind(TemplateProperty, this.GetBindingObservable(PopupTemplateProperty)),
                 _overlayPopupHost!.Bind(PaddingProperty, this.GetBindingObservable(DialogMarginProperty)),
                 _overlayPopupHost!.Bind(PopupPositionerProperty, this.GetBindingObservable(PopupPositionerProperty)),
-                e.NameScope.Find<Grid>(ContentCoverGridName)?.AddDisposableHandler(PointerReleasedEvent, ContentCoverGrid_OnPointerReleased) ?? Disposable.Empty
+                e.NameScope.Find<Rectangle>(ContentCoverName)?.AddDisposableHandler(PointerReleasedEvent, ContentCoverGrid_OnPointerReleased) ?? Disposable.Empty
             };
             base.OnApplyTemplate(e);
         }

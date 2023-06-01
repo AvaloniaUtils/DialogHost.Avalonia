@@ -14,12 +14,7 @@ namespace DialogHostDemo.Views {
         };
         public FruitBowl() {
             InitializeComponent();
-        }
-
-        private void InitializeComponent() {
-            AvaloniaXamlLoader.Load(this);
-            ListBox fruitListBox = this.FindControl<ListBox>("FruitListBox");
-            fruitListBox.Items = ListBoxSource;
+            FruitListBox.ItemsSource = ListBoxSource;
         }
 
         private void FruitBowl_OnDialogClosing(object? sender, DialogClosingEventArgs e) {

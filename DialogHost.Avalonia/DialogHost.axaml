@@ -25,35 +25,37 @@
     <Setter Property="HorizontalAlignment" Value="Stretch" />
     <Setter Property="VerticalAlignment" Value="Stretch" />
     <Setter Property="DialogMargin" Value="8" />
-    <Setter Property="OverlayBackground" Value="{utilities:MultiDynamicResource DefaultBrush=Black, ResourceKeys=SystemControlBackgroundBaseHighBrush}" />
-    <Setter Property="Background" Value="{utilities:MultiDynamicResource DefaultBrush=Black, ResourceKeys=SystemControlBackgroundAltHighBrush;MaterialDesignPaper}"></Setter>
+    <Setter Property="OverlayBackground"
+            Value="{utilities:MultiDynamicResource DefaultBrush=Black, ResourceKeys=SystemControlBackgroundBaseHighBrush}" />
+    <Setter Property="Background"
+            Value="{utilities:MultiDynamicResource DefaultBrush=Black, ResourceKeys=SystemControlBackgroundAltHighBrush;MaterialDesignPaper}">
+    </Setter>
     <Setter Property="dialogHostAvalonia:DialogHostStyle.ClipToBounds" Value="False" />
     <Setter Property="dialogHostAvalonia:DialogHostStyle.CornerRadius" Value="2" />
     <Setter Property="Template">
       <ControlTemplate>
-        <Grid Name="DialogHostRoot" Focusable="False">
+        <Grid Name="PART_DialogHostRoot" Focusable="False">
           <ContentPresenter Name="ContentPresenter"
                             Content="{TemplateBinding Content}"
                             ContentTemplate="{TemplateBinding ContentTemplate}"
                             HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
                             VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
-          <Grid Name="PART_ContentCoverGrid"
-                Background="{TemplateBinding OverlayBackground}"
-                Focusable="False">
-            <Grid.Styles>
-              <Style Selector="Grid#PART_ContentCoverGrid[Opacity=0]">
+          <Rectangle Name="PART_ContentCover"
+                     Fill="{TemplateBinding OverlayBackground}"
+                     Focusable="False">
+            <Rectangle.Styles>
+              <Style Selector="Rectangle#PART_ContentCover[Opacity=0]">
                 <Setter Property="IsVisible" Value="False" />
               </Style>
-              <Style Selector="Grid#PART_ContentCoverGrid:not(.notransitions)">
+              <Style Selector="Rectangle#PART_ContentCover:not(.notransitions)">
                 <Setter Property="Transitions">
                   <Transitions>
                     <DoubleTransition Property="Opacity" Easing="LinearEasing" Duration="0.3" />
                   </Transitions>
                 </Setter>
               </Style>
-            </Grid.Styles>
-          </Grid>
-          <OverlayLayer Name="PART_OverlayLayer" />
+            </Rectangle.Styles>
+          </Rectangle>
         </Grid>
       </ControlTemplate>
     </Setter>
@@ -75,11 +77,11 @@
       </ControlTemplate>
     </Setter>
 
-    <Style Selector="^[IsOpen=True] /template/ Grid#PART_ContentCoverGrid">
+    <Style Selector="^[IsOpen=True] /template/ Rectangle#PART_ContentCover">
       <Setter Property="IsHitTestVisible" Value="True" />
       <Setter Property="Opacity" Value="0.56" />
     </Style>
-    <Style Selector="^[IsOpen=False] /template/ Grid#PART_ContentCoverGrid">
+    <Style Selector="^[IsOpen=False] /template/ Rectangle#PART_ContentCover">
       <Setter Property="IsHitTestVisible" Value="False" />
       <Setter Property="Opacity" Value="0" />
     </Style>

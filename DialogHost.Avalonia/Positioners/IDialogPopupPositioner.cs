@@ -1,4 +1,5 @@
-﻿using Avalonia.Controls.Primitives.PopupPositioning;
+﻿using Avalonia;
+using Avalonia.Controls.Primitives.PopupPositioning;
 
 namespace DialogHostAvalonia.Positioners {
     /// <summary>
@@ -11,8 +12,9 @@ namespace DialogHostAvalonia.Positioners {
         /// <remarks>
         /// Use <see cref="IManagedPopupPositionerPopup.MoveAndResize"/> to manipulate popup
         /// </remarks>
-        /// <param name="popup">The popup handler</param>
         /// <param name="parameters">Parameters for popup</param>
-        public void Update(IManagedPopupPositionerPopup popup, PopupPositionerParameters parameters);
+        /// <param name="anchorRectangle">Owner's rectangle size</param>
+        /// <param name="size">Size of popup</param>
+        public Rect Update(Size anchorRectangle, Size size);
     }
 }

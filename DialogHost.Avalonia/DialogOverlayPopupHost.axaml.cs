@@ -16,7 +16,7 @@ using Avalonia.VisualTree;
 using DialogHostAvalonia.Positioners;
 
 namespace DialogHostAvalonia {
-    public class DialogOverlayPopupHost : ContentControl, IPopupHost, IManagedPopupPositionerPopup, ICustomKeyboardNavigation {
+    public class DialogOverlayPopupHost : ContentControl, ICustomKeyboardNavigation {
         public static readonly DirectProperty<DialogOverlayPopupHost, bool> IsOpenProperty =
             AvaloniaProperty.RegisterDirect<DialogOverlayPopupHost, bool>(
                 nameof(IsOpen),
@@ -36,20 +36,15 @@ namespace DialogHostAvalonia {
                 o => o.PopupPositioner,
                 (o, v) => o.PopupPositioner = v);
 
-        private readonly OverlayLayer _overlayLayer;
+        private readonly Grid _root;
 
         private bool _disableOpeningAnimation;
         private bool _isOpen;
-        private Point _lastRequestedPosition;
-        private Size _lastRequestedSize;
-        private DialogPopupPositionerHost _popupPositionerHost;
         private IDialogPopupPositioner? _popupPositioner;
-        private PopupPositionerParameters _positionerParameters;
 
-        public DialogOverlayPopupHost(OverlayLayer overlayLayer)
+        public DialogOverlayPopupHost(Grid root)
         {
-            _overlayLayer = overlayLayer;
-            _popupPositionerHost = new DialogPopupPositionerHost(this, _popupPositioner);
+            this._root = root;
         }
 
         public bool IsOpen {
@@ -80,59 +75,14 @@ namespace DialogHostAvalonia {
             get => _popupPositioner;
             set {
                 SetAndRaise(PopupPositionerProperty, ref _popupPositioner, value);
-                _popupPositionerHost._dialogPopupPositioner = value;
                 UpdatePosition();
             }
         }
 
-        IReadOnlyList<ManagedPopupPositionerScreenInfo> IManagedPopupPositionerPopup.Screens
-        {
-            get
-            {
-                var rc = new Rect(default, _overlayLayer.AvailableSize);
-                return new[] {new ManagedPopupPositionerScreenInfo(rc, rc)};
-            }
-        }
-
-        Rect IManagedPopupPositionerPopup.ParentClientAreaScreenGeometry =>
-            new Rect(default, _overlayLayer.Bounds.Size);
-
-        // TODO: Allow manipulation of the popup size
-        void IManagedPopupPositionerPopup.MoveAndResize(Point devicePoint, Size virtualSize)
-        {
-            _lastRequestedPosition = devicePoint;
-            _lastRequestedSize = virtualSize;
-            Dispatcher.UIThread.Post(() =>
-            {
-                Canvas.SetLeft(this, _lastRequestedPosition.X);
-                Canvas.SetTop(this, _lastRequestedPosition.Y);
-                Canvas.SetRight(this, _lastRequestedPosition.X + _lastRequestedSize.Width);
-                Canvas.SetBottom(this, _lastRequestedPosition.Y + _lastRequestedSize.Height);
-            }, DispatcherPriority.Layout);
-        }
-
-        double IManagedPopupPositionerPopup.Scaling => 1;
-
-        public void SetChild(Control? control)
-        {
-            Content = control;
-        }
-
-        bool IPopupHost.Topmost {
-            get => false;
-            set { /* Not supported */ }
-        }
-
-        Transform? IPopupHost.Transform { get; set; }
-        public Visual? HostedVisualTreeRoot => null;
-
-        public void Dispose() => Hide();
-
-
         public void Show()
         {
             if (Parent == null) {
-                _overlayLayer.Children.Add(this);
+                _root.Children.Add(this);
             }
             // Set the minimum priority to allow overriding it everywhere
             ClearValue(IsActuallyOpenProperty);
@@ -142,41 +92,37 @@ namespace DialogHostAvalonia {
 
         public void Hide()
         {
-            _overlayLayer.Children.Remove(this);
+            _root.Children.Remove(this);
         }
 
-        public void ConfigurePosition(Visual target, PlacementMode placement, Point offset,
-                                      PopupAnchor anchor = PopupAnchor.None, PopupGravity gravity = PopupGravity.None,
-                                      PopupPositionerConstraintAdjustment constraintAdjustment = PopupPositionerConstraintAdjustment.All,
-                                      Rect? rect = null)
-        {
-            // This code handles only PlacementMode.AnchorAndGravity and other default values
-            // Suitable only for current implementation of DialogHost
-            _positionerParameters.AnchorRectangle = target.Bounds;
-
-            UpdatePosition();
-        }
-
-        protected override Size ArrangeOverride(Size finalSize)
-        {
-            if (_positionerParameters.Size != finalSize)
-            {
-                _positionerParameters.Size = finalSize;
-                UpdatePosition();
-            }
-            return base.ArrangeOverride(finalSize);
+        /// <inheritdoc />
+        protected override void ArrangeCore(Rect finalRect) {
+            var margin = Margin;
+        
+            var size = new Size(
+                Math.Max(0, finalRect.Width - margin.Left - margin.Right),
+                Math.Max(0, finalRect.Height - margin.Top - margin.Bottom));
+            
+            var contentSize = new Size(
+                Math.Min(size.Width, DesiredSize.Width - margin.Left - margin.Right), 
+                Math.Min(size.Height, DesiredSize.Height - margin.Top - margin.Bottom));
+            var positioner = PopupPositioner ?? CenteredDialogPopupPositioner.Instance;
+            var bounds = positioner.Update(size, contentSize);
+            
+            ArrangeOverride(bounds.Size).Constrain(size);
+            Bounds = new Rect(bounds.X + margin.Left, bounds.Y + margin.Top, bounds.Width, bounds.Height);
         }
 
 
         private void UpdatePosition()
         {
             // Don't bother the positioner with layout system artifacts
-            if (_positionerParameters.Size.Width == 0 || _positionerParameters.Size.Height == 0)
-                return;
-            if (Parent != null)
-            {
-                _popupPositionerHost.Update(_positionerParameters);
-            }
+            // if (_positionerParameters.Size.Width == 0 || _positionerParameters.Size.Height == 0)
+                // return;
+            // if (Parent != null)
+            // {
+                // _popupPositioner.Update(_positionerParameters.);
+            // }
         }
 
         public (bool handled, IInputElement? next) GetNext(IInputElement element, NavigationDirection direction) {

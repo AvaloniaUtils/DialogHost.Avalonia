@@ -9,11 +9,11 @@ namespace DialogHostAvalonia.Positioners {
         public static CenteredDialogPopupPositioner Instance { get; } = new();
         
         /// <inheritdoc />
-        public void Update(IManagedPopupPositionerPopup popup, PopupPositionerParameters parameters) {
+        public Rect Update(Size anchorRectangle, Size size) {
             // Simplify calculations
-            var horizontalMargin = (parameters.AnchorRectangle.Width - parameters.Size.Width) / 2;
-            var verticalMargin = (parameters.AnchorRectangle.Height - parameters.Size.Height) / 2;
-            popup.MoveAndResize(new Point(horizontalMargin, verticalMargin), parameters.Size / popup.Scaling);
+            var horizontalMargin = (anchorRectangle.Width - size.Width) / 2;
+            var verticalMargin = (anchorRectangle.Height - size.Height) / 2;
+            return new Rect(new Point(horizontalMargin, verticalMargin), size);
         }
     }
 }
