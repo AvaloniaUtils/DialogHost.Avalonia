@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Reactive.Disposables;
 using System.Threading.Tasks;
@@ -10,11 +9,10 @@ using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Shapes;
 using Avalonia.Controls.Templates;
+using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Media;
-using Avalonia.Metadata;
-using Avalonia.Styling;
 using DialogHostAvalonia.Positioners;
 
 namespace DialogHostAvalonia {
@@ -46,7 +44,8 @@ namespace DialogHostAvalonia {
             AvaloniaProperty.RegisterDirect<DialogHost, bool>(
                 nameof(IsOpen),
                 o => o.IsOpen,
-                (o, v) => o.IsOpen = v);
+                (o, v) => o.IsOpen = v,
+                defaultBindingMode: BindingMode.TwoWay);
 
         public static readonly RoutedEvent DialogOpenedEvent =
             RoutedEvent.Register<DialogHost, DialogOpenedEventArgs>(nameof(DialogOpened), RoutingStrategies.Bubble);
@@ -55,13 +54,15 @@ namespace DialogHostAvalonia {
             AvaloniaProperty.RegisterDirect<DialogHost, bool>(
                 nameof(CloseOnClickAway),
                 o => o.CloseOnClickAway,
-                (o, v) => o.CloseOnClickAway = v);
+                (o, v) => o.CloseOnClickAway = v,
+                defaultBindingMode: BindingMode.TwoWay);
 
         public static readonly DirectProperty<DialogHost, object?> CloseOnClickAwayParameterProperty =
             AvaloniaProperty.RegisterDirect<DialogHost, object?>(
                 nameof(CloseOnClickAwayParameter),
                 o => o.CloseOnClickAwayParameter,
-                (o, v) => o.CloseOnClickAwayParameter = v);
+                (o, v) => o.CloseOnClickAwayParameter = v,
+                defaultBindingMode: BindingMode.TwoWay);
 
         public static readonly RoutedEvent DialogClosingEvent =
             RoutedEvent.Register<DialogHost, DialogClosingEventArgs>(nameof(DialogClosing), RoutingStrategies.Bubble);
@@ -70,38 +71,44 @@ namespace DialogHostAvalonia {
             AvaloniaProperty.RegisterDirect<DialogHost, DialogClosingEventHandler>(
                 nameof(DialogClosingCallback),
                 o => o.DialogClosingCallback,
-                (o, v) => o.DialogClosingCallback = v);
+                (o, v) => o.DialogClosingCallback = v,
+                defaultBindingMode: BindingMode.TwoWay);
 
         public static readonly DirectProperty<DialogHost, DialogOpenedEventHandler?> DialogOpenedCallbackProperty =
             AvaloniaProperty.RegisterDirect<DialogHost, DialogOpenedEventHandler?>(
                 nameof(DialogOpenedCallback),
                 o => o.DialogOpenedCallback,
-                (o, v) => o.DialogOpenedCallback = v);
+                (o, v) => o.DialogOpenedCallback = v,
+                defaultBindingMode: BindingMode.TwoWay);
 
         public static readonly DirectProperty<DialogHost, ICommand> OpenDialogCommandProperty =
             AvaloniaProperty.RegisterDirect<DialogHost, ICommand>(
                 nameof(OpenDialogCommand),
-                o => o.OpenDialogCommand);
+                o => o.OpenDialogCommand,
+                defaultBindingMode: BindingMode.TwoWay);
 
         public static readonly DirectProperty<DialogHost, ICommand> CloseDialogCommandProperty =
             AvaloniaProperty.RegisterDirect<DialogHost, ICommand>(
                 nameof(CloseDialogCommand),
-                o => o.CloseDialogCommand);
+                o => o.CloseDialogCommand,
+                defaultBindingMode: BindingMode.TwoWay);
 
         public static readonly StyledProperty<IControlTemplate?> PopupTemplateProperty =
             AvaloniaProperty.Register<DialogHost, IControlTemplate?>(nameof(PopupTemplate));
-        
+
         public static readonly DirectProperty<DialogHost, bool> DisableOpeningAnimationProperty =
             AvaloniaProperty.RegisterDirect<DialogHost, bool>(
                 nameof(DisableOpeningAnimation),
                 o => o.DisableOpeningAnimation,
-                (o, v) => o.DisableOpeningAnimation = v);
+                (o, v) => o.DisableOpeningAnimation = v,
+                defaultBindingMode: BindingMode.TwoWay);
 
         public static readonly DirectProperty<DialogHost, IDialogPopupPositioner?> PopupPositionerProperty =
             AvaloniaProperty.RegisterDirect<DialogHost, IDialogPopupPositioner?>(
                 nameof(PopupPositioner),
                 o => o.PopupPositioner,
-                (o, v) => o.PopupPositioner = v);
+                (o, v) => o.PopupPositioner = v,
+                defaultBindingMode: BindingMode.TwoWay);
 
         private IDialogPopupPositioner? _popupPositioner;
         private bool _disableOpeningAnimation;
@@ -239,7 +246,7 @@ namespace DialogHostAvalonia {
         /// <param name="openedEventHandler">Allows access to opened event which would otherwise have been subscribed to on a instance.</param>        
         /// <returns>Task result is the parameter used to close the dialog, typically what is passed to the <see cref="CloseDialogCommand"/> command.</returns>
         public static Task<object?> Show(object content, DialogOpenedEventHandler openedEventHandler)
-            => Show(content, (string?) null, openedEventHandler, null);
+            => Show(content, (string?)null, openedEventHandler, null);
 
         /// <summary>
         /// Shows a modal dialog. To use, a <see cref="DialogHost"/> instance must be in a visual tree (typically this may be specified towards the root of a Window's XAML).
@@ -248,7 +255,7 @@ namespace DialogHostAvalonia {
         /// <param name="closingEventHandler">Allows access to closing event which would otherwise have been subscribed to on a instance.</param>
         /// <returns>Task result is the parameter used to close the dialog, typically what is passed to the <see cref="CloseDialogCommand"/> command.</returns>
         public static Task<object?> Show(object content, DialogClosingEventHandler closingEventHandler)
-            => Show(content, (string?) null, null, closingEventHandler);
+            => Show(content, (string?)null, null, closingEventHandler);
 
         /// <summary>
         /// Shows a modal dialog. To use, a <see cref="DialogHost"/> instance must be in a visual tree (typically this may be specified towards the root of a Window's XAML).
@@ -258,7 +265,7 @@ namespace DialogHostAvalonia {
         /// <param name="closingEventHandler">Allows access to closing event which would otherwise have been subscribed to on a instance.</param>
         /// <returns>Task result is the parameter used to close the dialog, typically what is passed to the <see cref="CloseDialogCommand"/> command.</returns>
         public static Task<object?> Show(object content, DialogOpenedEventHandler? openedEventHandler, DialogClosingEventHandler? closingEventHandler)
-            => Show(content, (string?) null, openedEventHandler, closingEventHandler);
+            => Show(content, (string?)null, openedEventHandler, closingEventHandler);
 
         /// <summary>
         /// Shows a modal dialog. To use, a <see cref="DialogHost"/> instance must be in a visual tree (typically this may be specified towards the root of a Window's XAML).
@@ -298,11 +305,11 @@ namespace DialogHostAvalonia {
         /// <param name="closingEventHandler">Allows access to closing event which would otherwise have been subscribed to on a instance.</param>
         /// <returns>Task result is the parameter used to close the dialog, typically what is passed to the <see cref="CloseDialogCommand"/> command.</returns>
         public static Task<object?> Show(object content, string? dialogIdentifier, DialogOpenedEventHandler? openedEventHandler,
-                                               DialogClosingEventHandler? closingEventHandler) {
+                                         DialogClosingEventHandler? closingEventHandler) {
             if (content is null) throw new ArgumentNullException(nameof(content));
             return GetInstance(dialogIdentifier).ShowInternal(content, openedEventHandler, closingEventHandler);
         }
-        
+
         /// <summary>
         /// Shows a modal dialog. To use, a <see cref="DialogHost"/> instance must be in a visual tree (typically this may be specified towards the root of a Window's XAML).
         /// </summary>
@@ -341,12 +348,12 @@ namespace DialogHostAvalonia {
         /// <param name="closingEventHandler">Allows access to closing event which would otherwise have been subscribed to on a instance.</param>
         /// <returns>Task result is the parameter used to close the dialog, typically what is passed to the <see cref="CloseDialogCommand"/> command.</returns>
         public static Task<object?> Show(object content, DialogHost instance, DialogOpenedEventHandler? openedEventHandler,
-                                               DialogClosingEventHandler? closingEventHandler) {
+                                         DialogClosingEventHandler? closingEventHandler) {
             if (content is null) throw new ArgumentNullException(nameof(content));
             if (instance is null) throw new ArgumentNullException(nameof(instance));
             return instance.ShowInternal(content, openedEventHandler, closingEventHandler);
         }
-        
+
         /// <summary>Close a modal dialog.</summary>
         /// <param name="dialogIdentifier">of the instance where the dialog should be closed. Typically this will match an identifier set in XAML.</param>
         public static void Close(string? dialogIdentifier)
@@ -490,7 +497,7 @@ namespace DialogHostAvalonia {
 
             _templateDisposables = new CompositeDisposable() {
                 // this.GetObservable(BoundsProperty)
-                    // .Subscribe(rect => _overlayPopupHost?.ConfigurePosition(_root, PlacementMode.AnchorAndGravity, new Point())),
+                // .Subscribe(rect => _overlayPopupHost?.ConfigurePosition(_root, PlacementMode.AnchorAndGravity, new Point())),
                 _overlayPopupHost!.Bind(DisableOpeningAnimationProperty, this.GetBindingObservable(DisableOpeningAnimationProperty)),
                 _overlayPopupHost!.Bind(ContentProperty, this.GetBindingObservable(DialogContentProperty)),
                 _overlayPopupHost!.Bind(ContentTemplateProperty, this.GetBindingObservable(DialogContentTemplateProperty)),
