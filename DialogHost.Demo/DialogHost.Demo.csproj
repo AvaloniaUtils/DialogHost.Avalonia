@@ -10,11 +10,11 @@
         <AvaloniaResource Include="Assets\**" />
     </ItemGroup>
     <ItemGroup>
-        <PackageReference Include="Avalonia" Version="11.0.0-rc1.1" />
-        <PackageReference Include="Avalonia.Desktop" Version="11.0.0-rc1.1" />
-        <PackageReference Include="Avalonia.Diagnostics" Version="11.0.0-rc1.1" />
-        <PackageReference Include="Avalonia.ReactiveUI" Version="11.0.0-rc1.1" />
-        <PackageReference Include="Avalonia.Themes.Fluent" Version="11.0.0-rc1.1" />
+        <PackageReference Include="Avalonia" Version="11.0.0-rc2.1" />
+        <PackageReference Include="Avalonia.Desktop" Version="11.0.0-rc2.1" />
+        <PackageReference Include="Avalonia.Diagnostics" Version="11.0.0-rc2.1" />
+        <PackageReference Include="Avalonia.ReactiveUI" Version="11.0.0-rc2.1" />
+        <PackageReference Include="Avalonia.Themes.Fluent" Version="11.0.0-rc2.1" />
         <PackageReference Include="Material.Icons.Avalonia" Version="2.0.1" />
     </ItemGroup>
     <ItemGroup>
