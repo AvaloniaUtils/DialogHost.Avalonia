@@ -28,7 +28,7 @@
     <Setter Property="OverlayBackground"
             Value="{utilities:MultiDynamicResource DefaultBrush=Black, ResourceKeys=SystemControlBackgroundBaseHighBrush}" />
     <Setter Property="Background"
-            Value="{utilities:MultiDynamicResource DefaultBrush=Black, ResourceKeys=SystemControlBackgroundAltHighBrush;MaterialDesignPaper}">
+            Value="{utilities:MultiDynamicResource DefaultBrush=Black, ResourceKeys=SystemControlBackgroundAltHighBrush;MaterialDesignPaper;MaterialPaperBrush}">
     </Setter>
     <Setter Property="dialogHostAvalonia:DialogHostStyle.ClipToBounds" Value="False" />
     <Setter Property="dialogHostAvalonia:DialogHostStyle.CornerRadius" Value="2" />

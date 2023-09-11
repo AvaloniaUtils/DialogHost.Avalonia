@@ -15,11 +15,11 @@
         <GenerateDocumentationFile>True</GenerateDocumentationFile>
         <RepositoryType>Git</RepositoryType>
         <PackageTags>c-sharp xaml multi-platform gui control mvvm dialogs avalonia avaloniaui c-sharp-library</PackageTags>
-        <Version>0.7.6</Version>
+        <Version>0.7.7</Version>
         <RootNamespace>DialogHostAvalonia</RootNamespace>
         <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
         <PackageReleaseNotes>
-- Start opening animation ScaleTransform from 0.01 instead of 0 to fix #35
+- Changes Material.Avalonia brush name
         </PackageReleaseNotes>
     </PropertyGroup>
     <ItemGroup>
