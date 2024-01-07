@@ -1,8 +1,10 @@
 ﻿using Avalonia;
 using Avalonia.Media;
 
-namespace DialogHostAvalonia {
-    public class DialogHostStyle {
+namespace DialogHostAvalonia
+{
+    public class DialogHostStyle
+    {
         /// <summary>
         /// Controls CornerRadius DialogHost's popup background.
         /// Works only for default DialogHost theme!
@@ -30,6 +32,32 @@ namespace DialogHostAvalonia {
         /// </summary>
         public static readonly AttachedProperty<Thickness> BorderThicknessProperty =
             AvaloniaProperty.RegisterAttached<DialogHostStyle, DialogHost, Thickness>("BorderThickness");
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public static readonly AttachedProperty<BoxShadows> BoxShadowProperty =
+            AvaloniaProperty.RegisterAttached<DialogHostStyle, DialogHost, BoxShadows>("BoxShadow");
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="element"></param>
+        /// <param name="value"></param>
+        public static void SetBoxShadow(DialogHost element, BoxShadows value)
+        {
+            element.SetValue(BoxShadowProperty, value);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="element"></param>
+        /// <returns></returns>
+        public static BoxShadows GetBoxShadow(DialogHost element)
+        {
+            return element.GetValue(BoxShadowProperty);
+        }
 
         /// <summary>
         /// Get CornerRadius in DialogHost's popup background.

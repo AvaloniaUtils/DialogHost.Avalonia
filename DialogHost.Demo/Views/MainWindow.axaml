@@ -17,7 +17,9 @@
   </Design.DataContext>
   <dialogHostAvalonia:DialogHost Identifier="MainDialogHost"
                                  DialogMargin="16"
-                                 dialogHostAvalonia:DialogHostStyle.CornerRadius="8">
+                                 Background="Transparent"
+                                 dialogHostAvalonia:DialogHostStyle.CornerRadius="8"
+                                 dialogHostAvalonia:DialogHostStyle.BoxShadow="none">
     <dialogHostAvalonia:DialogHost.DataTemplates>
       <DataTemplate DataType="models:Sample2Model">
         <StackPanel>
