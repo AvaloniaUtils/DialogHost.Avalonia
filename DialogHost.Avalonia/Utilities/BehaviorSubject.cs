@@ -8,7 +8,7 @@ namespace DialogHostAvalonia.Utilities;
 /// Observers can subscribe to the subject to receive the last (or initial) value and all subsequent notifications.
 /// </summary>
 /// <typeparam name="T">The type of the elements processed by the subject.</typeparam>
-public sealed class BehaviorSubject<T> : SubjectBase<T>
+public sealed class BehaviorSubject<T> : IObserver<T>, IObservable<T>
 {
     #region Fields
 
@@ -41,12 +41,12 @@ public sealed class BehaviorSubject<T> : SubjectBase<T>
     /// <summary>
     /// Indicates whether the subject has observers subscribed to it.
     /// </summary>
-    public override bool HasObservers => _observers?.Data.Length > 0;
+    public bool HasObservers => _observers?.Data.Length > 0;
 
     /// <summary>
     /// Indicates whether the subject has been disposed.
     /// </summary>
-    public override bool IsDisposed
+    public bool IsDisposed
     {
         get
         {
@@ -131,7 +131,7 @@ public sealed class BehaviorSubject<T> : SubjectBase<T>
     /// <summary>
     /// Notifies all subscribed observers about the end of the sequence.
     /// </summary>
-    public override void OnCompleted()
+    public void OnCompleted()
     {
         IObserver<T>[]? os = null;
 
@@ -161,7 +161,7 @@ public sealed class BehaviorSubject<T> : SubjectBase<T>
     /// </summary>
     /// <param name="error">The exception to send to all observers.</param>
     /// <exception cref="ArgumentNullException"><paramref name="error"/> is <c>null</c>.</exception>
-    public override void OnError(Exception error)
+    public void OnError(Exception error)
     {
         if (error == null)
         {
@@ -196,7 +196,7 @@ public sealed class BehaviorSubject<T> : SubjectBase<T>
     /// Notifies all subscribed observers about the arrival of the specified element in the sequence.
     /// </summary>
     /// <param name="value">The value to send to all observers.</param>
-    public override void OnNext(T value)
+    public void OnNext(T value)
     {
         IObserver<T>[]? os = null;
 
@@ -230,7 +230,7 @@ public sealed class BehaviorSubject<T> : SubjectBase<T>
     /// <param name="observer">Observer to subscribe to the subject.</param>
     /// <returns>Disposable object that can be used to unsubscribe the observer from the subject.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="observer"/> is <c>null</c>.</exception>
-    public override IDisposable Subscribe(IObserver<T> observer)
+    public IDisposable Subscribe(IObserver<T> observer)
     {
         if (observer == null)
         {
@@ -283,7 +283,7 @@ public sealed class BehaviorSubject<T> : SubjectBase<T>
     /// <summary>
     /// Unsubscribe all observers and release resources.
     /// </summary>
-    public override void Dispose()
+    public void Dispose()
     {
         lock (_gate)
         {
