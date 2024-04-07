@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reactive.Disposables;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Avalonia;
@@ -14,6 +13,7 @@ using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Media;
 using DialogHostAvalonia.Positioners;
+using DialogHostAvalonia.Utilities;
 
 namespace DialogHostAvalonia {
     public class DialogHost : ContentControl {
@@ -110,9 +110,6 @@ namespace DialogHostAvalonia {
                 (o, v) => o.PopupPositioner = v,
                 defaultBindingMode: BindingMode.TwoWay);
 
-        private IDialogPopupPositioner? _popupPositioner;
-        private bool _disableOpeningAnimation;
-
         private DialogClosingEventHandler? _asyncShowClosingEventHandler;
         private DialogOpenedEventHandler? _asyncShowOpenedEventHandler;
 
@@ -127,16 +124,19 @@ namespace DialogHostAvalonia {
         private DialogOpenedEventHandler? _dialogOpenedCallback;
 
         private TaskCompletionSource<object?>? _dialogTaskCompletionSource;
+        private bool _disableOpeningAnimation;
 
         private string? _identifier;
 
         private bool _isOpen;
 
         private ICommand _openDialogCommand;
+        private DialogOverlayPopupHost? _overlayPopupHost;
+
+        private IDialogPopupPositioner? _popupPositioner;
+        private IInputElement? _restoreFocusDialogClose;
 
         private Grid? _root;
-        private DialogOverlayPopupHost? _overlayPopupHost;
-        private IInputElement? _restoreFocusDialogClose;
 
         private IDisposable? _templateDisposables;
 
@@ -504,7 +504,7 @@ namespace DialogHostAvalonia {
                 _overlayPopupHost!.Bind(TemplateProperty, this.GetBindingObservable(PopupTemplateProperty)),
                 _overlayPopupHost!.Bind(PaddingProperty, this.GetBindingObservable(DialogMarginProperty)),
                 _overlayPopupHost!.Bind(PopupPositionerProperty, this.GetBindingObservable(PopupPositionerProperty)),
-                e.NameScope.Find<Rectangle>(ContentCoverName)?.AddDisposableHandler(PointerReleasedEvent, ContentCoverGrid_OnPointerReleased) ?? Disposable.Empty
+                e.NameScope.Find<Rectangle>(ContentCoverName)?.AddDisposableHandler(PointerReleasedEvent, ContentCoverGrid_OnPointerReleased) ?? EmptyDisposable.Instance
             };
             base.OnApplyTemplate(e);
         }

@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Windows.Input;
+using DialogHostAvalonia.Utilities;
 
 namespace DialogHostAvalonia {
     internal class DialogHostCommandImpl : ICommand {
-        private Func<object, bool> _canExecuteFunc;
-        private Action<object> _executeFunc;
+        private readonly Func<object, bool> _canExecuteFunc;
+        private readonly Action<object> _executeFunc;
 
         public DialogHostCommandImpl(Action<object> executeFunc, Func<object, bool>? canExecuteFunc, IObservable<bool> canExecuteChangedObservable) {
             _canExecuteFunc = canExecuteFunc ?? (o => true) ;
