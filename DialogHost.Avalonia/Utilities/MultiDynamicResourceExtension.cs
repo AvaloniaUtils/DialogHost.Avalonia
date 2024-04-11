@@ -3,58 +3,47 @@ using System.Collections.Generic;
 using System.Linq;
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Data;
+using Avalonia.Markup.Xaml;
 using Avalonia.Markup.Xaml.Converters;
 using Avalonia.Media;
+using Avalonia.Styling;
 
 namespace DialogHostAvalonia.Utilities
 {
     /// <summary>
-    /// Allows to bind to several different DynamicResources
+    /// Allows binding to several different DynamicResources
     /// </summary>
-    internal class MultiDynamicResourceExtension : Binding, IBinding
+    // TODO: Replace it with proper implementation when https://github.com/AvaloniaUI/Avalonia/issues/15270 will be resolved
+    internal class MultiDynamicResourceExtension : MarkupExtension
     {
         public IBrush DefaultBrush { get; set; }
 
         public object ResourceKeys { get; set; }
 
-        public IBinding ProvideValue(IServiceProvider serviceProvider)
+        public override object ProvideValue(IServiceProvider serviceProvider)
         {
-            return this;
-        }
+            var provideValueTarget = serviceProvider.GetService<IProvideValueTarget>();
+            if (provideValueTarget is null)
+            {
+                throw new InvalidOperationException(
+                    "Can't resolve IProvideValueTarget from Avalonia service provider.");
+            }
 
-        InstancedBinding? IBinding.Initiate(
-            AvaloniaObject target,
-            AvaloniaProperty? targetProperty,
-            object? anchor,
-            bool enableDataValidation)
-        {
+            var setter = (Setter)provideValueTarget.TargetObject;
+            var targetProperty = setter.Property;
+
             if (ResourceKeys is not string resourceKey)
             {
-                return null;
+                throw new InvalidOperationException(
+                    "ResourceKeys should be string with ; delimeter");
             }
 
             var resourceKeys = resourceKey.Split(';');
-
-            var control = target as IResourceHost ?? DefaultAnchor?.Target as IResourceHost;
-
-            if (control != null)
-            {
-                var source =
-                    resourceKeys.Select(key => control.GetResourceObservable(key, GetConverter(targetProperty)));
-                var testObservable = new MultiDynamicResourceObservable(source, DefaultBrush);
-                return InstancedBinding.OneWay(testObservable, Priority);
-            }
-
-            if (DefaultAnchor?.Target is IResourceProvider resourceProvider)
-            {
-                var source = resourceKeys.Select(key =>
-                    resourceProvider.GetResourceObservable(key, GetConverter(targetProperty)));
-                var testObservable = new MultiDynamicResourceObservable(source, DefaultBrush);
-                return InstancedBinding.OneWay(testObservable, Priority);
-            }
-
-            return null;
+            var source = resourceKeys
+                .Select(key => Application.Current!
+                    .GetResourceObservable(key, GetConverter(targetProperty)));
+            var testObservable = new MultiDynamicResourceObservable(source, DefaultBrush);
+            return testObservable.ToBinding();
         }
 
         private static Func<object?, object?>? GetConverter(AvaloniaProperty? targetProperty)
