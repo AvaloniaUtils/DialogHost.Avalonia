@@ -2,7 +2,8 @@ name: .NET Publish
 
 on:
   push:
-    branches: [ main ]
+    tags:
+      - main
 
 jobs:
   build:
@@ -12,9 +13,9 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Setup .NET
-        uses: actions/setup-dotnet@v1
+        uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: 5.0.x
+          dotnet-version: 8
       - name: Build and Pack
         run: dotnet build DialogHost.Avalonia --configuration Release
       - name: Publish to Nuget

@@ -1,8 +1,6 @@
 ﻿using System.Diagnostics;
-using Avalonia;
 using Avalonia.Collections;
 using Avalonia.Controls;
-using Avalonia.Markup.Xaml;
 using DialogHostAvalonia;
 
 namespace DialogHostDemo.Views {
