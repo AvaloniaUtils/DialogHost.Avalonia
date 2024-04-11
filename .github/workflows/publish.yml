@@ -3,7 +3,7 @@ name: .NET Publish
 on:
   push:
     tags:
-      - main
+      - 'v*'
 
 jobs:
   build:
