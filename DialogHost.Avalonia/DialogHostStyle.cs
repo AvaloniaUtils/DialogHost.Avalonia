@@ -80,7 +80,7 @@ namespace DialogHostAvalonia {
         /// Set BorderThickness in DialogHost's popup background.
         /// Works only for default DialogHost theme!
         /// </summary>
-        public static void SetBorderThickness(DialogHost element, double value)
+        public static void SetBorderThickness(DialogHost element, Thickness value)
         {
             element.SetValue(BorderThicknessProperty, value);
         }
