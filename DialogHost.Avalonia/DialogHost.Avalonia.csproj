@@ -3,7 +3,9 @@
         <TargetFramework>netstandard2.0</TargetFramework>
         <LangVersion>12</LangVersion>
         <Nullable>enable</Nullable>
-        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+        <IsPackable>true</IsPackable>
+        
         <Title>DialogHost.Avalonia</Title>
         <Authors>SKProCH</Authors>
         <Description>Avalonia Dialog Host control that provides a simple way to display a dialog with information or prompt the user when information is required</Description>
@@ -15,12 +17,7 @@
         <GenerateDocumentationFile>True</GenerateDocumentationFile>
         <RepositoryType>Git</RepositoryType>
         <PackageTags>c-sharp xaml multi-platform gui control mvvm dialogs avalonia avaloniaui c-sharp-library</PackageTags>
-        <Version>0.8.0-avalonia11dot1-1</Version>
         <RootNamespace>DialogHostAvalonia</RootNamespace>
-        <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
-        <PackageReleaseNotes>
-- Changes Material.Avalonia brush name
-        </PackageReleaseNotes>
     </PropertyGroup>
     <ItemGroup>
         <None Include="../README.md" Pack="true" PackagePath="/"/>
