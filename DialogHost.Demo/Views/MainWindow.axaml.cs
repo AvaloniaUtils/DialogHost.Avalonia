@@ -1,10 +1,15 @@
 using System;
+using System.Diagnostics;
+using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Shapes;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
+using Avalonia.Media;
 using DialogHostAvalonia;
 using DialogHostDemo.Models;
+using static DialogHostAvalonia.DialogHost;
 
 namespace DialogHostDemo.Views {
     public partial class MainWindow : Window {
