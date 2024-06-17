@@ -8,7 +8,7 @@ namespace DialogHostAvalonia.Utilities;
 /// Observers can subscribe to the subject to receive the last (or initial) value and all subsequent notifications.
 /// </summary>
 /// <typeparam name="T">The type of the elements processed by the subject.</typeparam>
-public sealed class BehaviorSubject<T> : IObserver<T>, IObservable<T>
+public sealed class BehaviorSubject<T> : SubjectBase<T>
 {
     #region Fields
 
@@ -41,12 +41,12 @@ public sealed class BehaviorSubject<T> : IObserver<T>, IObservable<T>
     /// <summary>
     /// Indicates whether the subject has observers subscribed to it.
     /// </summary>
-    public bool HasObservers => _observers?.Data.Length > 0;
+    public override bool HasObservers => _observers?.Data.Length > 0;
 
     /// <summary>
     /// Indicates whether the subject has been disposed.
     /// </summary>
-    public bool IsDisposed
+    public override bool IsDisposed
     {
         get
         {
@@ -131,7 +131,7 @@ public sealed class BehaviorSubject<T> : IObserver<T>, IObservable<T>
     /// <summary>
     /// Notifies all subscribed observers about the end of the sequence.
     /// </summary>
-    public void OnCompleted()
+    public override void OnCompleted()
     {
         IObserver<T>[]? os = null;
 
@@ -161,7 +161,7 @@ public sealed class BehaviorSubject<T> : IObserver<T>, IObservable<T>
     /// </summary>
     /// <param name="error">The exception to send to all observers.</param>
     /// <exception cref="ArgumentNullException"><paramref name="error"/> is <c>null</c>.</exception>
-    public void OnError(Exception error)
+    public override void OnError(Exception error)
     {
         if (error == null)
         {
@@ -196,7 +196,7 @@ public sealed class BehaviorSubject<T> : IObserver<T>, IObservable<T>
     /// Notifies all subscribed observers about the arrival of the specified element in the sequence.
     /// </summary>
     /// <param name="value">The value to send to all observers.</param>
-    public void OnNext(T value)
+    public override void OnNext(T value)
     {
         IObserver<T>[]? os = null;
 
@@ -230,7 +230,7 @@ public sealed class BehaviorSubject<T> : IObserver<T>, IObservable<T>
     /// <param name="observer">Observer to subscribe to the subject.</param>
     /// <returns>Disposable object that can be used to unsubscribe the observer from the subject.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="observer"/> is <c>null</c>.</exception>
-    public IDisposable Subscribe(IObserver<T> observer)
+    public override IDisposable Subscribe(IObserver<T> observer)
     {
         if (observer == null)
         {
@@ -283,7 +283,7 @@ public sealed class BehaviorSubject<T> : IObserver<T>, IObservable<T>
     /// <summary>
     /// Unsubscribe all observers and release resources.
     /// </summary>
-    public void Dispose()
+    public override void Dispose()
     {
         lock (_gate)
         {
