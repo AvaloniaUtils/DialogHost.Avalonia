@@ -6,6 +6,10 @@ on:
       - master
       - main
       - release/**
+    tags:
+      - master
+      - main
+      - release/**
 
 jobs:
   build-and-test:
@@ -13,5 +17,5 @@ jobs:
     secrets:
       NUGET_KEY: ${{ secrets.NUGET_KEY }}
     with:
-      publish-nightly: false
+      publish-nightly: ${{ github.ref_type != 'tag' && (github.ref == 'master' || github.ref == 'main') }}
       dotnet-version: 8
