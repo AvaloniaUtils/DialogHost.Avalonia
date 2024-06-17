@@ -69,14 +69,6 @@
         </Border>
       </ControlTemplate>
     </Setter>
-    
-    <Style Selector="Rectangle#PART_ContentCover:not(.notransitions)">
-      <Setter Property="Transitions">
-        <Transitions>
-          <DoubleTransition Property="Opacity" Easing="LinearEasing" Duration="0.3" />
-        </Transitions>
-      </Setter>
-    </Style>
 
     <Style Selector="^[IsOpen=True] /template/ Rectangle#PART_ContentCover">
       <Setter Property="IsHitTestVisible" Value="True" />
