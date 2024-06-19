@@ -8,7 +8,7 @@ namespace DialogHostAvalonia.Positioners {
     /// <remarks>
     /// Default values for <see cref="HorizontalAlignment"/> and <see cref="VerticalAlignment"/> is <c>Stretch</c> and it will be act TopLeft alignment
     /// </remarks>
-    public class AlignmentDialogPopupPositioner : AvaloniaObject, IDialogPopupPositioner {
+    public class AlignmentDialogPopupPositioner : AvaloniaObject, IDialogPopupPositioner, IDialogPopupPositionerConstrainable {
         public static readonly StyledProperty<HorizontalAlignment> HorizontalAlignmentProperty
             = Layoutable.HorizontalAlignmentProperty.AddOwner<AlignmentDialogPopupPositioner>();
 
@@ -45,6 +45,12 @@ namespace DialogHostAvalonia.Positioners {
             if (GetValue(VerticalAlignmentProperty) == VerticalAlignment.Stretch) rect = rect.WithHeight(0);
             var aligned = rect.Align(constrainRect, GetValue(HorizontalAlignmentProperty), GetValue(VerticalAlignmentProperty));
             return new Rect(margin.Left + aligned.Left, margin.Top + aligned.Top, aligned.Width, aligned.Height);
+        }
+
+        /// <inheritdoc />
+        public Size Constrain(Size availableSize)
+        {
+            return availableSize.Deflate(Margin);
         }
     }
 }
