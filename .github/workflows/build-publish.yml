@@ -6,10 +6,10 @@ on:
       - master
       - main
       - release/**
+    paths:
+      - DialogHost.Avalonia/**
     tags:
-      - master
-      - main
-      - release/**
+      - v**
 
 jobs:
   build-and-test:
