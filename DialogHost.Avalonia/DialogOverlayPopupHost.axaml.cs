@@ -95,6 +95,15 @@ namespace DialogHostAvalonia {
             _root.Children.Remove(this);
         }
 
+        protected override Size MeasureOverride(Size availableSize)
+        {
+            if (PopupPositioner is IDialogPopupPositionerConstrainable constrainable)
+            {
+                return base.MeasureOverride(constrainable.Constrain(availableSize));
+            }
+            return base.MeasureOverride(availableSize);
+        }
+
         /// <inheritdoc />
         protected override void ArrangeCore(Rect finalRect) {
             var margin = Margin;
@@ -109,8 +118,8 @@ namespace DialogHostAvalonia {
             var positioner = PopupPositioner ?? CenteredDialogPopupPositioner.Instance;
             var bounds = positioner.Update(size, contentSize);
             
-            ArrangeOverride(bounds.Size).Constrain(size);
-            Bounds = new Rect(bounds.X + margin.Left, bounds.Y + margin.Top, bounds.Width, bounds.Height);
+            var (finalWidth, finalHeight) = ArrangeOverride(bounds.Size).Constrain(size);
+            Bounds = new Rect(bounds.X + margin.Left, bounds.Y + margin.Top, finalWidth, finalHeight);
         }
 
 
