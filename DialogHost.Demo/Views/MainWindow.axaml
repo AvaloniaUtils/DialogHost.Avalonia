@@ -53,7 +53,8 @@
               MinHeight="200" MinWidth="200"
               BorderThickness="1" BorderBrush="Black">
         <dialogHostAvalonia:DialogHost Identifier="NoAnimationDialogHost"
-                                       DisableOpeningAnimation="True">
+                                       DisableOpeningAnimation="True"
+                                       Classes="disable-content-cover-animations">
           <Button HorizontalAlignment="Center" VerticalAlignment="Center"
                   Click="OpenNoAnimationDialog">
             Open
