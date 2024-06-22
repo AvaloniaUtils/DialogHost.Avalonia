@@ -70,6 +70,14 @@
       </ControlTemplate>
     </Setter>
 
+    <Style Selector="^:not(.disable-content-cover-animations) /template/ Rectangle#PART_ContentCover">
+      <Setter Property="Transitions">
+        <Transitions>
+          <DoubleTransition Property="Opacity" Easing="LinearEasing" Duration="0.3" />
+        </Transitions>
+      </Setter>
+    </Style>
+
     <Style Selector="^[IsOpen=True] /template/ Rectangle#PART_ContentCover">
       <Setter Property="IsHitTestVisible" Value="True" />
       <Setter Property="Opacity" Value="0.56" />
