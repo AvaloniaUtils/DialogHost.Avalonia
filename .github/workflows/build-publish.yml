@@ -2,7 +2,7 @@ name: Build and publish
 
 on:
   push:
-    branches:  
+    branches:
       - master
       - main
       - release/**
