@@ -47,6 +47,13 @@
               <Style Selector="Rectangle#PART_ContentCover[Opacity=0]">
                 <Setter Property="IsVisible" Value="False" />
               </Style>
+              <Style Selector="Rectangle#PART_ContentCover:not(.notransitions)">
+                <Setter Property="Transitions">
+                  <Transitions>
+                    <DoubleTransition Property="Opacity" Easing="LinearEasing" Duration="0.3" />
+                  </Transitions>
+                </Setter>
+              </Style>
             </Rectangle.Styles>
           </Rectangle>
         </Grid>
