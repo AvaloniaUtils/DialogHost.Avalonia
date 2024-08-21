@@ -4,6 +4,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DialogHost.Avalonia", "Dial
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DialogHost.Demo", "DialogHost.Demo\DialogHost.Demo.csproj", "{DDD9BB37-B237-4F28-BD82-9BC2E7711B1D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AvaloniaApplication1", "AvaloniaApplication1\AvaloniaApplication1.csproj", "{8E38D15E-CD8A-4315-BC45-BD1C7F47580D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +20,9 @@ Global
 		{DDD9BB37-B237-4F28-BD82-9BC2E7711B1D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DDD9BB37-B237-4F28-BD82-9BC2E7711B1D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DDD9BB37-B237-4F28-BD82-9BC2E7711B1D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8E38D15E-CD8A-4315-BC45-BD1C7F47580D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8E38D15E-CD8A-4315-BC45-BD1C7F47580D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8E38D15E-CD8A-4315-BC45-BD1C7F47580D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8E38D15E-CD8A-4315-BC45-BD1C7F47580D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
