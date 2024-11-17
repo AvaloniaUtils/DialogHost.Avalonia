@@ -126,11 +126,18 @@ namespace DialogHostAvalonia {
         }
 
         public (bool handled, IInputElement? next) GetNext(IInputElement element, NavigationDirection direction) {
+            // If current element isn't this popup host - ignoring
             if (!element.Equals(this)) {
                 return (false, null);
             }
-            var focusable = this.GetVisualDescendants().OfType<IInputElement>().FirstOrDefault(visual => visual.Focusable);
-            return (true, focusable);
+            
+            // Finding the focusable descendant
+            var focusable = this.GetVisualDescendants()
+                .OfType<IInputElement>()
+                .FirstOrDefault(visual => visual.Focusable);
+
+            // Or returning the control itself to prevent focus escaping
+            return (true, focusable ?? this);
         }
 
         /// <inheritdoc />

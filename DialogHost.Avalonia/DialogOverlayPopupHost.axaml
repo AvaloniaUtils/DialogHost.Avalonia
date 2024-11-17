@@ -5,6 +5,8 @@
                 TargetType="dialogHost:DialogOverlayPopupHost">
     <Setter Property="Background" Value="{DynamicResource ThemeBackgroundBrush}" />
     <Setter Property="KeyboardNavigation.TabNavigation" Value="Cycle" />
+    <Setter Property="Focusable" Value="True" />
+    <Setter Property="IsTabStop" Value="False" />
     <Setter Property="Template">
       <ControlTemplate>
         <ContentPresenter Name="PART_ContentPresenter"
