@@ -114,8 +114,8 @@ public class DialogHost : ContentControl {
     /// <summary>
     /// Identifies the <see cref="DialogClosingCallback"/> property.
     /// </summary>
-    public static readonly DirectProperty<DialogHost, DialogClosingEventHandler> DialogClosingCallbackProperty =
-        AvaloniaProperty.RegisterDirect<DialogHost, DialogClosingEventHandler>(
+    public static readonly DirectProperty<DialogHost, DialogClosingEventHandler?> DialogClosingCallbackProperty =
+        AvaloniaProperty.RegisterDirect<DialogHost, DialogClosingEventHandler?>(
             nameof(DialogClosingCallback),
             o => o.DialogClosingCallback,
             (o, v) => o.DialogClosingCallback = v,
@@ -336,7 +336,7 @@ public class DialogHost : ContentControl {
     /// <summary>
     /// Gets or sets the callback for when the dialog is closing.
     /// </summary>
-    public DialogClosingEventHandler DialogClosingCallback {
+    public DialogClosingEventHandler? DialogClosingCallback {
         get => _dialogClosingCallback;
         set => SetAndRaise(DialogClosingCallbackProperty, ref _dialogClosingCallback, value);
     }
