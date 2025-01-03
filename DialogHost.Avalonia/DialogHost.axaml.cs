@@ -31,6 +31,8 @@ public class DialogHost : ContentControl {
     /// </summary>
     public const string DialogHostRoot = "PART_DialogHostRoot";
     
+    private const double DefaultBlurRadius = 16.0;
+    
     /// <summary>
     /// Tracks all loaded instances of DialogHost.
     /// </summary>
@@ -174,6 +176,18 @@ public class DialogHost : ContentControl {
             o => o.PopupPositioner,
             (o, v) => o.PopupPositioner = v,
             defaultBindingMode: BindingMode.TwoWay);
+
+    /// <summary>
+    /// Identifies the <see cref="BlurBackground"/> property.
+    /// </summary>
+    public static readonly StyledProperty<bool> BlurBackgroundProperty 
+        = AvaloniaProperty.Register<DialogHost, bool>(nameof(BlurBackground));
+
+    /// <summary>
+    /// Identifies the <see cref="BlurBackgroundRadius"/> property.
+    /// </summary>
+    public static readonly StyledProperty<double> BlurBackgroundRadiusProperty 
+        = AvaloniaProperty.Register<DialogHost, double>(nameof(BlurBackgroundRadius), DefaultBlurRadius);
 
     private DialogClosingEventHandler? _asyncShowClosingEventHandler;
     private DialogOpenedEventHandler? _asyncShowOpenedEventHandler;
@@ -326,6 +340,22 @@ public class DialogHost : ContentControl {
     public IDialogPopupPositioner? PopupPositioner {
         get => _popupPositioner;
         set => SetAndRaise(PopupPositionerProperty, ref _popupPositioner, value);
+    }
+    
+    /// <summary>
+    /// Gets or sets whether to enable background blur when dialog is opened
+    /// </summary>
+    public bool BlurBackground {
+        get => GetValue(BlurBackgroundProperty);
+        set => SetValue(BlurBackgroundProperty, value);
+    }
+    
+    /// <summary>
+    /// Gets or sets radius of background blur when <see cref="BlurBackground"/> is enabled
+    /// </summary>
+    public double BlurBackgroundRadius {
+        get => GetValue(BlurBackgroundRadiusProperty);
+        set => SetValue(BlurBackgroundRadiusProperty, value);
     }
 
     /// <summary>

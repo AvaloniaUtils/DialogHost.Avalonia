@@ -9,8 +9,8 @@
         mc:Ignorable="d"
         x:Class="DialogHostDemo.Views.MainWindow"
         Icon="/Assets/avalonia-logo.ico"
-        Width="820" Height="420"
-        MinWidth="820" MinHeight="420"
+        Width="1024" Height="420"
+        MinWidth="1024" MinHeight="420"
         Title="DialogHost.Demo">
   <Design.DataContext>
     <vm:MainWindowViewModel />
@@ -33,14 +33,14 @@
       </DataTemplate>
     </dialogHostAvalonia:DialogHost.DataTemplates>
     <Grid Margin="8"
-          ColumnDefinitions="* 8 * 8 *" RowDefinitions="Auto 8 *"
+          ColumnDefinitions="* 8 * 8 * 8 *" RowDefinitions="Auto 8 *"
           VerticalAlignment="Center" HorizontalAlignment="Stretch">
       <TextBlock Grid.Column="0" Grid.Row="0"
                  TextWrapping="Wrap">
         SAMPLE 1: Localized dialog encapsulating specific content, launched from a routed command, response handled in code-behind.
       </TextBlock>
       <Border Grid.Column="0" Grid.Row="2"
-              MinHeight="256" MinWidth="256"
+              MinHeight="250" MinWidth="250"
               BorderThickness="1" BorderBrush="Black">
         <views:FruitBowl />
       </Border>
@@ -70,6 +70,28 @@
         <Button Margin="8" Click="OpenDialogWithView">PASS VIEW</Button>
         <Button Margin="8" Click="OpenDialogWithModel">PASS MODEL</Button>
       </StackPanel>
+
+      <TextBlock Grid.Column="6" Grid.Row="0"
+                 TextWrapping="Wrap">
+        SAMPLE 4: Dialog with blur.
+        Blur can be controlled via BlurBackground and BlurBackgroundRadius properties.
+      </TextBlock>
+      <Border Grid.Column="6" Grid.Row="2"
+              MinHeight="200" MinWidth="200"
+              BorderThickness="1" BorderBrush="Black">
+        <dialogHostAvalonia:DialogHost Identifier="BlurDialogHost"
+                                       BlurBackground="True">
+          <Panel>
+            <TextBlock TextWrapping="Wrap" TextAlignment="Justify">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas sed metus semper, faucibus erat ac, tincidunt odio. Donec congue nisi purus, non consectetur purus sollicitudin sed. Suspendisse iaculis dictum porttitor. Nulla ex leo, pulvinar venenatis arcu in, luctus efficitur nisl. Mauris non velit quis elit placerat auctor porttitor ac augue. Phasellus ut ipsum enim. Proin interdum aliquam ex sed laoreet. Sed eros nulla, ornare elementum urna vel, fringilla pharetra lorem. Integer hendrerit eros a tortor gravida, in lacinia augue blandit. Donec dignissim dapibus augue vel ultricies. Donec in velit mi. Pellentesque ac lorem vitae magna ullamcorper vehicula.</TextBlock>
+            <Panel HorizontalAlignment="Center" VerticalAlignment="Center"
+                   Background="{DynamicResource SystemRegionBrush}">
+              <Button Click="OpenBlurDialog">
+                Open with blur
+              </Button>
+            </Panel>
+          </Panel>
+        </dialogHostAvalonia:DialogHost>
+      </Border>
     </Grid>
   </dialogHostAvalonia:DialogHost>
   <Window.Resources>
