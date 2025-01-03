@@ -31,13 +31,13 @@
     <Setter Property="dialogHostAvalonia:DialogHostStyle.CornerRadius" Value="2" />
     <Setter Property="Template">
       <ControlTemplate>
-        <Grid Name="PART_DialogHostRoot" Focusable="False">
+        <Panel Name="PART_DialogHostRoot" Focusable="False">
           <ContentPresenter Name="PART_ContentPresenter"
                             Content="{TemplateBinding Content}"
                             ContentTemplate="{TemplateBinding ContentTemplate}"
                             HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
                             VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
-                            Tag="{TemplateBinding BlurBackgroundRadius}"/>
+                            Tag="{TemplateBinding BlurBackgroundRadius}" />
           <Rectangle Name="PART_ContentCover"
                      Fill="{TemplateBinding OverlayBackground}"
                      Focusable="False">
@@ -47,7 +47,7 @@
               </Style>
             </Rectangle.Styles>
           </Rectangle>
-        </Grid>
+        </Panel>
       </ControlTemplate>
     </Setter>
     <Setter Property="PopupTemplate">
@@ -84,7 +84,6 @@
         </Setter>
       </Style>
     </Style>
-
 
     <Style Selector="^[IsOpen=True] /template/ Rectangle#PART_ContentCover">
       <Setter Property="IsHitTestVisible" Value="True" />

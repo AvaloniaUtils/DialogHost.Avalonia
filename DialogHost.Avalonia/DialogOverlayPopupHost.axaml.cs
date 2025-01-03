@@ -8,7 +8,7 @@ using DialogHostAvalonia.Positioners;
 
 namespace DialogHostAvalonia;
 
-public class DialogOverlayPopupHost : ContentControl, ICustomKeyboardNavigation {
+public class DialogOverlayPopupHost(Panel root) : ContentControl, ICustomKeyboardNavigation {
     public static readonly DirectProperty<DialogOverlayPopupHost, bool> IsOpenProperty =
         AvaloniaProperty.RegisterDirect<DialogOverlayPopupHost, bool>(
             nameof(IsOpen),
@@ -28,16 +28,9 @@ public class DialogOverlayPopupHost : ContentControl, ICustomKeyboardNavigation 
             o => o.PopupPositioner,
             (o, v) => o.PopupPositioner = v);
 
-    private readonly Grid _root;
-
     private bool _disableOpeningAnimation;
     private bool _isOpen;
     private IDialogPopupPositioner? _popupPositioner;
-
-    public DialogOverlayPopupHost(Grid root)
-    {
-        this._root = root;
-    }
 
     public bool IsOpen {
         get => _isOpen;
@@ -71,52 +64,49 @@ public class DialogOverlayPopupHost : ContentControl, ICustomKeyboardNavigation 
         }
     }
 
-    public void Show()
-    {
+    public void Show() {
         if (Parent == null) {
-            _root.Children.Add(this);
+            root.Children.Add(this);
         }
+
         // Set the minimum priority to allow overriding it everywhere
         ClearValue(IsActuallyOpenProperty);
         Focus();
         UpdatePosition();
     }
 
-    public void Hide()
-    {
-        _root.Children.Remove(this);
+    public void Hide() {
+        root.Children.Remove(this);
     }
 
-    protected override Size MeasureOverride(Size availableSize)
-    {
-        if (PopupPositioner is IDialogPopupPositionerConstrainable constrainable)
-        {
+    protected override Size MeasureOverride(Size availableSize) {
+        if (PopupPositioner is IDialogPopupPositionerConstrainable constrainable) {
             return base.MeasureOverride(constrainable.Constrain(availableSize));
         }
+
         return base.MeasureOverride(availableSize);
     }
 
     /// <inheritdoc />
     protected override void ArrangeCore(Rect finalRect) {
         var margin = Margin;
-        
+
         var size = new Size(
             Math.Max(0, finalRect.Width - margin.Left - margin.Right),
             Math.Max(0, finalRect.Height - margin.Top - margin.Bottom));
-            
+
         var contentSize = new Size(
-            Math.Min(size.Width, DesiredSize.Width - margin.Left - margin.Right), 
+            Math.Min(size.Width, DesiredSize.Width - margin.Left - margin.Right),
             Math.Min(size.Height, DesiredSize.Height - margin.Top - margin.Bottom));
         var positioner = PopupPositioner ?? CenteredDialogPopupPositioner.Instance;
         var bounds = positioner.Update(size, contentSize);
-            
+
         var (finalWidth, finalHeight) = ArrangeOverride(bounds.Size).Constrain(size);
         Bounds = new Rect(bounds.X + margin.Left, bounds.Y + margin.Top, finalWidth, finalHeight);
     }
 
 
-    private void UpdatePosition()
-    {
+    private void UpdatePosition() {
         // Don't bother the positioner with layout system artifacts
         // if (_positionerParameters.Size.Width == 0 || _positionerParameters.Size.Height == 0)
         // return;
@@ -131,7 +121,7 @@ public class DialogOverlayPopupHost : ContentControl, ICustomKeyboardNavigation 
         if (!element.Equals(this)) {
             return (false, null);
         }
-            
+
         // Finding the focusable descendant
         var focusable = this.GetVisualDescendants()
             .OfType<IInputElement>()
@@ -146,6 +136,7 @@ public class DialogOverlayPopupHost : ContentControl, ICustomKeyboardNavigation 
         if (change.Property == IsActuallyOpenProperty && !change.GetNewValue<bool>()) {
             Hide();
         }
+
         base.OnPropertyChanged(change);
     }
 }
