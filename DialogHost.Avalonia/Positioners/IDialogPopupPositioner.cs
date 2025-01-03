@@ -13,7 +13,6 @@ public interface IDialogPopupPositioner {
     /// <remarks>
     /// Use <see cref="IManagedPopupPositionerPopup.MoveAndResize"/> to manipulate popup
     /// </remarks>
-    /// <param name="parameters">Parameters for popup</param>
     /// <param name="anchorRectangle">Owner's rectangle size</param>
     /// <param name="size">Size of popup</param>
     public Rect Update(Size anchorRectangle, Size size);

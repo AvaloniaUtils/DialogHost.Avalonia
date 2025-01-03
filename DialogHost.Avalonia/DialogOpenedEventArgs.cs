@@ -3,17 +3,12 @@ using Avalonia.Interactivity;
 
 namespace DialogHostAvalonia;
 
-public class DialogOpenedEventArgs : RoutedEventArgs {
-    public DialogOpenedEventArgs(DialogSession session, RoutedEvent routedEvent)
-    {
-        if (session == null) throw new ArgumentNullException(nameof(session));
-
-        Session = session;
-        RoutedEvent = routedEvent;
-    }
-
+/// <summary>
+/// Event args contains info about dialog opening
+/// </summary>
+public class DialogOpenedEventArgs(DialogSession session, RoutedEvent routedEvent) : RoutedEventArgs(routedEvent) {
     /// <summary>
-    /// Allows interation with the current dialog session.
+    /// Allows interaction with the current dialog session.
     /// </summary>
-    public DialogSession Session { get; }
+    public DialogSession Session { get; } = session;
 }

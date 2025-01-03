@@ -3,11 +3,10 @@ using Avalonia.Interactivity;
 
 namespace DialogHostAvalonia;
 
-public class DialogClosingEventArgs : RoutedEventArgs {
-    public DialogClosingEventArgs(DialogSession session, RoutedEvent routedEvent)
-        : base(routedEvent)
-        => Session = session ?? throw new ArgumentNullException(nameof(session));
-
+/// <summary>
+/// Event args contains info about dialog closing
+/// </summary>
+public class DialogClosingEventArgs(DialogSession session, RoutedEvent routedEvent) : RoutedEventArgs(routedEvent) {
     /// <summary>
     /// Cancel the close.
     /// </summary>
@@ -26,5 +25,5 @@ public class DialogClosingEventArgs : RoutedEventArgs {
     /// <summary>
     /// Allows interaction with the current dialog session.
     /// </summary>
-    public DialogSession Session { get; }
+    public DialogSession Session { get; } = session ?? throw new ArgumentNullException(nameof(session));
 }

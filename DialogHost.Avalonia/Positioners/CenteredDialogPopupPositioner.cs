@@ -6,6 +6,9 @@ namespace DialogHostAvalonia.Positioners;
 /// Positions the popup at the screen center
 /// </summary>
 public class CenteredDialogPopupPositioner : IDialogPopupPositioner {
+    /// <summary>
+    /// Singleton instance
+    /// </summary>
     public static CenteredDialogPopupPositioner Instance { get; } = new();
         
     /// <inheritdoc />
