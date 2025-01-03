@@ -3,34 +3,37 @@ using Avalonia.Media;
 
 namespace DialogHostAvalonia;
 
-public class DialogHostStyle {
+/// <summary>
+/// Contains properties for <see cref="DialogHost"/> default theme
+/// </summary>
+public static class DialogHostStyle {
     /// <summary>
     /// Controls CornerRadius DialogHost's popup background.
     /// Works only for default DialogHost theme!
     /// </summary>
     public static readonly AttachedProperty<CornerRadius> CornerRadiusProperty =
-        AvaloniaProperty.RegisterAttached<DialogHostStyle, DialogHost, CornerRadius>("CornerRadius");
+        AvaloniaProperty.RegisterAttached<DialogHost, CornerRadius>("CornerRadius", typeof(DialogHostStyle));
 
     /// <summary>
     /// Controls ClipToBounds DialogHost's popup background.
     /// Works only for default DialogHost theme!
     /// </summary>
     public static readonly AttachedProperty<bool> ClipToBoundsProperty =
-        AvaloniaProperty.RegisterAttached<DialogHostStyle, DialogHost, bool>("ClipToBounds");
+        AvaloniaProperty.RegisterAttached<DialogHost, bool>("ClipToBounds", typeof(DialogHostStyle));
 
     /// <summary>
     /// Controls BorderBrush DialogHost's popup background.
     /// Works only for default DialogHost theme!
     /// </summary>
     public static readonly AttachedProperty<IBrush> BorderBrushProperty =
-        AvaloniaProperty.RegisterAttached<DialogHostStyle, DialogHost, IBrush>("BorderBrush");
+        AvaloniaProperty.RegisterAttached<DialogHost, IBrush>("BorderBrush", typeof(DialogHostStyle));
 
     /// <summary>
     /// Controls BorderThickness DialogHost's popup background.
     /// Works only for default DialogHost theme!
     /// </summary>
     public static readonly AttachedProperty<Thickness> BorderThicknessProperty =
-        AvaloniaProperty.RegisterAttached<DialogHostStyle, DialogHost, Thickness>("BorderThickness");
+        AvaloniaProperty.RegisterAttached<DialogHost, Thickness>("BorderThickness", typeof(DialogHostStyle));
 
     /// <summary>
     /// Get CornerRadius in DialogHost's popup background.
