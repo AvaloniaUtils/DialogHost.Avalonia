@@ -3,26 +3,26 @@ using Avalonia.Collections;
 using Avalonia.Controls;
 using DialogHostAvalonia;
 
-namespace DialogHostDemo.Views {
-    public partial class FruitBowl : UserControl {
-        public AvaloniaList<string> ListBoxSource = new AvaloniaList<string>() {
-            "Apple",
-            "Banana",
-            "Peer"
-        };
-        public FruitBowl() {
-            InitializeComponent();
-            FruitListBox.ItemsSource = ListBoxSource;
-        }
+namespace DialogHostDemo.Views;
 
-        private void FruitBowl_OnDialogClosing(object? sender, DialogClosingEventArgs e) {
-            Debug.WriteLine($"SAMPLE 1: Closing dialog with parameter: {e.Parameter ?? string.Empty}");
+public partial class FruitBowl : UserControl {
+    public AvaloniaList<string> ListBoxSource = new AvaloniaList<string>() {
+        "Apple",
+        "Banana",
+        "Peer"
+    };
+    public FruitBowl() {
+        InitializeComponent();
+        FruitListBox.ItemsSource = ListBoxSource;
+    }
 
-            //you can cancel the dialog close:
-            //eventArgs.Cancel();
+    private void FruitBowl_OnDialogClosing(object? sender, DialogClosingEventArgs e) {
+        Debug.WriteLine($"SAMPLE 1: Closing dialog with parameter: {e.Parameter ?? string.Empty}");
 
-            if (!string.IsNullOrWhiteSpace(e.Parameter?.ToString()))
-                ListBoxSource.Add(e.Parameter.ToString()!.Trim());
-        }
+        //you can cancel the dialog close:
+        //eventArgs.Cancel();
+
+        if (!string.IsNullOrWhiteSpace(e.Parameter?.ToString()))
+            ListBoxSource.Add(e.Parameter.ToString()!.Trim());
     }
 }

@@ -112,7 +112,7 @@ public sealed class BehaviorSubject<T> : IObserver<T>, IObservable<T>
         {
             if (_isDisposed)
             {
-                value = default;
+                value = default!;
                 return false;
             }
 

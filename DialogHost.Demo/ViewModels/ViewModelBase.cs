@@ -1,8 +1,7 @@
 ﻿using ReactiveUI;
 
-namespace DialogHostDemo.ViewModels
+namespace DialogHostDemo.ViewModels;
+
+public class ViewModelBase : ReactiveObject
 {
-    public class ViewModelBase : ReactiveObject
-    {
-    }
 }
