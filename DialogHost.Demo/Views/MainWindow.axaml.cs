@@ -19,20 +19,20 @@ public partial class MainWindow : Window {
     private void InitializeComponent() {
         AvaloniaXamlLoader.Load(this);
     }
+    
+    private async void OpenNoAnimationDialog(object? sender, RoutedEventArgs e) {
+        await DialogHost.Show(Resources["Sample2View"]!, "NoAnimationDialogHost");
+    }
 
     private async void OpenDialogWithView(object? sender, RoutedEventArgs e) {
         await DialogHost.Show(Resources["Sample3View"]!, "MainDialogHost");
     }
         
     private async void OpenDialogWithModel(object? sender, RoutedEventArgs e) {
-        await DialogHost.Show(new Sample2Model(new Random().Next(0, 100)), "MainDialogHost");
-    }
-
-    private async void OpenNoAnimationDialog(object? sender, RoutedEventArgs e) {
-        await DialogHost.Show(Resources["Sample2View"]!, "NoAnimationDialogHost");
+        await DialogHost.Show(new Sample3Model(new Random().Next(0, 100)), "MainDialogHost");
     }
 
     private async void OpenBlurDialog(object? sender, RoutedEventArgs e) {
-        await DialogHost.Show(Resources["Sample2View"]!, "BlurDialogHost");
+        await DialogHost.Show(Resources["Sample4View"]!, "BlurDialogHost");
     }
 }
