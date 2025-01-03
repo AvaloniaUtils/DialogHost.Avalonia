@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Shapes;
 using Avalonia.Controls.Templates;
@@ -215,7 +216,7 @@ public class DialogHost : ContentControl {
     private IDialogPopupPositioner? _popupPositioner;
     private IInputElement? _restoreFocusDialogClose;
 
-    private Grid? _root;
+    private Panel _root;
 
     private IDisposable? _templateDisposables;
 
@@ -627,7 +628,9 @@ public class DialogHost : ContentControl {
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e) {
         _templateDisposables?.Dispose();
 
-        _root = e.NameScope.Find<Grid>(DialogHostRoot) ?? throw new InvalidOperationException($"No Grid with name {DialogHostRoot} found");
+        _root = e.NameScope.Find<Panel>(DialogHostRoot) 
+                ?? throw new InvalidOperationException($"No Panel with name {DialogHostRoot} found. " +
+                                                       $"Did you add the styles as stated in getting started?");
         _overlayPopupHost = new DialogOverlayPopupHost(_root) {
             Content = DialogContent, ContentTemplate = DialogContentTemplate, Template = PopupTemplate,
             Padding = DialogMargin, ClipToBounds = false, DisableOpeningAnimation = DisableOpeningAnimation,
