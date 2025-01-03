@@ -31,4 +31,8 @@ public partial class MainWindow : Window {
     private async void OpenNoAnimationDialog(object? sender, RoutedEventArgs e) {
         await DialogHost.Show(Resources["Sample2View"]!, "NoAnimationDialogHost");
     }
+
+    private async void OpenBlurDialog(object? sender, RoutedEventArgs e) {
+        await DialogHost.Show(Resources["Sample2View"]!, "BlurDialogHost");
+    }
 }
