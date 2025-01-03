@@ -21,6 +21,8 @@ namespace DialogHostAvalonia;
 /// <summary>
 /// A control that hosts dialog content in a modal overlay.
 /// </summary>
+[TemplatePart(ContentCoverName, typeof(Rectangle))]
+[TemplatePart(DialogHostRoot, typeof(Panel))]
 public class DialogHost : ContentControl {
     /// <summary>
     /// Gets the name for the content cover part in the control template.
