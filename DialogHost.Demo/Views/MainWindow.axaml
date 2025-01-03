@@ -15,23 +15,48 @@
   <Design.DataContext>
     <vm:MainWindowViewModel />
   </Design.DataContext>
+  
+  <Window.DataTemplates>
+    <DataTemplate DataType="models:Sample3Model">
+      <StackPanel>
+        <TextBlock TextAlignment="Center">Your lucky number:</TextBlock>
+        <TextBlock Classes="Body1"
+                   TextAlignment="Center"
+                   Text="{Binding Number}" />
+        <Button Margin="0 8 0 0"
+                Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=dialogHostAvalonia:DialogHost}, Path=CloseDialogCommand}">
+          THANKS, CLOSE
+        </Button>
+      </StackPanel>
+    </DataTemplate>
+  </Window.DataTemplates>
+  <Window.Resources>
+    <StackPanel x:Key="Sample2View">
+      <TextBlock>It opened without animation</TextBlock>
+      <Button Margin="0 16 0 0"
+              Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=dialogHostAvalonia:DialogHost}, Path=CloseDialogCommand}">
+        CLOSE
+      </Button>
+    </StackPanel>
+    <StackPanel x:Key="Sample3View">
+      <ProgressBar Classes="Circle" IsIndeterminate="True" />
+      <Button Margin="0 16 0 0"
+              Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=dialogHostAvalonia:DialogHost}, Path=CloseDialogCommand}">
+        CLOSE
+      </Button>
+    </StackPanel>
+    <StackPanel x:Key="Sample4View">
+      <TextBlock>Everything blurred</TextBlock>
+      <Button Margin="0 16 0 0"
+              Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=dialogHostAvalonia:DialogHost}, Path=CloseDialogCommand}">
+        CLOSE
+      </Button>
+    </StackPanel>
+  </Window.Resources>
+  
   <dialogHostAvalonia:DialogHost Identifier="MainDialogHost"
                                  DialogMargin="16"
                                  dialogHostAvalonia:DialogHostStyle.CornerRadius="8">
-    <dialogHostAvalonia:DialogHost.DataTemplates>
-      <DataTemplate DataType="models:Sample2Model">
-        <StackPanel>
-          <TextBlock TextAlignment="Center">Your lucky number:</TextBlock>
-          <TextBlock Classes="Body1"
-                     TextAlignment="Center"
-                     Text="{Binding Number}" />
-          <Button Margin="0 8 0 0"
-                  Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=dialogHostAvalonia:DialogHost}, Path=CloseDialogCommand}">
-            THANKS, CLOSE
-          </Button>
-        </StackPanel>
-      </DataTemplate>
-    </dialogHostAvalonia:DialogHost.DataTemplates>
     <Grid Margin="8"
           ColumnDefinitions="* 8 * 8 * 8 *" RowDefinitions="Auto 8 *"
           VerticalAlignment="Center" HorizontalAlignment="Stretch">
@@ -94,20 +119,4 @@
       </Border>
     </Grid>
   </dialogHostAvalonia:DialogHost>
-  <Window.Resources>
-    <StackPanel x:Key="Sample2View">
-      <TextBlock>It opened without animation</TextBlock>
-      <Button Margin="0 16 0 0"
-              Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=dialogHostAvalonia:DialogHost}, Path=CloseDialogCommand}">
-        CLOSE
-      </Button>
-    </StackPanel>
-    <StackPanel x:Key="Sample3View">
-      <ProgressBar Classes="Circle" IsIndeterminate="True" />
-      <Button Margin="0 16 0 0"
-              Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=dialogHostAvalonia:DialogHost}, Path=CloseDialogCommand}">
-        CLOSE
-      </Button>
-    </StackPanel>
-  </Window.Resources>
 </Window>
