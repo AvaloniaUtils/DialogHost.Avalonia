@@ -17,30 +17,61 @@ using DialogHostAvalonia.Utilities;
 
 namespace DialogHostAvalonia;
 
+/// <summary>
+/// A control that hosts dialog content in a modal overlay.
+/// </summary>
 public class DialogHost : ContentControl {
+    /// <summary>
+    /// Gets the name for the content cover part in the control template.
+    /// </summary>
     public const string ContentCoverName = "PART_ContentCover";
+    
+    /// <summary>
+    /// Gets the name for the root part in the control template.
+    /// </summary>
     public const string DialogHostRoot = "PART_DialogHostRoot";
+    
+    /// <summary>
+    /// Tracks all loaded instances of DialogHost.
+    /// </summary>
+    private static readonly HashSet<DialogHost> _loadedInstances = new();
 
-    private static readonly HashSet<DialogHost> LoadedInstances = new();
-
+    /// <summary>
+    /// Identifies the <see cref="Identifier"/> property.
+    /// </summary>
     public static readonly DirectProperty<DialogHost, string?> IdentifierProperty =
         AvaloniaProperty.RegisterDirect<DialogHost, string?>(
             nameof(Identifier),
             o => o.Identifier,
             (o, v) => o.Identifier = v);
 
+    /// <summary>
+    /// Identifies the <see cref="DialogContent"/> property.
+    /// </summary>
     public static readonly StyledProperty<object?> DialogContentProperty =
         AvaloniaProperty.Register<DialogHost, object?>(nameof(DialogContent));
 
+    /// <summary>
+    /// Identifies the <see cref="DialogContentTemplate"/> property.
+    /// </summary>
     public static readonly StyledProperty<IDataTemplate?> DialogContentTemplateProperty =
         AvaloniaProperty.Register<DialogHost, IDataTemplate?>(nameof(DialogContentTemplate));
 
+    /// <summary>
+    /// Identifies the <see cref="OverlayBackground"/> property.
+    /// </summary>
     public static readonly StyledProperty<IBrush> OverlayBackgroundProperty =
         AvaloniaProperty.Register<DialogHost, IBrush>(nameof(OverlayBackground));
 
+    /// <summary>
+    /// Identifies the <see cref="DialogMargin"/> property.
+    /// </summary>
     public static readonly StyledProperty<Thickness> DialogMarginProperty =
         AvaloniaProperty.Register<DialogHost, Thickness>(nameof(DialogMargin));
 
+    /// <summary>
+    /// Identifies the <see cref="IsOpen"/> property.
+    /// </summary>
     public static readonly DirectProperty<DialogHost, bool> IsOpenProperty =
         AvaloniaProperty.RegisterDirect<DialogHost, bool>(
             nameof(IsOpen),
@@ -48,9 +79,21 @@ public class DialogHost : ContentControl {
             (o, v) => o.IsOpen = v,
             defaultBindingMode: BindingMode.TwoWay);
 
+    /// <summary>
+    /// Identifies the <see cref="DialogOpened"/> routed event.
+    /// </summary>
     public static readonly RoutedEvent DialogOpenedEvent =
         RoutedEvent.Register<DialogHost, DialogOpenedEventArgs>(nameof(DialogOpened), RoutingStrategies.Bubble);
+    
+    /// <summary>
+    /// Identifies the <see cref="DialogClosing"/> routed event.
+    /// </summary>
+    public static readonly RoutedEvent DialogClosingEvent =
+        RoutedEvent.Register<DialogHost, DialogClosingEventArgs>(nameof(DialogClosing), RoutingStrategies.Bubble);
 
+    /// <summary>
+    /// Identifies the <see cref="CloseOnClickAway"/> property.
+    /// </summary>
     public static readonly DirectProperty<DialogHost, bool> CloseOnClickAwayProperty =
         AvaloniaProperty.RegisterDirect<DialogHost, bool>(
             nameof(CloseOnClickAway),
@@ -58,6 +101,9 @@ public class DialogHost : ContentControl {
             (o, v) => o.CloseOnClickAway = v,
             defaultBindingMode: BindingMode.TwoWay);
 
+    /// <summary>
+    /// Identifies the <see cref="CloseOnClickAwayParameter"/> property.
+    /// </summary>
     public static readonly DirectProperty<DialogHost, object?> CloseOnClickAwayParameterProperty =
         AvaloniaProperty.RegisterDirect<DialogHost, object?>(
             nameof(CloseOnClickAwayParameter),
@@ -65,9 +111,9 @@ public class DialogHost : ContentControl {
             (o, v) => o.CloseOnClickAwayParameter = v,
             defaultBindingMode: BindingMode.TwoWay);
 
-    public static readonly RoutedEvent DialogClosingEvent =
-        RoutedEvent.Register<DialogHost, DialogClosingEventArgs>(nameof(DialogClosing), RoutingStrategies.Bubble);
-
+    /// <summary>
+    /// Identifies the <see cref="DialogClosingCallback"/> property.
+    /// </summary>
     public static readonly DirectProperty<DialogHost, DialogClosingEventHandler> DialogClosingCallbackProperty =
         AvaloniaProperty.RegisterDirect<DialogHost, DialogClosingEventHandler>(
             nameof(DialogClosingCallback),
@@ -75,6 +121,9 @@ public class DialogHost : ContentControl {
             (o, v) => o.DialogClosingCallback = v,
             defaultBindingMode: BindingMode.TwoWay);
 
+    /// <summary>
+    /// Identifies the <see cref="DialogOpenedCallback"/> property.
+    /// </summary>
     public static readonly DirectProperty<DialogHost, DialogOpenedEventHandler?> DialogOpenedCallbackProperty =
         AvaloniaProperty.RegisterDirect<DialogHost, DialogOpenedEventHandler?>(
             nameof(DialogOpenedCallback),
@@ -82,21 +131,33 @@ public class DialogHost : ContentControl {
             (o, v) => o.DialogOpenedCallback = v,
             defaultBindingMode: BindingMode.TwoWay);
 
+    /// <summary>
+    /// Identifies the <see cref="OpenDialogCommand"/> property.
+    /// </summary>
     public static readonly DirectProperty<DialogHost, ICommand> OpenDialogCommandProperty =
         AvaloniaProperty.RegisterDirect<DialogHost, ICommand>(
             nameof(OpenDialogCommand),
             o => o.OpenDialogCommand,
             defaultBindingMode: BindingMode.TwoWay);
 
+    /// <summary>
+    /// Identifies the <see cref="CloseDialogCommand"/> property.
+    /// </summary>
     public static readonly DirectProperty<DialogHost, ICommand> CloseDialogCommandProperty =
         AvaloniaProperty.RegisterDirect<DialogHost, ICommand>(
             nameof(CloseDialogCommand),
             o => o.CloseDialogCommand,
             defaultBindingMode: BindingMode.TwoWay);
 
+    /// <summary>
+    /// Identifies the <see cref="PopupTemplate"/> property.
+    /// </summary>
     public static readonly StyledProperty<IControlTemplate?> PopupTemplateProperty =
         AvaloniaProperty.Register<DialogHost, IControlTemplate?>(nameof(PopupTemplate));
 
+    /// <summary>
+    /// Identifies the <see cref="DisableOpeningAnimation"/> property.
+    /// </summary>
     public static readonly DirectProperty<DialogHost, bool> DisableOpeningAnimationProperty =
         AvaloniaProperty.RegisterDirect<DialogHost, bool>(
             nameof(DisableOpeningAnimation),
@@ -104,6 +165,9 @@ public class DialogHost : ContentControl {
             (o, v) => o.DisableOpeningAnimation = v,
             defaultBindingMode: BindingMode.TwoWay);
 
+    /// <summary>
+    /// Identifies the <see cref="PopupPositioner"/> property.
+    /// </summary>
     public static readonly DirectProperty<DialogHost, IDialogPopupPositioner?> PopupPositionerProperty =
         AvaloniaProperty.RegisterDirect<DialogHost, IDialogPopupPositioner?>(
             nameof(PopupPositioner),
@@ -141,56 +205,89 @@ public class DialogHost : ContentControl {
 
     private IDisposable? _templateDisposables;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="DialogHost"/> class.
+    /// </summary>
     public DialogHost() {
-        _closeDialogCommand = new DialogHostCommandImpl(InternalClose, o => IsOpen, this.GetObservable(IsOpenProperty));
-        _openDialogCommand = new DialogHostCommandImpl(o => ShowInternal(o, null, null), o => !IsOpen, this.GetObservable(IsOpenProperty));
+        _closeDialogCommand = new DialogHostCommandImpl(InternalClose, _ => IsOpen, this.GetObservable(IsOpenProperty));
+        _openDialogCommand = new DialogHostCommandImpl(o => _ = ShowCore(o, null, null), o => !IsOpen, this.GetObservable(IsOpenProperty));
     }
 
+    /// <summary>
+    /// Gets or sets the popup template.
+    /// </summary>
     public IControlTemplate? PopupTemplate {
         get => GetValue(PopupTemplateProperty);
         set => SetValue(PopupTemplateProperty, value);
     }
 
+    /// <summary>
+    /// Gets or sets the callback for when the dialog is opened.
+    /// </summary>
     public DialogOpenedEventHandler? DialogOpenedCallback {
         get => _dialogOpenedCallback;
         set => SetAndRaise(DialogOpenedCallbackProperty, ref _dialogOpenedCallback, value);
     }
 
+    /// <summary>
+    /// Gets the command to open the dialog.
+    /// </summary>
     public ICommand OpenDialogCommand {
         get => _openDialogCommand;
         private set => SetAndRaise<ICommand>(OpenDialogCommandProperty, ref _openDialogCommand, value);
     }
 
+    /// <summary>
+    /// Gets the command to close the dialog.
+    /// </summary>
     public ICommand CloseDialogCommand {
         get => _closeDialogCommand;
         private set => SetAndRaise<ICommand>(CloseDialogCommandProperty, ref _closeDialogCommand, value);
     }
 
+    /// <summary>
+    /// Gets or sets the unique identifier for this dialog host instance.
+    /// </summary>
     public string? Identifier {
         get => _identifier;
         set => SetAndRaise(IdentifierProperty, ref _identifier, value);
     }
 
+    /// <summary>
+    /// Gets or sets the content to display in the dialog.
+    /// </summary>
     public object? DialogContent {
         get => GetValue(DialogContentProperty);
         set => SetValue(DialogContentProperty, value);
     }
 
+    /// <summary>
+    /// Gets or sets the template used to display the dialog content.
+    /// </summary>
     public IDataTemplate? DialogContentTemplate {
         get => GetValue(DialogContentTemplateProperty);
         set => SetValue(DialogContentTemplateProperty, value);
     }
 
+    /// <summary>
+    /// Gets or sets the background brush for the overlay.
+    /// </summary>
     public IBrush OverlayBackground {
         get => GetValue(OverlayBackgroundProperty);
         set => SetValue(OverlayBackgroundProperty, value);
     }
 
+    /// <summary>
+    /// Gets or sets the margin around the dialog content.
+    /// </summary>
     public Thickness DialogMargin {
         get => GetValue(DialogMarginProperty);
         set => SetValue(DialogMarginProperty, value);
     }
 
+    /// <summary>
+    /// Gets or sets whether the dialog is currently open.
+    /// </summary>
     public bool IsOpen {
         get => _isOpen;
         set {
@@ -199,16 +296,25 @@ public class DialogHost : ContentControl {
         }
     }
 
+    /// <summary>
+    /// Gets or sets whether clicking outside the dialog area should close it.
+    /// </summary>
     public bool CloseOnClickAway {
         get => _closeOnClickAway;
         set => SetAndRaise(CloseOnClickAwayProperty, ref _closeOnClickAway, value);
     }
 
+    /// <summary>
+    /// Gets or sets the parameter passed to close handler when dialog is closed by clicking away.
+    /// </summary>
     public object? CloseOnClickAwayParameter {
         get => _closeOnClickAwayParameter;
         set => SetAndRaise(CloseOnClickAwayParameterProperty, ref _closeOnClickAwayParameter, value);
     }
 
+    /// <summary>
+    /// Gets or sets whether to disable the opening animation.
+    /// </summary>
     public bool DisableOpeningAnimation {
         get => _disableOpeningAnimation;
         set => SetAndRaise(DisableOpeningAnimationProperty, ref _disableOpeningAnimation, value);
@@ -227,6 +333,9 @@ public class DialogHost : ContentControl {
     /// </summary>
     public DialogSession? CurrentSession { get; private set; }
 
+    /// <summary>
+    /// Gets or sets the callback for when the dialog is closing.
+    /// </summary>
     public DialogClosingEventHandler DialogClosingCallback {
         get => _dialogClosingCallback;
         set => SetAndRaise(DialogClosingCallbackProperty, ref _dialogClosingCallback, value);
@@ -308,7 +417,7 @@ public class DialogHost : ContentControl {
     public static Task<object?> Show(object content, string? dialogIdentifier, DialogOpenedEventHandler? openedEventHandler,
         DialogClosingEventHandler? closingEventHandler) {
         if (content is null) throw new ArgumentNullException(nameof(content));
-        return GetInstance(dialogIdentifier).ShowInternal(content, openedEventHandler, closingEventHandler);
+        return GetInstance(dialogIdentifier).ShowCore(content, openedEventHandler, closingEventHandler);
     }
 
     /// <summary>
@@ -352,7 +461,7 @@ public class DialogHost : ContentControl {
         DialogClosingEventHandler? closingEventHandler) {
         if (content is null) throw new ArgumentNullException(nameof(content));
         if (instance is null) throw new ArgumentNullException(nameof(instance));
-        return instance.ShowInternal(content, openedEventHandler, closingEventHandler);
+        return instance.ShowCore(content, openedEventHandler, closingEventHandler);
     }
 
     /// <summary>Close a modal dialog.</summary>
@@ -366,7 +475,7 @@ public class DialogHost : ContentControl {
     /// <param name="dialogIdentifier"> of the instance where the dialog should be closed. Typically this will match an identifier set in XAML. </param>
     /// <param name="parameter"> to provide to close handler</param>
     public static void Close(string? dialogIdentifier, object? parameter) {
-        DialogHost dialogHost = GetInstance(dialogIdentifier);
+        var dialogHost = GetInstance(dialogIdentifier);
         if (dialogHost.CurrentSession is { } currentSession) {
             currentSession.Close(parameter);
             return;
@@ -381,7 +490,7 @@ public class DialogHost : ContentControl {
     /// <param name="dialogIdentifier">The identifier to use to retrieve the DialogHost</param>
     /// <returns>The DialogSession if one is in process, or null</returns>
     public static DialogSession? GetDialogSession(string? dialogIdentifier) {
-        DialogHost dialogHost = GetInstance(dialogIdentifier);
+        var dialogHost = GetInstance(dialogIdentifier);
         return dialogHost.CurrentSession;
     }
 
@@ -393,10 +502,10 @@ public class DialogHost : ContentControl {
     public static bool IsDialogOpen(string? dialogIdentifier) => GetDialogSession(dialogIdentifier)?.IsEnded == false;
 
     private static DialogHost GetInstance(string? dialogIdentifier) {
-        if (LoadedInstances.Count == 0)
+        if (_loadedInstances.Count == 0)
             throw new InvalidOperationException("No loaded DialogHost instances.");
 
-        var targets = LoadedInstances.Where(dh => dialogIdentifier == null || Equals(dh.Identifier, dialogIdentifier)).ToList();
+        var targets = _loadedInstances.Where(dh => dialogIdentifier == null || Equals(dh.Identifier, dialogIdentifier)).ToList();
         if (targets.Count == 0)
             throw new InvalidOperationException(
                 $"No loaded DialogHost have an {nameof(Identifier)} property matching {nameof(dialogIdentifier)} ('{dialogIdentifier}') argument.");
@@ -407,7 +516,7 @@ public class DialogHost : ContentControl {
         return targets[0];
     }
 
-    internal async Task<object?> ShowInternal(object content, DialogOpenedEventHandler? openedEventHandler,
+    private async Task<object?> ShowCore(object content, DialogOpenedEventHandler? openedEventHandler,
         DialogClosingEventHandler? closingEventHandler) {
         if (IsOpen)
             throw new InvalidOperationException("DialogHost is already open.");
@@ -421,7 +530,7 @@ public class DialogHost : ContentControl {
         _asyncShowClosingEventHandler = closingEventHandler;
         IsOpen = true;
 
-        object? result = await _dialogTaskCompletionSource.Task;
+        var result = await _dialogTaskCompletionSource.Task;
 
         _asyncShowOpenedEventHandler = null;
         _asyncShowClosingEventHandler = null;
@@ -476,11 +585,15 @@ public class DialogHost : ContentControl {
         dialogHost.RaiseCommandsCanExecuteChanged();
     }
 
+    /// <summary>
+    /// Raises the can execute changed on open and close commands
+    /// </summary>
     protected void RaiseCommandsCanExecuteChanged() {
         (_openDialogCommand as DialogHostCommandImpl)?.OnCanExecuteChanged();
         (_closeDialogCommand as DialogHostCommandImpl)?.OnCanExecuteChanged();
     }
 
+    /// <inheritdoc />
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e) {
         _templateDisposables?.Dispose();
 
@@ -516,7 +629,11 @@ public class DialogHost : ContentControl {
         }
     }
 
-    protected void OnDialogOpened(DialogOpenedEventArgs dialogOpenedEventArgs) => RaiseEvent(dialogOpenedEventArgs);
+    /// <summary>
+    /// Called when dialog is opened
+    /// </summary>
+    /// <param name="dialogOpenedEventArgs">Dialog opened event arguments</param>
+    protected virtual void OnDialogOpened(DialogOpenedEventArgs dialogOpenedEventArgs) => RaiseEvent(dialogOpenedEventArgs);
 
     /// <summary>
     /// Raised when a dialog is opened.
@@ -534,7 +651,11 @@ public class DialogHost : ContentControl {
         remove => RemoveHandler(DialogClosingEvent, value);
     }
 
-    protected void OnDialogClosing(DialogClosingEventArgs eventArgs) => RaiseEvent(eventArgs);
+    /// <summary>
+    /// Called when dialog is closed
+    /// </summary>
+    /// <param name="eventArgs">Dialog closed event arguments</param>
+    protected virtual void OnDialogClosing(DialogClosingEventArgs eventArgs) => RaiseEvent(eventArgs);
 
     internal void InternalClose(object? parameter) {
         var currentSession = CurrentSession ?? throw new InvalidOperationException($"{nameof(DialogHost)} does not have a current session");
@@ -559,13 +680,15 @@ public class DialogHost : ContentControl {
         IsOpen = false;
     }
 
+    /// <inheritdoc />
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e) {
         base.OnAttachedToVisualTree(e);
-        LoadedInstances.Add(this);
+        _loadedInstances.Add(this);
     }
 
+    /// <inheritdoc />
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e) {
         base.OnDetachedFromVisualTree(e);
-        LoadedInstances.Remove(this);
+        _loadedInstances.Remove(this);
     }
 }
