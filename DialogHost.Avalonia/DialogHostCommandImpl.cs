@@ -2,29 +2,29 @@
 using System.Windows.Input;
 using DialogHostAvalonia.Utilities;
 
-namespace DialogHostAvalonia {
-    internal class DialogHostCommandImpl : ICommand {
-        private readonly Func<object, bool> _canExecuteFunc;
-        private readonly Action<object> _executeFunc;
+namespace DialogHostAvalonia;
 
-        public DialogHostCommandImpl(Action<object> executeFunc, Func<object, bool>? canExecuteFunc, IObservable<bool> canExecuteChangedObservable) {
-            _canExecuteFunc = canExecuteFunc ?? (o => true) ;
-            _executeFunc = executeFunc;
-            canExecuteChangedObservable.Subscribe(_ => OnCanExecuteChanged());
-        }
+internal class DialogHostCommandImpl : ICommand {
+    private readonly Func<object, bool> _canExecuteFunc;
+    private readonly Action<object> _executeFunc;
 
-        public bool CanExecute(object parameter) {
-            return _canExecuteFunc(parameter);
-        }
+    public DialogHostCommandImpl(Action<object> executeFunc, Func<object, bool>? canExecuteFunc, IObservable<bool> canExecuteChangedObservable) {
+        _canExecuteFunc = canExecuteFunc ?? (o => true) ;
+        _executeFunc = executeFunc;
+        canExecuteChangedObservable.Subscribe(_ => OnCanExecuteChanged());
+    }
 
-        public void Execute(object parameter) {
-            _executeFunc(parameter);
-        }
+    public bool CanExecute(object parameter) {
+        return _canExecuteFunc(parameter);
+    }
 
-        public event EventHandler? CanExecuteChanged;
+    public void Execute(object parameter) {
+        _executeFunc(parameter);
+    }
 
-        protected internal virtual void OnCanExecuteChanged() {
-            CanExecuteChanged?.Invoke(this, EventArgs.Empty);
-        }
+    public event EventHandler? CanExecuteChanged;
+
+    protected internal virtual void OnCanExecuteChanged() {
+        CanExecuteChanged?.Invoke(this, EventArgs.Empty);
     }
 }

@@ -1,19 +1,19 @@
 ﻿using System;
 using Avalonia.Interactivity;
 
-namespace DialogHostAvalonia {
-    public class DialogOpenedEventArgs : RoutedEventArgs {
-        public DialogOpenedEventArgs(DialogSession session, RoutedEvent routedEvent)
-        {
-            if (session == null) throw new ArgumentNullException(nameof(session));
+namespace DialogHostAvalonia;
 
-            Session = session;
-            RoutedEvent = routedEvent;
-        }
+public class DialogOpenedEventArgs : RoutedEventArgs {
+    public DialogOpenedEventArgs(DialogSession session, RoutedEvent routedEvent)
+    {
+        if (session == null) throw new ArgumentNullException(nameof(session));
 
-        /// <summary>
-        /// Allows interation with the current dialog session.
-        /// </summary>
-        public DialogSession Session { get; }
+        Session = session;
+        RoutedEvent = routedEvent;
     }
+
+    /// <summary>
+    /// Allows interation with the current dialog session.
+    /// </summary>
+    public DialogSession Session { get; }
 }
