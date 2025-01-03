@@ -1,24 +1,26 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-    <PropertyGroup>
-        <OutputType>WinExe</OutputType>
-        <TargetFramework>net8.0</TargetFramework>
-        <Nullable>enable</Nullable>
-        <RootNamespace>DialogHostDemo</RootNamespace>
-        <IsPackable>false</IsPackable>
-    </PropertyGroup>
-    <ItemGroup>
-        <Folder Include="Models\" />
-        <AvaloniaResource Include="Assets\**" />
-    </ItemGroup>
-    <ItemGroup>
-        <PackageReference Include="Avalonia" Version="11.1.3" />
-        <PackageReference Include="Avalonia.Desktop" Version="11.1.3" />
-        <PackageReference Include="Avalonia.Diagnostics" Version="11.1.3" />
-        <PackageReference Include="Avalonia.ReactiveUI" Version="11.1.3" />
-        <PackageReference Include="Avalonia.Themes.Fluent" Version="11.1.3" />
-        <PackageReference Include="Material.Icons.Avalonia" Version="2.1.0" />
-    </ItemGroup>
-    <ItemGroup>
-      <ProjectReference Include="..\DialogHost.Avalonia\DialogHost.Avalonia.csproj" />
-    </ItemGroup>
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <RootNamespace>DialogHostDemo</RootNamespace>
+    <IsPackable>false</IsPackable>
+
+    <AvaloniaVersion>11.2.3</AvaloniaVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <Folder Include="Models\"/>
+    <AvaloniaResource Include="Assets\**"/>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Avalonia" Version="$(AvaloniaVersion)"/>
+    <PackageReference Include="Avalonia.Desktop" Version="$(AvaloniaVersion)"/>
+    <PackageReference Include="Avalonia.Diagnostics" Version="$(AvaloniaVersion)"/>
+    <PackageReference Include="Avalonia.ReactiveUI" Version="$(AvaloniaVersion)"/>
+    <PackageReference Include="Avalonia.Themes.Fluent" Version="$(AvaloniaVersion)"/>
+    <PackageReference Include="Material.Icons.Avalonia" Version="2.1.0"/>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DialogHost.Avalonia\DialogHost.Avalonia.csproj"/>
+  </ItemGroup>
 </Project>
