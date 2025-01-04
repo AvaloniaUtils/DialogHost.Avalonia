@@ -87,13 +87,13 @@ public class DialogHost : ContentControl {
     /// <summary>
     /// Identifies the <see cref="DialogOpened"/> routed event.
     /// </summary>
-    public static readonly RoutedEvent DialogOpenedEvent =
+    public static readonly RoutedEvent<DialogOpenedEventArgs> DialogOpenedEvent =
         RoutedEvent.Register<DialogHost, DialogOpenedEventArgs>(nameof(DialogOpened), RoutingStrategies.Bubble);
     
     /// <summary>
     /// Identifies the <see cref="DialogClosing"/> routed event.
     /// </summary>
-    public static readonly RoutedEvent DialogClosingEvent =
+    public static readonly RoutedEvent<DialogClosingEventArgs> DialogClosingEvent =
         RoutedEvent.Register<DialogHost, DialogClosingEventArgs>(nameof(DialogClosing), RoutingStrategies.Bubble);
 
     /// <summary>
