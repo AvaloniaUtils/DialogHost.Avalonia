@@ -37,13 +37,14 @@ public class DialogHostStyles : Styles, IResourceNode {
     /// <summary>
     /// Lists of resource keys which will be used as defaults for DialogHost.Background property
     /// </summary>
-    public static IReadOnlyList<string> BackgroundColorKeys { get; } = ["SystemControlPageBackgroundChromeLowBrush"];
+    public static IReadOnlyList<string> BackgroundColorKeys { get; } =
+        ["SystemControlBackgroundAltHighBrush", "MaterialDesignPaper", "MaterialPaperBrush"];
 
     /// <summary>
     /// Lists of resource keys which will be used as defaults for DialogHost.OverlayBackground property
     /// </summary>
     public static IReadOnlyList<string> OverlayBackgroundColorKeys { get; } =
-        ["SystemControlBackgroundAltHighBrush", "MaterialDesignPaper", "MaterialPaperBrush"];
+        ["SystemControlPageBackgroundChromeLowBrush"];
 
     bool IResourceNode.HasResources => true;
 
@@ -57,7 +58,7 @@ public class DialogHostStyles : Styles, IResourceNode {
     /// if the key is found; otherwise, null.
     /// </param>
     /// <returns>
-    /// True if the resource if found, otherwise false.
+    /// True if the resource is found, otherwise false.
     /// </returns>
     bool IResourceNode.TryGetResource(object key, ThemeVariant? theme, out object? value) {
         if (key is "DialogHostBackgroundMixinBrush") {
@@ -66,7 +67,7 @@ public class DialogHostStyles : Styles, IResourceNode {
                     return true;
                 }
             }
-                
+
             value = Brushes.Black;
             return true;
         }
@@ -77,7 +78,7 @@ public class DialogHostStyles : Styles, IResourceNode {
                     return true;
                 }
             }
-                
+
             value = Brushes.Black;
             return true;
         }
