@@ -44,7 +44,7 @@ public class DialogHostStyles : Styles, IResourceNode {
     /// Lists of resource keys which will be used as defaults for DialogHost.OverlayBackground property
     /// </summary>
     public static IReadOnlyList<string> OverlayBackgroundColorKeys { get; } =
-        ["SystemControlPageBackgroundChromeLowBrush"];
+        ["SystemChromeDisabledLowColor", "MaterialBodyLightColor"];
 
     bool IResourceNode.HasResources => true;
 
