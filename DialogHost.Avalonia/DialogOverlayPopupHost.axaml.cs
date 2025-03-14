@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
@@ -8,7 +9,7 @@ using DialogHostAvalonia.Positioners;
 
 namespace DialogHostAvalonia;
 
-public class DialogOverlayPopupHost(Panel root) : ContentControl, ICustomKeyboardNavigation {
+public class DialogOverlayPopupHost : ContentControl, ICustomKeyboardNavigation {
     public static readonly DirectProperty<DialogOverlayPopupHost, bool> IsOpenProperty =
         AvaloniaProperty.RegisterDirect<DialogOverlayPopupHost, bool>(
             nameof(IsOpen),
@@ -30,7 +31,16 @@ public class DialogOverlayPopupHost(Panel root) : ContentControl, ICustomKeyboar
 
     private bool _disableOpeningAnimation;
     private bool _isOpen;
+    private DialogHost _host;
     private IDialogPopupPositioner? _popupPositioner;
+
+    internal readonly TaskCompletionSource<object?> DialogTaskCompletionSource = new();
+    internal readonly DialogSession Session;
+
+    public DialogOverlayPopupHost(DialogHost host) {
+        _host = host;
+        Session = new(host, this);
+    }
 
     public bool IsOpen {
         get => _isOpen;
@@ -64,9 +74,9 @@ public class DialogOverlayPopupHost(Panel root) : ContentControl, ICustomKeyboar
         }
     }
 
-    public void Show() {
+    internal void Show() {
         if (Parent == null) {
-            root.Children.Add(this);
+            _host.Root.Children.Add(this);
         }
 
         // Set the minimum priority to allow overriding it everywhere
@@ -75,8 +85,8 @@ public class DialogOverlayPopupHost(Panel root) : ContentControl, ICustomKeyboar
         UpdatePosition();
     }
 
-    public void Hide() {
-        root.Children.Remove(this);
+    internal void Hide() {
+        _host.Root.Children.Remove(this);
     }
 
     protected override Size MeasureOverride(Size availableSize) {
@@ -138,5 +148,10 @@ public class DialogOverlayPopupHost(Panel root) : ContentControl, ICustomKeyboar
         }
 
         base.OnPropertyChanged(change);
+    }
+
+    internal void Pop() {
+        Hide();
+        Show();
     }
 }

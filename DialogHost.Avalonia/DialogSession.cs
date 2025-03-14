@@ -8,8 +8,10 @@ namespace DialogHostAvalonia;
 public class DialogSession {
     private readonly DialogHost _owner;
 
-    internal DialogSession(DialogHost owner)
-        => _owner = owner ?? throw new ArgumentNullException(nameof(owner));
+    internal DialogSession(DialogHost owner, DialogOverlayPopupHost host) {
+        _owner = owner ?? throw new ArgumentNullException(nameof(owner));
+        Host = host ?? throw new ArgumentNullException(nameof(host));
+    }
 
     /// <summary>
     /// Indicates if the dialog session has ended.  Once ended no further method calls will be permitted.
@@ -25,17 +27,21 @@ public class DialogSession {
     internal object? CloseParameter { get; set; }
 
     /// <summary>
+    /// Dialog Overlay Popup Host, To set content
+    /// </summary>
+    public DialogOverlayPopupHost Host { get; private set; }
+
+    /// <summary>
     /// Gets the <see cref="DialogHost.DialogContent"/> which is currently displayed, so this could be a view model or a UI element.
     /// </summary>
-    public object? Content => _owner.DialogContent;
+    public object? Content => Host.Content;
 
     /// <summary>
     /// Update the current content in the dialog.
     /// </summary>
     /// <param name="content"></param>
-    public void UpdateContent(object content)
-    {
-        _owner.DialogContent = content ?? throw new ArgumentNullException(nameof(content));
+    public void UpdateContent(object content) {
+        Host.Content = content ?? throw new ArgumentNullException(nameof(content));
     }
 
     /// <summary>

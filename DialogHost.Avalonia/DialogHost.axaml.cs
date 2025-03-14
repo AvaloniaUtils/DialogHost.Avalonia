@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -205,7 +206,6 @@ public class DialogHost : ContentControl {
 
     private DialogOpenedEventHandler? _dialogOpenedCallback;
 
-    private TaskCompletionSource<object?>? _dialogTaskCompletionSource;
     private bool _disableOpeningAnimation;
 
     private string? _identifier;
@@ -213,14 +213,15 @@ public class DialogHost : ContentControl {
     private bool _isOpen;
 
     private ICommand _openDialogCommand;
-    private DialogOverlayPopupHost? _overlayPopupHost;
+    private readonly List<DialogOverlayPopupHost> _overlayPopupHosts = [];
 
     private IDialogPopupPositioner? _popupPositioner;
     private IInputElement? _restoreFocusDialogClose;
 
-    private Panel _root;
+    internal Panel Root;
 
     private IDisposable? _templateDisposables;
+    private readonly DisposeList _disposeList = new();
 
     /// <summary>
     /// Initializes a new instance of the <see cref="DialogHost"/> class.
@@ -309,7 +310,7 @@ public class DialogHost : ContentControl {
         get => _isOpen;
         set {
             SetAndRaise(IsOpenProperty, ref _isOpen, value);
-            IsOpenPropertyChangedCallback(this, value);
+            IsOpenPropertyChangedCallback(value);
         }
     }
 
@@ -503,18 +504,66 @@ public class DialogHost : ContentControl {
         => Close(dialogIdentifier, null);
 
     /// <summary>
+    /// Close a modal dialog, with content
+    /// </summary>
+    /// <param name="dialogIdentifier">of the instance where the dialog should be closed. Typically this will match an identifier set in XAML.</param>
+    /// <param name="parameter">to provide to close handler</param>
+    public static void Close(string? dialogIdentifier, object? parameter)
+        => Close(dialogIdentifier, parameter, null);
+
+    /// <summary>
     ///  Close a modal dialog.
     /// </summary>
     /// <param name="dialogIdentifier"> of the instance where the dialog should be closed. Typically this will match an identifier set in XAML. </param>
-    /// <param name="parameter"> to provide to close handler</param>
-    public static void Close(string? dialogIdentifier, object? parameter) {
+    /// <param name="parameter">to provide to close handler</param>
+    /// <param name="content">the open content</param>
+    public static void Close(string? dialogIdentifier, object? parameter, object? content) {
         var dialogHost = GetInstance(dialogIdentifier);
-        if (dialogHost.CurrentSession is { } currentSession) {
-            currentSession.Close(parameter);
+        if (dialogHost != null) {
+            if (content == null) {
+                if (dialogHost.CurrentSession is { } currentSession) {
+                    currentSession.Close(parameter);
+                    return;
+                }
+            }
+            else {
+                foreach (var item in dialogHost._overlayPopupHosts) {
+                    if (item.Content == content) {
+                        item.Session.Close(parameter);
+                        return;
+                    }
+                }
+            }
+        }
+
+        throw new InvalidOperationException("DialogHost is not open.");
+    }
+
+    /// <summary>
+    /// Make the content pop in dialog
+    /// </summary>
+    /// <param name="dialogIdentifier"><see cref="Identifier"/> of the instance where the dialog should be shown. Typically this will match an identifier set in XAML. <c>null</c> is allowed.</param>
+    /// <param name="content">Content to show (can be a control or view model).</param>
+    public static void Pop(string? dialogIdentifier, object? content) {
+        var dialogHost = GetInstance(dialogIdentifier);
+        if (dialogHost != null) {
+            dialogHost.PopCore(content);
             return;
         }
 
         throw new InvalidOperationException("DialogHost is not open.");
+    }
+
+    private void PopCore(object? content) {
+        foreach (var item in _overlayPopupHosts) {
+            if (item.Content == content) {
+                _overlayPopupHosts.Remove(item);
+                _overlayPopupHosts.Add(item);
+                CurrentSession = item.Session;
+                item.Pop();
+                return;
+            }
+        }
     }
 
     /// <summary>
@@ -551,19 +600,14 @@ public class DialogHost : ContentControl {
 
     private async Task<object?> ShowCore(object content, DialogOpenedEventHandler? openedEventHandler,
         DialogClosingEventHandler? closingEventHandler) {
-        if (IsOpen)
-            throw new InvalidOperationException("DialogHost is already open.");
 
-        _dialogTaskCompletionSource = new TaskCompletionSource<object?>();
-
-        if (content != null)
-            DialogContent = content;
+        var task = AddHost(content ?? DialogContent);
 
         _asyncShowOpenedEventHandler = openedEventHandler;
         _asyncShowClosingEventHandler = closingEventHandler;
         IsOpen = true;
 
-        var result = await _dialogTaskCompletionSource.Task;
+        var result = await task.Task;
 
         _asyncShowOpenedEventHandler = null;
         _asyncShowClosingEventHandler = null;
@@ -571,51 +615,28 @@ public class DialogHost : ContentControl {
         return result;
     }
 
-    private static void IsOpenPropertyChangedCallback(DialogHost dialogHost, bool newValue) {
+    private void IsOpenPropertyChangedCallback(bool newValue) {
         if (newValue) {
-            dialogHost.CurrentSession = new DialogSession(dialogHost);
-            dialogHost._restoreFocusDialogClose = TopLevel.GetTopLevel(dialogHost)?.FocusManager?.GetFocusedElement();
-
-            if (dialogHost._overlayPopupHost != null)
-                dialogHost._overlayPopupHost.IsOpen = true;
+            _restoreFocusDialogClose = TopLevel.GetTopLevel(this)?.FocusManager?.GetFocusedElement();
 
             //multiple ways of calling back that the dialog has opened:
             // * routed event
             // * straight forward dependency property 
             // * handler provided to the async show method
-            var dialogOpenedEventArgs = new DialogOpenedEventArgs(dialogHost.CurrentSession, DialogOpenedEvent);
-            dialogHost.OnDialogOpened(dialogOpenedEventArgs);
-            dialogHost.DialogOpenedCallback?.Invoke(dialogHost, dialogOpenedEventArgs);
-            dialogHost._asyncShowOpenedEventHandler?.Invoke(dialogHost, dialogOpenedEventArgs);
+            var dialogOpenedEventArgs = new DialogOpenedEventArgs(CurrentSession!, DialogOpenedEvent);
+            OnDialogOpened(dialogOpenedEventArgs);
+            DialogOpenedCallback?.Invoke(this, dialogOpenedEventArgs);
+            _asyncShowOpenedEventHandler?.Invoke(this, dialogOpenedEventArgs);
 
             // dialogHost._overlayPopupHost?.ConfigurePosition(dialogHost._root, PlacementMode.AnchorAndGravity, new Point());
         }
         else {
-            object? closeParameter = null;
-            if (dialogHost.CurrentSession is { } session) {
-                if (!session.IsEnded) {
-                    session.Close(session.CloseParameter);
-                }
+            RemoveAllHost();
 
-                //DialogSession.Close may attempt to cancel the closing of the dialog.
-                //When the dialog is closed in this manner it is not valid
-                if (!session.IsEnded) {
-                    throw new InvalidOperationException($"Cannot cancel dialog closing after {nameof(IsOpen)} property has been set to {bool.FalseString}");
-                }
-
-                closeParameter = session.CloseParameter;
-                dialogHost.CurrentSession = null;
-            }
-
-            if (dialogHost._overlayPopupHost != null)
-                dialogHost._overlayPopupHost.IsOpen = false;
-            //NB: _dialogTaskCompletionSource is only set in the case where the dialog is shown with Show
-            dialogHost._dialogTaskCompletionSource?.TrySetResult(closeParameter);
-
-            dialogHost._restoreFocusDialogClose?.Focus();
+            _restoreFocusDialogClose?.Focus();
         }
 
-        dialogHost.RaiseCommandsCanExecuteChanged();
+        RaiseCommandsCanExecuteChanged();
     }
 
     /// <summary>
@@ -630,32 +651,126 @@ public class DialogHost : ContentControl {
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e) {
         _templateDisposables?.Dispose();
 
-        _root = e.NameScope.Find<Panel>(DialogHostRoot) 
+        Root = e.NameScope.Find<Panel>(DialogHostRoot) 
                 ?? throw new InvalidOperationException($"No Panel with name {DialogHostRoot} found. " +
                                                        $"Did you add the styles as stated in getting started?");
-        _overlayPopupHost = new DialogOverlayPopupHost(_root) {
-            Content = DialogContent, ContentTemplate = DialogContentTemplate, Template = PopupTemplate,
-            Padding = DialogMargin, ClipToBounds = false, DisableOpeningAnimation = DisableOpeningAnimation,
-            PopupPositioner = PopupPositioner
-        };
 
         if (IsOpen) {
-            _overlayPopupHost.IsOpen = true;
+            AddHost(DialogContent);
+            //_overlayPopupHost.IsOpen = true;
             // _overlayPopupHost?.ConfigurePosition(_root, PlacementMode.AnchorAndGravity, new Point());
         }
 
         _templateDisposables = new CompositeDisposable() {
             // this.GetObservable(BoundsProperty)
             // .Subscribe(rect => _overlayPopupHost?.ConfigurePosition(_root, PlacementMode.AnchorAndGravity, new Point())),
-            _overlayPopupHost!.Bind(DisableOpeningAnimationProperty, this.GetBindingObservable(DisableOpeningAnimationProperty)),
-            _overlayPopupHost!.Bind(ContentProperty, this.GetBindingObservable(DialogContentProperty)),
-            _overlayPopupHost!.Bind(ContentTemplateProperty, this.GetBindingObservable(DialogContentTemplateProperty)),
-            _overlayPopupHost!.Bind(TemplateProperty, this.GetBindingObservable(PopupTemplateProperty)),
-            _overlayPopupHost!.Bind(PaddingProperty, this.GetBindingObservable(DialogMarginProperty)),
-            _overlayPopupHost!.Bind(PopupPositionerProperty, this.GetBindingObservable(PopupPositionerProperty)),
+            _disposeList,
             e.NameScope.Find<Rectangle>(ContentCoverName)?.AddDisposableHandler(PointerReleasedEvent, ContentCoverGrid_OnPointerReleased) ?? EmptyDisposable.Instance
         };
         base.OnApplyTemplate(e);
+    }
+
+    private class DisposeList : IDisposable {
+        private readonly Dictionary<DialogOverlayPopupHost, List<IDisposable>> _hostDisposeList = [];
+
+        public void Dispose() {
+            foreach (var list in _hostDisposeList.Values) {
+                foreach (var item in list) {
+                    item.Dispose();
+                }
+            }
+            _hostDisposeList.Clear();
+        }
+
+        public void AddDispose(DialogOverlayPopupHost host, params IDisposable[] disposables) {
+            _hostDisposeList[host] = [.. disposables];
+        }
+
+        public void RemoveDispose(DialogOverlayPopupHost host) {
+            if (_hostDisposeList.TryGetValue(host, out var list)) {
+                _hostDisposeList.Remove(host);
+                foreach (var item in list) {
+                    item.Dispose();
+                }
+            }
+        }
+    }
+
+    private TaskCompletionSource<object?> AddHost(object? content) {
+        foreach (var item in _overlayPopupHosts) {
+            if (item.Content == content) {
+                return item.DialogTaskCompletionSource;
+            }
+        }
+
+        var host = new DialogOverlayPopupHost(this) {
+            Content = content, ContentTemplate = DialogContentTemplate, Template = PopupTemplate,
+            Padding = DialogMargin, ClipToBounds = false, DisableOpeningAnimation = DisableOpeningAnimation,
+            PopupPositioner = PopupPositioner
+        };
+
+        _disposeList.AddDispose(host, 
+            host.Bind(DisableOpeningAnimationProperty, this.GetBindingObservable(DisableOpeningAnimationProperty)),
+            //host.Bind(ContentProperty, this.GetBindingObservable(DialogContentProperty)),
+            host.Bind(ContentTemplateProperty, this.GetBindingObservable(DialogContentTemplateProperty)),
+            host.Bind(TemplateProperty, this.GetBindingObservable(PopupTemplateProperty)),
+            host.Bind(PaddingProperty, this.GetBindingObservable(DialogMarginProperty)),
+            host.Bind(PopupPositionerProperty, this.GetBindingObservable(PopupPositionerProperty)));
+
+        CurrentSession = host.Session;
+
+        host.IsOpen = true;
+
+        _overlayPopupHosts.Add(host);
+
+        return host.DialogTaskCompletionSource;
+    }
+
+    private void RemoveHost(DialogOverlayPopupHost? host) {
+        if (host == null) {
+            return;
+        }
+
+        var session = host.Session;
+        if (!session.IsEnded) {
+            session.Close(session.CloseParameter);
+        }
+
+        //DialogSession.Close may attempt to cancel the closing of the dialog.
+        //When the dialog is closed in this manner it is not valid
+        if (!session.IsEnded) {
+            throw new InvalidOperationException($"Cannot cancel dialog closing after {nameof(IsOpen)} property has been set to {bool.FalseString}");
+        }
+
+        //NB: _dialogTaskCompletionSource is only set in the case where the dialog is shown with Show
+        host.DialogTaskCompletionSource.TrySetResult(session.CloseParameter);
+        host.IsOpen = false;
+        host.Content = null;
+
+        _disposeList.RemoveDispose(host);
+
+        _overlayPopupHosts.Remove(host);
+
+        if (_overlayPopupHosts.Count == 0) {
+            SetAndRaise(IsOpenProperty, ref _isOpen, false);
+        }
+        else {
+            GetLastHost();
+        }
+    }
+
+    private void GetLastHost() {
+        if (_overlayPopupHosts.LastOrDefault() is { } host) {
+            CurrentSession = host.Session;
+        }
+    }
+
+    private void RemoveAllHost() {
+        foreach (var host in _overlayPopupHosts.ToArray()) {
+            RemoveHost(host);
+        }
+
+        CurrentSession = null;
     }
 
     private void ContentCoverGrid_OnPointerReleased(object sender, PointerReleasedEventArgs e) {
@@ -712,7 +827,8 @@ public class DialogHost : ContentControl {
             return;
         }
 
-        IsOpen = false;
+        //IsOpen = false;
+        RemoveHost(currentSession.Host);
     }
 
     /// <inheritdoc />

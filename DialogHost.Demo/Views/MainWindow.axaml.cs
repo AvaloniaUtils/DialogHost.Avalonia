@@ -29,7 +29,7 @@ public partial class MainWindow : Window {
     }
         
     private async void OpenDialogWithModel(object? sender, RoutedEventArgs e) {
-        await DialogHost.Show(new Sample3Model(new Random().Next(0, 100)), "MainDialogHost");
+        await DialogHost.Show(new Sample3Model(new Random().Next(0, 100)), "NoAnimationDialogHost");
     }
 
     private async void OpenBlurDialog(object? sender, RoutedEventArgs e) {
