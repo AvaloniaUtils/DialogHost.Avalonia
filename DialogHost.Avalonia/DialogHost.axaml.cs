@@ -747,6 +747,8 @@ public class DialogHost : ContentControl {
         host.IsOpen = false;
         host.Content = null;
 
+        CurrentSession = null;
+
         _disposeList.RemoveDispose(host);
 
         _overlayPopupHosts.Remove(host);
