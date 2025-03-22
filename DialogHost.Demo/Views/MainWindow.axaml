@@ -78,6 +78,7 @@
               MinHeight="200" MinWidth="200"
               BorderThickness="1" BorderBrush="Black">
         <dialogHostAvalonia:DialogHost Identifier="NoAnimationDialogHost"
+                                       Name="NoAnimationDialogHost"
                                        DisableOpeningAnimation="True"
                                        Classes="disable-content-cover-animations">
           <Button HorizontalAlignment="Center" VerticalAlignment="Center"
@@ -94,6 +95,9 @@
       <StackPanel Grid.Column="4" Grid.Row="2">
         <Button Margin="8" Click="OpenNoAnimationDialog">PASS VIEW</Button>
         <Button Margin="8" Click="OpenDialogWithModel">PASS MODEL</Button>
+        <Button Margin="8" Click="CloseDialogWithModel">PASS CLOSE</Button>
+        <Button Margin="8" Click="OffDialogWithModel">PASS IsOpen=false</Button>
+        <Button Margin="8" Click="OnDialogWithModel">PASS IsOpen=true</Button>
       </StackPanel>
 
       <TextBlock Grid.Column="6" Grid.Row="0"

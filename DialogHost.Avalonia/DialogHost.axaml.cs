@@ -617,7 +617,9 @@ public class DialogHost : ContentControl {
 
     private void IsOpenPropertyChangedCallback(bool newValue) {
         if (newValue) {
-            AddHost(DialogContent);
+            if (_overlayPopupHosts.Count == 0) {
+                AddHost(DialogContent);
+            }
 
             _restoreFocusDialogClose = TopLevel.GetTopLevel(this)?.FocusManager?.GetFocusedElement();
 
@@ -770,7 +772,7 @@ public class DialogHost : ContentControl {
     }
 
     private void RemoveAllHost() {
-        foreach (var host in _overlayPopupHosts.ToArray()) {
+        foreach (var host in _overlayPopupHosts.ToArray().Reverse()) {
             RemoveHost(host);
         }
 
