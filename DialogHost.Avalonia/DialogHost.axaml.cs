@@ -617,6 +617,8 @@ public class DialogHost : ContentControl {
 
     private void IsOpenPropertyChangedCallback(bool newValue) {
         if (newValue) {
+            AddHost(DialogContent);
+
             _restoreFocusDialogClose = TopLevel.GetTopLevel(this)?.FocusManager?.GetFocusedElement();
 
             //multiple ways of calling back that the dialog has opened:
