@@ -15,10 +15,6 @@ public partial class MainWindow : Window {
         this.AttachDevTools();
 #endif
     }
-
-    //private void InitializeComponent() {
-    //    AvaloniaXamlLoader.Load(this);
-    //}
     
     private async void OpenNoAnimationDialog(object? sender, RoutedEventArgs e) {
         await DialogHost.Show(Resources["Sample2View"]!, "NoAnimationDialogHost");
