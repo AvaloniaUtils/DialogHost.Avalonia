@@ -52,6 +52,14 @@ public class DialogHost : ContentControl {
             (o, v) => o.Identifier = v);
 
     /// <summary>
+    /// Identified the <see cref="IsMultipleDialogsSupported"/>
+    /// </summary>
+    public static readonly DirectProperty<DialogHost, bool> IsMultipleDialogsSupportedProperty = 
+        AvaloniaProperty.RegisterDirect<DialogHost, bool>(nameof(IsMultipleDialogsSupported), 
+            o => o.IsMultipleDialogsSupported, 
+            (o, v) => o.IsMultipleDialogsSupported = v);
+
+    /// <summary>
     /// Identifies the <see cref="DialogContent"/> property.
     /// </summary>
     public static readonly StyledProperty<object?> DialogContentProperty =
@@ -195,6 +203,8 @@ public class DialogHost : ContentControl {
 
     private DialogClosingEventHandler? _asyncShowClosingEventHandler;
     private DialogOpenedEventHandler? _asyncShowOpenedEventHandler;
+    
+    private bool _isMultipleDialogsSupported;
 
     private ICommand _closeDialogCommand;
 
@@ -269,6 +279,14 @@ public class DialogHost : ContentControl {
     public string? Identifier {
         get => _identifier;
         set => SetAndRaise(IdentifierProperty, ref _identifier, value);
+    }
+    
+    /// <summary>
+    /// Gets or sets is opening multiple dialogs at the same supported 
+    /// </summary>
+    public bool IsMultipleDialogsSupported {
+        get => _isMultipleDialogsSupported;
+        set => SetAndRaise(IsMultipleDialogsSupportedProperty, ref _isMultipleDialogsSupported, value);
     }
 
     /// <summary>
@@ -600,9 +618,12 @@ public class DialogHost : ContentControl {
 
     private async Task<object?> ShowCore(object? content, DialogOpenedEventHandler? openedEventHandler,
         DialogClosingEventHandler? closingEventHandler) {
+        if (!IsMultipleDialogsSupported && IsOpen)
+            throw new InvalidOperationException("DialogHost is already open and IsMultipleDialogsSupported is false.");
 
         var task = AddHost(content);
 
+        // TODO: Move event handlers to session
         _asyncShowOpenedEventHandler = openedEventHandler;
         _asyncShowClosingEventHandler = closingEventHandler;
         IsOpen = true;
