@@ -443,12 +443,12 @@ public class DialogHost : ContentControl {
     /// <summary>
     /// Shows a modal dialog. To use, a <see cref="DialogHost"/> instance must be in a visual tree (typically this may be specified towards the root of a Window's XAML).
     /// </summary>
-    /// <param name="content">Content to show (can be a control or view model).</param>
+    /// <param name="content">Content to show (can be a control or view model). <c>null</c> to open dialog with a <see cref="DialogContent"/></param>
     /// <param name="dialogIdentifier"><see cref="Identifier"/> of the instance where the dialog should be shown. Typically this will match an identifier set in XAML. <c>null</c> is allowed.</param>
     /// <param name="openedEventHandler">Allows access to opened event which would otherwise have been subscribed to on a instance.</param>
     /// <param name="closingEventHandler">Allows access to closing event which would otherwise have been subscribed to on a instance.</param>
     /// <returns>Task result is the parameter used to close the dialog, typically what is passed to the <see cref="CloseDialogCommand"/> command.</returns>
-    public static Task<object?> Show(object content, string? dialogIdentifier, DialogOpenedEventHandler? openedEventHandler,
+    public static Task<object?> Show(object? content, string? dialogIdentifier, DialogOpenedEventHandler? openedEventHandler,
         DialogClosingEventHandler? closingEventHandler) {
         if (content is null) throw new ArgumentNullException(nameof(content));
         return GetInstance(dialogIdentifier).ShowCore(content, openedEventHandler, closingEventHandler);
@@ -457,10 +457,10 @@ public class DialogHost : ContentControl {
     /// <summary>
     /// Shows a modal dialog. To use, a <see cref="DialogHost"/> instance must be in a visual tree (typically this may be specified towards the root of a Window's XAML).
     /// </summary>
-    /// <param name="content">Content to show (can be a control or view model).</param>
+    /// <param name="content">Content to show (can be a control or view model). <c>null</c> to open dialog with a <see cref="DialogContent"/></param>
     /// <param name="instance">Instance of <see cref="DialogHost"/> where the dialog should be shown.</param>
     /// <returns>Task result is the parameter used to close the dialog, typically what is passed to the <see cref="CloseDialogCommand"/> command.</returns>
-    public static Task<object?> Show(object content, DialogHost instance)
+    public static Task<object?> Show(object? content, DialogHost instance)
         => Show(content, instance, null, null);
 
     /// <summary>
@@ -598,10 +598,10 @@ public class DialogHost : ContentControl {
         return targets[0];
     }
 
-    private async Task<object?> ShowCore(object content, DialogOpenedEventHandler? openedEventHandler,
+    private async Task<object?> ShowCore(object? content, DialogOpenedEventHandler? openedEventHandler,
         DialogClosingEventHandler? closingEventHandler) {
 
-        var task = AddHost(content ?? DialogContent);
+        var task = AddHost(content);
 
         _asyncShowOpenedEventHandler = openedEventHandler;
         _asyncShowClosingEventHandler = closingEventHandler;
@@ -618,7 +618,7 @@ public class DialogHost : ContentControl {
     private void IsOpenPropertyChangedCallback(bool newValue) {
         if (newValue) {
             if (_overlayPopupHosts.Count == 0) {
-                AddHost(DialogContent);
+                AddHost(null);
             }
 
             _restoreFocusDialogClose = TopLevel.GetTopLevel(this)?.FocusManager?.GetFocusedElement();
@@ -660,7 +660,7 @@ public class DialogHost : ContentControl {
                                                        $"Did you add the styles as stated in getting started?");
 
         if (IsOpen) {
-            AddHost(DialogContent);
+            AddHost(null);
             //_overlayPopupHost.IsOpen = true;
             // _overlayPopupHost?.ConfigurePosition(_root, PlacementMode.AnchorAndGravity, new Point());
         }
@@ -708,14 +708,14 @@ public class DialogHost : ContentControl {
         }
 
         var host = new DialogOverlayPopupHost(this) {
-            Content = content, ContentTemplate = DialogContentTemplate, Template = PopupTemplate,
+            Content = content ?? DialogContent, ContentTemplate = DialogContentTemplate, Template = PopupTemplate,
             Padding = DialogMargin, ClipToBounds = false, DisableOpeningAnimation = DisableOpeningAnimation,
             PopupPositioner = PopupPositioner
         };
 
         _disposeList.AddDispose(host, 
             host.Bind(DisableOpeningAnimationProperty, this.GetBindingObservable(DisableOpeningAnimationProperty)),
-            //host.Bind(ContentProperty, this.GetBindingObservable(DialogContentProperty)),
+            content is not null ? host.Bind(ContentProperty, this.GetBindingObservable(DialogContentProperty)) : EmptyDisposable.Instance,
             host.Bind(ContentTemplateProperty, this.GetBindingObservable(DialogContentTemplateProperty)),
             host.Bind(TemplateProperty, this.GetBindingObservable(PopupTemplateProperty)),
             host.Bind(PaddingProperty, this.GetBindingObservable(DialogMarginProperty)),
