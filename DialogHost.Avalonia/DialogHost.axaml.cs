@@ -335,7 +335,7 @@ public class DialogHost : ContentControl {
         set {
             if (SetAndRaise(IsOpenProperty, ref _isOpen, value))
             {
-                IsOpenPropertyChangedCallback(this, value);
+                IsOpenPropertyChangedCallback(value);
             }
         }
     }
