@@ -333,8 +333,10 @@ public class DialogHost : ContentControl {
     public bool IsOpen {
         get => _isOpen;
         set {
-            SetAndRaise(IsOpenProperty, ref _isOpen, value);
-            IsOpenPropertyChangedCallback(value);
+            if (SetAndRaise(IsOpenProperty, ref _isOpen, value))
+            {
+                IsOpenPropertyChangedCallback(this, value);
+            }
         }
     }
 
