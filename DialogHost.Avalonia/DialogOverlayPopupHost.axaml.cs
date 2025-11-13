@@ -29,9 +29,11 @@ public class DialogOverlayPopupHost : ContentControl, ICustomKeyboardNavigation 
             o => o.PopupPositioner,
             (o, v) => o.PopupPositioner = v);
 
+    private readonly DialogHost _host;
+
     private bool _disableOpeningAnimation;
     private bool _isOpen;
-    private DialogHost _host;
+
     private IDialogPopupPositioner? _popupPositioner;
 
     internal readonly TaskCompletionSource<object?> DialogTaskCompletionSource = new();

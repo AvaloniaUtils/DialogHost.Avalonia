@@ -466,7 +466,7 @@ public class DialogHost : ContentControl {
     /// <param name="openedEventHandler">Allows access to opened event which would otherwise have been subscribed to on a instance.</param>
     /// <param name="closingEventHandler">Allows access to closing event which would otherwise have been subscribed to on a instance.</param>
     /// <returns>Task result is the parameter used to close the dialog, typically what is passed to the <see cref="CloseDialogCommand"/> command.</returns>
-    public static Task<object?> Show(object? content, string? dialogIdentifier, DialogOpenedEventHandler? openedEventHandler,
+    public static Task<object?> Show(object content, string? dialogIdentifier, DialogOpenedEventHandler? openedEventHandler,
         DialogClosingEventHandler? closingEventHandler) {
         if (content is null) throw new ArgumentNullException(nameof(content));
         return GetInstance(dialogIdentifier).ShowCore(content, openedEventHandler, closingEventHandler);
@@ -729,14 +729,18 @@ public class DialogHost : ContentControl {
         }
 
         var host = new DialogOverlayPopupHost(this) {
-            Content = content ?? DialogContent, ContentTemplate = DialogContentTemplate, Template = PopupTemplate,
-            Padding = DialogMargin, ClipToBounds = false, DisableOpeningAnimation = DisableOpeningAnimation,
+            Content = content ?? DialogContent, 
+            ContentTemplate = DialogContentTemplate, 
+            Template = PopupTemplate,
+            Padding = DialogMargin, 
+            ClipToBounds = false, 
+            DisableOpeningAnimation = DisableOpeningAnimation,
             PopupPositioner = PopupPositioner
         };
 
         _disposeList.AddDispose(host, 
             host.Bind(DisableOpeningAnimationProperty, this.GetBindingObservable(DisableOpeningAnimationProperty)),
-            content is not null ? host.Bind(ContentProperty, this.GetBindingObservable(DialogContentProperty)) : EmptyDisposable.Instance,
+            content is null ? host.Bind(ContentProperty, this.GetBindingObservable(DialogContentProperty)) : EmptyDisposable.Instance,
             host.Bind(ContentTemplateProperty, this.GetBindingObservable(DialogContentTemplateProperty)),
             host.Bind(TemplateProperty, this.GetBindingObservable(PopupTemplateProperty)),
             host.Bind(PaddingProperty, this.GetBindingObservable(DialogMarginProperty)),
