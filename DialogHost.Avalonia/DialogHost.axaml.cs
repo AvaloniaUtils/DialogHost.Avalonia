@@ -206,9 +206,6 @@ public class DialogHost : ContentControl {
     /// </summary>
     public static readonly StyledProperty<double> BlurBackgroundRadiusProperty 
         = AvaloniaProperty.Register<DialogHost, double>(nameof(BlurBackgroundRadius), DefaultBlurRadius);
-
-    private DialogClosingEventHandler? _asyncShowClosingEventHandler;
-    private DialogOpenedEventHandler? _asyncShowOpenedEventHandler;
     
     private bool _isMultipleDialogsSupported;
 
@@ -635,17 +632,11 @@ public class DialogHost : ContentControl {
         if (!IsMultipleDialogsSupported && IsOpen)
             throw new InvalidOperationException("DialogHost is already open and IsMultipleDialogsSupported is false.");
 
-        var task = AddHost(content);
+        var task = AddHost(content, openedEventHandler, closingEventHandler);
 
-        // TODO: Move event handlers to session
-        _asyncShowOpenedEventHandler = openedEventHandler;
-        _asyncShowClosingEventHandler = closingEventHandler;
         IsOpen = true;
 
         var result = await task.Task;
-
-        _asyncShowOpenedEventHandler = null;
-        _asyncShowClosingEventHandler = null;
 
         return result;
     }
@@ -665,7 +656,7 @@ public class DialogHost : ContentControl {
             var dialogOpenedEventArgs = new DialogOpenedEventArgs(CurrentSession!, DialogOpenedEvent);
             OnDialogOpened(dialogOpenedEventArgs);
             DialogOpenedCallback?.Invoke(this, dialogOpenedEventArgs);
-            _asyncShowOpenedEventHandler?.Invoke(this, dialogOpenedEventArgs);
+            CurrentSession?.ShowOpened(this, dialogOpenedEventArgs);
 
             // dialogHost._overlayPopupHost?.ConfigurePosition(dialogHost._root, PlacementMode.AnchorAndGravity, new Point());
         }
@@ -735,14 +726,14 @@ public class DialogHost : ContentControl {
         }
     }
 
-    private TaskCompletionSource<object?> AddHost(object? content) {
+    private TaskCompletionSource<object?> AddHost(object? content, DialogOpenedEventHandler? open = null, DialogClosingEventHandler? closing = null) {
         foreach (var item in _overlayPopupHosts) {
             if (item.Content == content) {
                 return item.DialogTaskCompletionSource;
             }
         }
 
-        var host = new DialogOverlayPopupHost(this) {
+        var host = new DialogOverlayPopupHost(this, open, closing) {
             Content = content ?? DialogContent, 
             ContentTemplate = DialogContentTemplate, 
             Template = PopupTemplate,
@@ -854,7 +845,7 @@ public class DialogHost : ContentControl {
         var dialogClosingEventArgs = new DialogClosingEventArgs(currentSession, DialogClosingEvent);
         OnDialogClosing(dialogClosingEventArgs);
         DialogClosingCallback?.Invoke(this, dialogClosingEventArgs);
-        _asyncShowClosingEventHandler?.Invoke(this, dialogClosingEventArgs);
+        CurrentSession?.ShowClosing(this, dialogClosingEventArgs);
 
         if (dialogClosingEventArgs.IsCancelled) {
             currentSession.IsEnded = false;

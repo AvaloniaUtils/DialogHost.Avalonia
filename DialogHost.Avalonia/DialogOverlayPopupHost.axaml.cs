@@ -39,9 +39,9 @@ public class DialogOverlayPopupHost : ContentControl, ICustomKeyboardNavigation 
     internal readonly TaskCompletionSource<object?> DialogTaskCompletionSource = new();
     internal readonly DialogSession Session;
 
-    public DialogOverlayPopupHost(DialogHost host) {
+    public DialogOverlayPopupHost(DialogHost host, DialogOpenedEventHandler? open, DialogClosingEventHandler? closing) {
         _host = host;
-        Session = new(host, this);
+        Session = new(host, this, open, closing);
     }
 
     public bool IsOpen {

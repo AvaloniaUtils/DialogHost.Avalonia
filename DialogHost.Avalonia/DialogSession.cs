@@ -8,9 +8,15 @@ namespace DialogHostAvalonia;
 public class DialogSession {
     private readonly DialogHost _owner;
 
-    internal DialogSession(DialogHost owner, DialogOverlayPopupHost host) {
+    private DialogClosingEventHandler? _asyncShowClosingEventHandler;
+    private DialogOpenedEventHandler? _asyncShowOpenedEventHandler;
+
+    internal DialogSession(DialogHost owner, DialogOverlayPopupHost host, DialogOpenedEventHandler? open, DialogClosingEventHandler? closing) {
         _owner = owner ?? throw new ArgumentNullException(nameof(owner));
         Host = host ?? throw new ArgumentNullException(nameof(host));
+
+        _asyncShowOpenedEventHandler = open;
+        _asyncShowClosingEventHandler = closing;
     }
 
     /// <summary>
@@ -65,5 +71,13 @@ public class DialogSession {
         if (IsEnded) throw new InvalidOperationException("Dialog session has ended.");
 
         _owner.InternalClose(parameter);
+    }
+
+    internal void ShowOpened(object obj, DialogOpenedEventArgs args) {
+        _asyncShowOpenedEventHandler?.Invoke(obj, args);
+    }
+
+    internal void ShowClosing(object obj, DialogClosingEventArgs args) {
+        _asyncShowClosingEventHandler?.Invoke(obj, args);
     }
 }
