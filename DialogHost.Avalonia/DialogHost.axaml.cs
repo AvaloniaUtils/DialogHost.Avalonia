@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -40,7 +41,12 @@ public class DialogHost : ContentControl {
     /// <summary>
     /// Tracks all loaded instances of DialogHost.
     /// </summary>
-    private static readonly HashSet<DialogHost> _loadedInstances = new();
+    private static readonly HashSet<DialogHost> _loadedInstances = [];
+
+    /// <summary>
+    /// List of open dialog
+    /// </summary>
+    private static readonly List<DialogSession> _currentSession = [];
 
     /// <summary>
     /// Identifies the <see cref="Identifier"/> property.
@@ -383,7 +389,12 @@ public class DialogHost : ContentControl {
     /// <summary>
     /// Returns a DialogSession for the currently open dialog for managing it programmatically. If no dialog is open, CurrentSession will return null
     /// </summary>
-    public DialogSession? CurrentSession { get; private set; }
+    public DialogSession? CurrentSession => _currentSession.FirstOrDefault();
+
+    /// <summary>
+    /// Return a list of open dialog
+    /// </summary>
+    public IReadOnlyList<DialogSession> CurrentSessions => [.. _currentSession];
 
     /// <summary>
     /// Gets or sets the callback for when the dialog is closing.
@@ -478,7 +489,7 @@ public class DialogHost : ContentControl {
     /// <param name="content">Content to show (can be a control or view model). <c>null</c> to open dialog with a <see cref="DialogContent"/></param>
     /// <param name="instance">Instance of <see cref="DialogHost"/> where the dialog should be shown.</param>
     /// <returns>Task result is the parameter used to close the dialog, typically what is passed to the <see cref="CloseDialogCommand"/> command.</returns>
-    public static Task<object?> Show(object? content, DialogHost instance)
+    public static Task<object?> Show(object content, DialogHost instance)
         => Show(content, instance, null, null);
 
     /// <summary>
@@ -577,7 +588,8 @@ public class DialogHost : ContentControl {
             if (item.Content == content) {
                 _overlayPopupHosts.Remove(item);
                 _overlayPopupHosts.Add(item);
-                CurrentSession = item.Session;
+                _currentSession.Remove(item.Session);
+                _currentSession.Add(item.Session);
                 item.Pop();
                 return;
             }
@@ -746,7 +758,7 @@ public class DialogHost : ContentControl {
             host.Bind(PaddingProperty, this.GetBindingObservable(DialogMarginProperty)),
             host.Bind(PopupPositionerProperty, this.GetBindingObservable(PopupPositionerProperty)));
 
-        CurrentSession = host.Session;
+        _currentSession.Add(host.Session);
 
         host.IsOpen = true;
 
@@ -776,7 +788,7 @@ public class DialogHost : ContentControl {
         host.IsOpen = false;
         host.Content = null;
 
-        CurrentSession = null;
+        _currentSession.Remove(host.Session);
 
         _disposeList.RemoveDispose(host);
 
@@ -785,23 +797,12 @@ public class DialogHost : ContentControl {
         if (_overlayPopupHosts.Count == 0) {
             SetAndRaise(IsOpenProperty, ref _isOpen, false);
         }
-        else {
-            GetLastHost();
-        }
-    }
-
-    private void GetLastHost() {
-        if (_overlayPopupHosts.LastOrDefault() is { } host) {
-            CurrentSession = host.Session;
-        }
     }
 
     private void RemoveAllHost() {
         foreach (var host in _overlayPopupHosts.ToArray().Reverse()) {
             RemoveHost(host);
         }
-
-        CurrentSession = null;
     }
 
     private void ContentCoverGrid_OnPointerReleased(object sender, PointerReleasedEventArgs e) {

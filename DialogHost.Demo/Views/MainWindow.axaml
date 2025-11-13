@@ -79,12 +79,22 @@
               BorderThickness="1" BorderBrush="Black">
         <dialogHostAvalonia:DialogHost Identifier="NoAnimationDialogHost"
                                        Name="NoAnimationDialogHost"
+                                       IsMultipleDialogsSupported="True"
                                        DisableOpeningAnimation="True"
                                        Classes="disable-content-cover-animations">
           <Button HorizontalAlignment="Center" VerticalAlignment="Center"
                   Click="OpenNoAnimationDialog">
             Open
           </Button>
+          <dialogHostAvalonia:DialogHost.DialogContent>
+            <StackPanel>
+              <TextBlock>It's dialog content</TextBlock>
+              <Button Margin="0 16 0 0"
+                      Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=dialogHostAvalonia:DialogHost}, Path=CloseDialogCommand}">
+                CLOSE
+              </Button>
+            </StackPanel>
+          </dialogHostAvalonia:DialogHost.DialogContent>
         </dialogHostAvalonia:DialogHost>
       </Border>
 
