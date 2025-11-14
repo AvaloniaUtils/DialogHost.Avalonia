@@ -43,10 +43,10 @@ public class DialogHost : ContentControl {
     /// </summary>
     private static readonly HashSet<DialogHost> _loadedInstances = [];
 
-    /// <summary>
-    /// List of open dialog
-    /// </summary>
-    private static readonly List<DialogSession> _currentSession = [];
+    ///// <summary>
+    ///// List of open dialog
+    ///// </summary>
+    //private static readonly List<DialogSession> _currentSession = [];
 
     /// <summary>
     /// Identifies the <see cref="Identifier"/> property.
@@ -388,12 +388,12 @@ public class DialogHost : ContentControl {
     /// <summary>
     /// Returns a DialogSession for the currently open dialog for managing it programmatically. If no dialog is open, CurrentSession will return null
     /// </summary>
-    public DialogSession? CurrentSession => _currentSession.LastOrDefault();
+    public DialogSession? CurrentSession => _overlayPopupHosts.LastOrDefault()?.Session;
 
     /// <summary>
     /// Return a list of open dialog
     /// </summary>
-    public IReadOnlyList<DialogSession> CurrentSessions => [.. _currentSession];
+    public IReadOnlyList<DialogSession> CurrentSessions => [.. _overlayPopupHosts.Select(item => item.Session)];
 
     /// <summary>
     /// Gets or sets the callback for when the dialog is closing.
@@ -594,8 +594,6 @@ public class DialogHost : ContentControl {
     private void PopCoreHost(DialogOverlayPopupHost host) {
         _overlayPopupHosts.Remove(host);
         _overlayPopupHosts.Add(host);
-        _currentSession.Remove(host.Session);
-        _currentSession.Add(host.Session);
         host.Pop();
         return;
     }
@@ -763,8 +761,6 @@ public class DialogHost : ContentControl {
             host.Bind(PaddingProperty, this.GetBindingObservable(DialogMarginProperty)),
             host.Bind(PopupPositionerProperty, this.GetBindingObservable(PopupPositionerProperty)));
 
-        _currentSession.Add(host.Session);
-
         host.IsOpen = true;
 
         _overlayPopupHosts.Add(host);
@@ -792,8 +788,6 @@ public class DialogHost : ContentControl {
         host.DialogTaskCompletionSource.TrySetResult(session.CloseParameter);
         host.IsOpen = false;
         host.Content = null;
-
-        _currentSession.Remove(host.Session);
 
         _disposeList.RemoveDispose(host);
 
