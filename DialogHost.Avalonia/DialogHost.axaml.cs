@@ -231,7 +231,7 @@ public class DialogHost : ContentControl {
     private IDialogPopupPositioner? _popupPositioner;
     private IInputElement? _restoreFocusDialogClose;
 
-    internal Panel Root;
+    internal Panel Root { get; private set; }
 
     private IDisposable? _templateDisposables;
     private readonly DisposeList _disposeList = new();
@@ -455,7 +455,7 @@ public class DialogHost : ContentControl {
     /// <param name="dialogIdentifier"><see cref="Identifier"/> of the instance where the dialog should be shown. Typically this will match an identifier set in XAML. <c>null</c> is allowed.</param>
     /// <param name="openedEventHandler">Allows access to opened event which would otherwise have been subscribed to on a instance.</param>
     /// <returns>Task result is the parameter used to close the dialog, typically what is passed to the <see cref="CloseDialogCommand"/> command.</returns>
-    public static Task<object?> Show(object content, string? dialogIdentifier, DialogOpenedEventHandler openedEventHandler)
+    public static Task<object?> Show(object? content, string? dialogIdentifier, DialogOpenedEventHandler openedEventHandler)
         => Show(content, dialogIdentifier, openedEventHandler, null);
 
     /// <summary>
@@ -465,7 +465,7 @@ public class DialogHost : ContentControl {
     /// <param name="dialogIdentifier"><see cref="Identifier"/> of the instance where the dialog should be shown. Typically this will match an identifier set in XAML. <c>null</c> is allowed.</param>        
     /// <param name="closingEventHandler">Allows access to closing event which would otherwise have been subscribed to on a instance.</param>
     /// <returns>Task result is the parameter used to close the dialog, typically what is passed to the <see cref="CloseDialogCommand"/> command.</returns>
-    public static Task<object?> Show(object content, string? dialogIdentifier, DialogClosingEventHandler closingEventHandler)
+    public static Task<object?> Show(object? content, string? dialogIdentifier, DialogClosingEventHandler closingEventHandler)
         => Show(content, dialogIdentifier, null, closingEventHandler);
 
     /// <summary>
@@ -488,7 +488,7 @@ public class DialogHost : ContentControl {
     /// <param name="content">Content to show (can be a control or view model). <c>null</c> to open dialog with a <see cref="DialogContent"/></param>
     /// <param name="instance">Instance of <see cref="DialogHost"/> where the dialog should be shown.</param>
     /// <returns>Task result is the parameter used to close the dialog, typically what is passed to the <see cref="CloseDialogCommand"/> command.</returns>
-    public static Task<object?> Show(object content, DialogHost instance)
+    public static Task<object?> Show(object? content, DialogHost instance)
         => Show(content, instance, null, null);
 
     /// <summary>
@@ -498,7 +498,7 @@ public class DialogHost : ContentControl {
     /// <param name="instance">Instance of <see cref="DialogHost"/> where the dialog should be shown.</param>
     /// <param name="openedEventHandler">Allows access to opened event which would otherwise have been subscribed to on a instance.</param>
     /// <returns>Task result is the parameter used to close the dialog, typically what is passed to the <see cref="CloseDialogCommand"/> command.</returns>
-    public static Task<object?> Show(object content, DialogHost instance, DialogOpenedEventHandler openedEventHandler)
+    public static Task<object?> Show(object? content, DialogHost instance, DialogOpenedEventHandler openedEventHandler)
         => Show(content, instance, openedEventHandler, null);
 
     /// <summary>
@@ -727,6 +727,10 @@ public class DialogHost : ContentControl {
     }
 
     private TaskCompletionSource<object?> AddHost(object? content, DialogOpenedEventHandler? open = null, DialogClosingEventHandler? closing = null) {
+        if (DialogContent == null && content == null) {
+            throw new ArgumentNullException(nameof(content), "DialogContent and content is null");
+        }
+        
         if (content != null) {
             foreach (var item in _overlayPopupHosts) {
                 if (item.Content == content) {
