@@ -408,7 +408,7 @@ public class DialogHost : ContentControl {
     /// </summary>
     /// <param name="content">Content to show (can be a control or view model).</param>
     /// <returns>Task result is the parameter used to close the dialog, typically what is passed to the <see cref="CloseDialogCommand"/> command.</returns>
-    public static Task<object?> Show(object content)
+    public static Task<object?> Show(object? content)
         => Show(content, dialogIdentifier: null);
 
     /// <summary>
@@ -417,7 +417,7 @@ public class DialogHost : ContentControl {
     /// <param name="content">Content to show (can be a control or view model).</param>        
     /// <param name="openedEventHandler">Allows access to opened event which would otherwise have been subscribed to on a instance.</param>        
     /// <returns>Task result is the parameter used to close the dialog, typically what is passed to the <see cref="CloseDialogCommand"/> command.</returns>
-    public static Task<object?> Show(object content, DialogOpenedEventHandler openedEventHandler)
+    public static Task<object?> Show(object? content, DialogOpenedEventHandler openedEventHandler)
         => Show(content, (string?)null, openedEventHandler, null);
 
     /// <summary>
@@ -426,7 +426,7 @@ public class DialogHost : ContentControl {
     /// <param name="content">Content to show (can be a control or view model).</param>
     /// <param name="closingEventHandler">Allows access to closing event which would otherwise have been subscribed to on a instance.</param>
     /// <returns>Task result is the parameter used to close the dialog, typically what is passed to the <see cref="CloseDialogCommand"/> command.</returns>
-    public static Task<object?> Show(object content, DialogClosingEventHandler closingEventHandler)
+    public static Task<object?> Show(object? content, DialogClosingEventHandler closingEventHandler)
         => Show(content, (string?)null, null, closingEventHandler);
 
     /// <summary>
@@ -436,7 +436,7 @@ public class DialogHost : ContentControl {
     /// <param name="openedEventHandler">Allows access to opened event which would otherwise have been subscribed to on a instance.</param>
     /// <param name="closingEventHandler">Allows access to closing event which would otherwise have been subscribed to on a instance.</param>
     /// <returns>Task result is the parameter used to close the dialog, typically what is passed to the <see cref="CloseDialogCommand"/> command.</returns>
-    public static Task<object?> Show(object content, DialogOpenedEventHandler? openedEventHandler, DialogClosingEventHandler? closingEventHandler)
+    public static Task<object?> Show(object? content, DialogOpenedEventHandler? openedEventHandler, DialogClosingEventHandler? closingEventHandler)
         => Show(content, (string?)null, openedEventHandler, closingEventHandler);
 
     /// <summary>
@@ -445,7 +445,7 @@ public class DialogHost : ContentControl {
     /// <param name="content">Content to show (can be a control or view model).</param>
     /// <param name="dialogIdentifier"><see cref="Identifier"/> of the instance where the dialog should be shown. Typically this will match an identifier set in XAML. <c>null</c> is allowed.</param>
     /// <returns>Task result is the parameter used to close the dialog, typically what is passed to the <see cref="CloseDialogCommand"/> command.</returns>
-    public static Task<object?> Show(object content, string? dialogIdentifier)
+    public static Task<object?> Show(object? content, string? dialogIdentifier)
         => Show(content, dialogIdentifier, null, null);
 
     /// <summary>
@@ -476,9 +476,9 @@ public class DialogHost : ContentControl {
     /// <param name="openedEventHandler">Allows access to opened event which would otherwise have been subscribed to on a instance.</param>
     /// <param name="closingEventHandler">Allows access to closing event which would otherwise have been subscribed to on a instance.</param>
     /// <returns>Task result is the parameter used to close the dialog, typically what is passed to the <see cref="CloseDialogCommand"/> command.</returns>
-    public static Task<object?> Show(object content, string? dialogIdentifier, DialogOpenedEventHandler? openedEventHandler,
+    public static Task<object?> Show(object? content, string? dialogIdentifier, DialogOpenedEventHandler? openedEventHandler,
         DialogClosingEventHandler? closingEventHandler) {
-        if (content is null) throw new ArgumentNullException(nameof(content));
+        //if (content is null) throw new ArgumentNullException(nameof(content));
         return GetInstance(dialogIdentifier).ShowCore(content, openedEventHandler, closingEventHandler);
     }
 
@@ -508,7 +508,7 @@ public class DialogHost : ContentControl {
     /// <param name="instance">Instance of <see cref="DialogHost"/> where the dialog should be shown.</param>
     /// <param name="closingEventHandler">Allows access to closing event which would otherwise have been subscribed to on a instance.</param>
     /// <returns>Task result is the parameter used to close the dialog, typically what is passed to the <see cref="CloseDialogCommand"/> command.</returns>
-    public static Task<object?> Show(object content, DialogHost instance, DialogClosingEventHandler closingEventHandler)
+    public static Task<object?> Show(object? content, DialogHost instance, DialogClosingEventHandler closingEventHandler)
         => Show(content, instance, null, closingEventHandler);
 
     /// <summary>
@@ -519,9 +519,9 @@ public class DialogHost : ContentControl {
     /// <param name="openedEventHandler">Allows access to opened event which would otherwise have been subscribed to on a instance.</param>
     /// <param name="closingEventHandler">Allows access to closing event which would otherwise have been subscribed to on a instance.</param>
     /// <returns>Task result is the parameter used to close the dialog, typically what is passed to the <see cref="CloseDialogCommand"/> command.</returns>
-    public static Task<object?> Show(object content, DialogHost instance, DialogOpenedEventHandler? openedEventHandler,
+    public static Task<object?> Show(object? content, DialogHost instance, DialogOpenedEventHandler? openedEventHandler,
         DialogClosingEventHandler? closingEventHandler) {
-        if (content is null) throw new ArgumentNullException(nameof(content));
+        //if (content is null) throw new ArgumentNullException(nameof(content));
         if (instance is null) throw new ArgumentNullException(nameof(instance));
         return instance.ShowCore(content, openedEventHandler, closingEventHandler);
     }
@@ -727,9 +727,11 @@ public class DialogHost : ContentControl {
     }
 
     private TaskCompletionSource<object?> AddHost(object? content, DialogOpenedEventHandler? open = null, DialogClosingEventHandler? closing = null) {
-        foreach (var item in _overlayPopupHosts) {
-            if (item.Content == content) {
-                return item.DialogTaskCompletionSource;
+        if (content != null) {
+            foreach (var item in _overlayPopupHosts) {
+                if (item.Content == content) {
+                    return item.DialogTaskCompletionSource;
+                }
             }
         }
 
