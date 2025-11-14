@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -43,11 +41,6 @@ public class DialogHost : ContentControl {
     /// </summary>
     private static readonly HashSet<DialogHost> _loadedInstances = [];
 
-    ///// <summary>
-    ///// List of open dialog
-    ///// </summary>
-    //private static readonly List<DialogSession> _currentSession = [];
-
     /// <summary>
     /// Identifies the <see cref="Identifier"/> property.
     /// </summary>
@@ -58,12 +51,12 @@ public class DialogHost : ContentControl {
             (o, v) => o.Identifier = v);
 
     /// <summary>
-    /// Identified the <see cref="IsMultipleDialogsSupported"/>
+    /// Identified the <see cref="IsMultipleDialogsEnabled"/>
     /// </summary>
-    public static readonly DirectProperty<DialogHost, bool> IsMultipleDialogsSupportedProperty = 
-        AvaloniaProperty.RegisterDirect<DialogHost, bool>(nameof(IsMultipleDialogsSupported), 
-            o => o.IsMultipleDialogsSupported, 
-            (o, v) => o.IsMultipleDialogsSupported = v);
+    public static readonly DirectProperty<DialogHost, bool> IsMultipleDialogsEnabledProperty = 
+        AvaloniaProperty.RegisterDirect<DialogHost, bool>(nameof(IsMultipleDialogsEnabled), 
+            o => o.IsMultipleDialogsEnabled, 
+            (o, v) => o.IsMultipleDialogsEnabled = v);
 
     /// <summary>
     /// Identifies the <see cref="DialogContent"/> property.
@@ -207,7 +200,7 @@ public class DialogHost : ContentControl {
     public static readonly StyledProperty<double> BlurBackgroundRadiusProperty 
         = AvaloniaProperty.Register<DialogHost, double>(nameof(BlurBackgroundRadius), DefaultBlurRadius);
     
-    private bool _isMultipleDialogsSupported;
+    private bool _isMultipleDialogsEnabled;
 
     private ICommand _closeDialogCommand;
 
@@ -285,11 +278,11 @@ public class DialogHost : ContentControl {
     }
     
     /// <summary>
-    /// Gets or sets is opening multiple dialogs at the same supported 
+    /// Gets or sets is opening multiple dialogs at the same time enabled 
     /// </summary>
-    public bool IsMultipleDialogsSupported {
-        get => _isMultipleDialogsSupported;
-        set => SetAndRaise(IsMultipleDialogsSupportedProperty, ref _isMultipleDialogsSupported, value);
+    public bool IsMultipleDialogsEnabled {
+        get => _isMultipleDialogsEnabled;
+        set => SetAndRaise(IsMultipleDialogsEnabledProperty, ref _isMultipleDialogsEnabled, value);
     }
 
     /// <summary>
@@ -386,12 +379,14 @@ public class DialogHost : ContentControl {
     }
 
     /// <summary>
-    /// Returns a DialogSession for the currently open dialog for managing it programmatically. If no dialog is open, CurrentSession will return null
+    /// Returns a DialogSession for the currently open dialog for managing it programmatically. <br/>
+    /// If no dialog is open, CurrentSession will return null. <br/>
+    /// If multiple dialogs are open, the last one will be returned. Refer to <see cref="CurrentSessions"/> to see all.
     /// </summary>
     public DialogSession? CurrentSession => _overlayPopupHosts.LastOrDefault()?.Session;
 
     /// <summary>
-    /// Return a list of open dialog
+    /// Return a list of open dialogs
     /// </summary>
     public IReadOnlyList<DialogSession> CurrentSessions => [.. _overlayPopupHosts.Select(item => item.Session)];
 
@@ -632,7 +627,7 @@ public class DialogHost : ContentControl {
 
     private async Task<object?> ShowCore(object? content, DialogOpenedEventHandler? openedEventHandler,
         DialogClosingEventHandler? closingEventHandler) {
-        if (!IsMultipleDialogsSupported && IsOpen)
+        if (!IsMultipleDialogsEnabled && IsOpen)
             throw new InvalidOperationException("DialogHost is already open and IsMultipleDialogsSupported is false.");
 
         var task = AddHost(content, openedEventHandler, closingEventHandler);

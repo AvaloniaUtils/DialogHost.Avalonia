@@ -79,7 +79,7 @@
               BorderThickness="1" BorderBrush="Black">
         <dialogHostAvalonia:DialogHost Identifier="NoAnimationDialogHost"
                                        Name="NoAnimationDialogHost"
-                                       IsMultipleDialogsSupported="True"
+                                       IsMultipleDialogsEnabled="True"
                                        DisableOpeningAnimation="True"
                                        Classes="disable-content-cover-animations">
           <Button HorizontalAlignment="Center" VerticalAlignment="Center"
