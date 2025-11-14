@@ -388,7 +388,7 @@ public class DialogHost : ContentControl {
     /// <summary>
     /// Returns a DialogSession for the currently open dialog for managing it programmatically. If no dialog is open, CurrentSession will return null
     /// </summary>
-    public DialogSession? CurrentSession => _currentSession.FirstOrDefault();
+    public DialogSession? CurrentSession => _currentSession.LastOrDefault();
 
     /// <summary>
     /// Return a list of open dialog
@@ -585,14 +585,19 @@ public class DialogHost : ContentControl {
     private void PopCore(object? content) {
         foreach (var item in _overlayPopupHosts) {
             if (item.Content == content) {
-                _overlayPopupHosts.Remove(item);
-                _overlayPopupHosts.Add(item);
-                _currentSession.Remove(item.Session);
-                _currentSession.Add(item.Session);
-                item.Pop();
+                PopCoreHost(item);
                 return;
             }
         }
+    }
+
+    private void PopCoreHost(DialogOverlayPopupHost host) {
+        _overlayPopupHosts.Remove(host);
+        _overlayPopupHosts.Add(host);
+        _currentSession.Remove(host.Session);
+        _currentSession.Add(host.Session);
+        host.Pop();
+        return;
     }
 
     /// <summary>
@@ -734,6 +739,7 @@ public class DialogHost : ContentControl {
         if (content != null) {
             foreach (var item in _overlayPopupHosts) {
                 if (item.Content == content) {
+                    PopCoreHost(item);
                     return item.DialogTaskCompletionSource;
                 }
             }
