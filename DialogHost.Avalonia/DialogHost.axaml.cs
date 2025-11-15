@@ -728,7 +728,7 @@ public class DialogHost : ContentControl {
         if (DialogContent == null && content == null) {
             throw new ArgumentNullException(nameof(content), "DialogContent and content is null");
         }
-        
+
         if (content != null) {
             foreach (var item in _overlayPopupHosts) {
                 if (item.Content == content) {
@@ -737,13 +737,21 @@ public class DialogHost : ContentControl {
                 }
             }
         }
+        else {
+            foreach (var item in _overlayPopupHosts) {
+                if (item.Content == DialogContent) {
+                    PopCoreHost(item);
+                    return item.DialogTaskCompletionSource;
+                }
+            }
+        }
 
         var host = new DialogOverlayPopupHost(this, open, closing) {
-            Content = content ?? DialogContent, 
-            ContentTemplate = DialogContentTemplate, 
+            Content = content ?? DialogContent,
+            ContentTemplate = DialogContentTemplate,
             Template = PopupTemplate,
-            Padding = DialogMargin, 
-            ClipToBounds = false, 
+            Padding = DialogMargin,
+            ClipToBounds = false,
             DisableOpeningAnimation = DisableOpeningAnimation,
             PopupPositioner = PopupPositioner
         };
