@@ -78,12 +78,23 @@
               MinHeight="200" MinWidth="200"
               BorderThickness="1" BorderBrush="Black">
         <dialogHostAvalonia:DialogHost Identifier="NoAnimationDialogHost"
+                                       Name="NoAnimationDialogHost"
+                                       IsMultipleDialogsEnabled="True"
                                        DisableOpeningAnimation="True"
                                        Classes="disable-content-cover-animations">
           <Button HorizontalAlignment="Center" VerticalAlignment="Center"
                   Click="OpenNoAnimationDialog">
             Open
           </Button>
+          <dialogHostAvalonia:DialogHost.DialogContent>
+            <StackPanel>
+              <TextBlock>It's dialog content</TextBlock>
+              <Button Margin="0 16 0 0"
+                      Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=dialogHostAvalonia:DialogHost}, Path=CloseDialogCommand}">
+                CLOSE
+              </Button>
+            </StackPanel>
+          </dialogHostAvalonia:DialogHost.DialogContent>
         </dialogHostAvalonia:DialogHost>
       </Border>
 
@@ -92,8 +103,11 @@
         SAMPLE 3: Top level dialog with custom corner radius, using OpenDialog, passing content via the Parameter. You can pass a view model, provided a corresponding DataTemplate can be found in the scope of the root DialogHost.
       </TextBlock>
       <StackPanel Grid.Column="4" Grid.Row="2">
-        <Button Margin="8" Click="OpenDialogWithView">PASS VIEW</Button>
+        <Button Margin="8" Click="OpenNoAnimationDialog">PASS VIEW</Button>
         <Button Margin="8" Click="OpenDialogWithModel">PASS MODEL</Button>
+        <Button Margin="8" Click="CloseDialogWithModel">PASS CLOSE</Button>
+        <Button Margin="8" Click="OffDialogWithModel">PASS IsOpen=false</Button>
+        <Button Margin="8" Click="OnDialogWithModel">PASS IsOpen=true</Button>
       </StackPanel>
 
       <TextBlock Grid.Column="6" Grid.Row="0"
