@@ -56,7 +56,7 @@ public class DialogHost : ContentControl {
     public static readonly DirectProperty<DialogHost, bool> IsMultipleDialogsEnabledProperty = 
         AvaloniaProperty.RegisterDirect<DialogHost, bool>(nameof(IsMultipleDialogsEnabled), 
             o => o.IsMultipleDialogsEnabled, 
-            (o, v) => o.IsMultipleDialogsEnabled = v, true);
+            (o, v) => o.IsMultipleDialogsEnabled = v);
 
     /// <summary>
     /// Identifies the <see cref="DialogContent"/> property.
