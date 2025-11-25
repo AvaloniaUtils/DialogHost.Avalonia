@@ -521,18 +521,18 @@ public class DialogHost : ContentControl {
         return instance.ShowCore(content, openedEventHandler, closingEventHandler);
     }
 
-    /// <summary>Close a modal dialog.</summary>
-    /// <param name="dialogIdentifier">of the instance where the dialog should be closed. Typically this will match an identifier set in XAML.</param>
-    public static void Close(string? dialogIdentifier)
-        => Close(dialogIdentifier, null);
+    ///// <summary>Close a modal dialog.</summary>
+    ///// <param name="dialogIdentifier">of the instance where the dialog should be closed. Typically this will match an identifier set in XAML.</param>
+    //public static void Close(string? dialogIdentifier)
+    //    => Close(dialogIdentifier, null);
 
-    /// <summary>
-    /// Close a modal dialog, with content
-    /// </summary>
-    /// <param name="dialogIdentifier">of the instance where the dialog should be closed. Typically this will match an identifier set in XAML.</param>
-    /// <param name="parameter">to provide to close handler</param>
-    public static void Close(string? dialogIdentifier, object? parameter)
-        => Close(dialogIdentifier, parameter, null);
+    ///// <summary>
+    ///// Close a modal dialog, with content
+    ///// </summary>
+    ///// <param name="dialogIdentifier">of the instance where the dialog should be closed. Typically this will match an identifier set in XAML.</param>
+    ///// <param name="parameter">to provide to close handler</param>
+    //public static void Close(string? dialogIdentifier, object? parameter)
+    //    => Close(dialogIdentifier, parameter, null);
 
     /// <summary>
     ///  Close a modal dialog.
@@ -540,7 +540,7 @@ public class DialogHost : ContentControl {
     /// <param name="dialogIdentifier"> of the instance where the dialog should be closed. Typically this will match an identifier set in XAML. </param>
     /// <param name="parameter">to provide to close handler</param>
     /// <param name="content">the open content</param>
-    public static void Close(string? dialogIdentifier, object? parameter, object? content) {
+    public static void Close(string? dialogIdentifier, object? parameter = null, object? content = null) {
         var dialogHost = GetInstance(dialogIdentifier);
         if (dialogHost != null) {
             if (content == null) {
@@ -779,6 +779,7 @@ public class DialogHost : ContentControl {
         var session = host.Session;
         if (!session.IsEnded) {
             session.Close(session.CloseParameter);
+            return;
         }
 
         //DialogSession.Close may attempt to cancel the closing of the dialog.
@@ -842,27 +843,31 @@ public class DialogHost : ContentControl {
     protected virtual void OnDialogClosing(DialogClosingEventArgs eventArgs) => RaiseEvent(eventArgs);
 
     internal void InternalClose(object? parameter) {
-        var currentSession = CurrentSession ?? throw new InvalidOperationException($"{nameof(DialogHost)} does not have a current session");
+        var session = CurrentSession ?? throw new InvalidOperationException($"{nameof(DialogHost)} does not have a current session");
 
-        currentSession.CloseParameter = parameter;
-        currentSession.IsEnded = true;
+        InternalClose(session, parameter);
+    }
+
+    internal void InternalClose(DialogSession session, object? parameter) {
+        session.CloseParameter = parameter;
+        session.IsEnded = true;
 
         //multiple ways of calling back that the dialog is closing:
         // * routed event
         // * straight forward IsOpen dependency property 
         // * handler provided to the async show method
-        var dialogClosingEventArgs = new DialogClosingEventArgs(currentSession, DialogClosingEvent);
+        var dialogClosingEventArgs = new DialogClosingEventArgs(session, DialogClosingEvent);
         OnDialogClosing(dialogClosingEventArgs);
         DialogClosingCallback?.Invoke(this, dialogClosingEventArgs);
-        CurrentSession?.ShowClosing(this, dialogClosingEventArgs);
+        session.ShowClosing(this, dialogClosingEventArgs);
 
         if (dialogClosingEventArgs.IsCancelled) {
-            currentSession.IsEnded = false;
+            session.IsEnded = false;
             return;
         }
 
         //IsOpen = false;
-        RemoveHost(currentSession.Host);
+        RemoveHost(session.Host);
     }
 
     /// <inheritdoc />
