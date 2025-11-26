@@ -521,18 +521,18 @@ public class DialogHost : ContentControl {
         return instance.ShowCore(content, openedEventHandler, closingEventHandler);
     }
 
-    ///// <summary>Close a modal dialog.</summary>
-    ///// <param name="dialogIdentifier">of the instance where the dialog should be closed. Typically this will match an identifier set in XAML.</param>
-    //public static void Close(string? dialogIdentifier)
-    //    => Close(dialogIdentifier, null);
+    /// <summary>Close a modal dialog.</summary>
+    /// <param name="dialogIdentifier">of the instance where the dialog should be closed. Typically this will match an identifier set in XAML.</param>
+    public static void Close(string? dialogIdentifier)
+        => Close(dialogIdentifier, null);
 
-    ///// <summary>
-    ///// Close a modal dialog, with content
-    ///// </summary>
-    ///// <param name="dialogIdentifier">of the instance where the dialog should be closed. Typically this will match an identifier set in XAML.</param>
-    ///// <param name="parameter">to provide to close handler</param>
-    //public static void Close(string? dialogIdentifier, object? parameter)
-    //    => Close(dialogIdentifier, parameter, null);
+    /// <summary>
+    /// Close a modal dialog, with content
+    /// </summary>
+    /// <param name="dialogIdentifier">of the instance where the dialog should be closed. Typically this will match an identifier set in XAML.</param>
+    /// <param name="parameter">to provide to close handler</param>
+    public static void Close(string? dialogIdentifier, object? parameter)
+        => Close(dialogIdentifier, parameter, null);
 
     /// <summary>
     ///  Close a modal dialog.
@@ -540,21 +540,19 @@ public class DialogHost : ContentControl {
     /// <param name="dialogIdentifier"> of the instance where the dialog should be closed. Typically this will match an identifier set in XAML. </param>
     /// <param name="parameter">to provide to close handler</param>
     /// <param name="content">the open content</param>
-    public static void Close(string? dialogIdentifier, object? parameter = null, object? content = null) {
+    public static void Close(string? dialogIdentifier, object? parameter, object? content) {
         var dialogHost = GetInstance(dialogIdentifier);
-        if (dialogHost != null) {
-            if (content == null) {
-                if (dialogHost.CurrentSession is { } currentSession) {
-                    currentSession.Close(parameter);
-                    return;
-                }
+        if (content == null) {
+            if (dialogHost.CurrentSession is { } currentSession) {
+                currentSession.Close(parameter);
+                return;
             }
-            else {
-                foreach (var item in dialogHost._overlayPopupHosts) {
-                    if (item.Content == content) {
-                        item.Session.Close(parameter);
-                        return;
-                    }
+        }
+        else {
+            foreach (var item in dialogHost._overlayPopupHosts) {
+                if (item.Content == content) {
+                    item.Session.Close(parameter);
+                    return;
                 }
             }
         }
@@ -604,17 +602,25 @@ public class DialogHost : ContentControl {
     }
 
     /// <summary>
-    /// dialog instance exists
+    /// Check if a dialog instance exists
     /// </summary>
-    /// <param name="dialogIdentifier">of the instance where the dialog should be closed. Typically this will match an identifier set in XAML.</param>
+    /// <param name="dialogIdentifier">
+    /// Identifier of the instance where the dialog should be closed.
+    /// Typically, this will match an identifier set in XAML.
+    /// </param>
     /// <returns></returns>
     public static bool IsDialogOpen(string? dialogIdentifier) => GetDialogSession(dialogIdentifier)?.IsEnded == false;
 
     /// <summary>
-    /// dialog instance exists
+    /// Check if a dialog instance exists
     /// </summary>
-    /// <param name="dialogIdentifier">of the instance where the dialog should be closed. Typically this will match an identifier set in XAML.</param>
-    /// <param name="content">Content to show (can be a control or view model).</param>
+    /// <param name="dialogIdentifier">
+    /// Identifier of the instance where the dialog should be closed.
+    /// Typically, this will match an identifier set in XAML.
+    /// </param>
+    /// <param name="content">
+    /// Filter dialogs by content (in case multiple dialogs are open)
+    /// </param>
     /// <returns></returns>
     public static bool IsDialogOpen(string? dialogIdentifier, object? content) {
         var host = GetInstance(dialogIdentifier);
