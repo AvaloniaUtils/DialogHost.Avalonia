@@ -610,6 +610,30 @@ public class DialogHost : ContentControl {
     /// <returns></returns>
     public static bool IsDialogOpen(string? dialogIdentifier) => GetDialogSession(dialogIdentifier)?.IsEnded == false;
 
+    /// <summary>
+    /// dialog instance exists
+    /// </summary>
+    /// <param name="dialogIdentifier">of the instance where the dialog should be closed. Typically this will match an identifier set in XAML.</param>
+    /// <param name="content">Content to show (can be a control or view model).</param>
+    /// <returns></returns>
+    public static bool IsDialogOpen(string? dialogIdentifier, object? content) {
+        var host = GetInstance(dialogIdentifier);
+        if (content == null) {
+            if (host.CurrentSession == null) {
+                return false;
+            }
+
+            return host.CurrentSession.IsEnded == false;
+        }
+        foreach (var item in host._overlayPopupHosts) {
+            if (item.Content == content) {
+                return item.Session.IsEnded == false;
+            }
+        }
+
+        return false;
+    }
+
     private static DialogHost GetInstance(string? dialogIdentifier) {
         if (_loadedInstances.Count == 0)
             throw new InvalidOperationException("No loaded DialogHost instances.");
