@@ -624,6 +624,8 @@ public class DialogHost : ContentControl {
     /// <returns></returns>
     public static bool IsDialogOpen(string? dialogIdentifier, object? content) {
         var host = GetInstance(dialogIdentifier);
+        if (!host.IsMultipleDialogsEnabled)
+            throw new InvalidOperationException("Multiple dialogs is not enabled");
         if (content == null) {
             if (host.CurrentSession == null) {
                 return false;
