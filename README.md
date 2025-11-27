@@ -183,3 +183,13 @@ var result = await DialogHost.Show(viewOrModel, ClosingEventHandler);
 The async response from this method returns the parameter provided when `DialogHost.CloseDialogCommand` was executed. As
 part of the `Show()` signature a `DialogClosingEventHandler` delegate can be provided to intercept the on-closing event,
 just prior to the close.
+
+### Multiple dialogs (0.10.0)
+
+```xaml
+<dialogHost:DialogHost IsMultipleDialogsEnabled="True" />
+```
+
+Than you can open multiple dialogs
+
+![multiple](https://github.com/AvaloniaUtils/DialogHost.Avalonia/raw/main/wiki/images/multiple.png)
