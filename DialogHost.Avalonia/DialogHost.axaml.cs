@@ -717,13 +717,9 @@ public class DialogHost : ContentControl {
 
         if (IsOpen) {
             AddHost(null);
-            //_overlayPopupHost.IsOpen = true;
-            // _overlayPopupHost?.ConfigurePosition(_root, PlacementMode.AnchorAndGravity, new Point());
         }
 
         _templateDisposables = new CompositeDisposable() {
-            // this.GetObservable(BoundsProperty)
-            // .Subscribe(rect => _overlayPopupHost?.ConfigurePosition(_root, PlacementMode.AnchorAndGravity, new Point())),
             _disposeList,
             e.NameScope.Find<Rectangle>(ContentCoverName)?.AddDisposableHandler(PointerReleasedEvent, ContentCoverGrid_OnPointerReleased) ?? EmptyDisposable.Instance
         };
@@ -898,7 +894,6 @@ public class DialogHost : ContentControl {
             return;
         }
 
-        //IsOpen = false;
         RemoveHost(session.Host);
     }
 
