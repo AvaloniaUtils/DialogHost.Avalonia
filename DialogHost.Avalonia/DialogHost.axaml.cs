@@ -224,7 +224,7 @@ public class DialogHost : ContentControl {
     private IDialogPopupPositioner? _popupPositioner;
     private IInputElement? _restoreFocusDialogClose;
 
-    internal Panel Root { get; private set; }
+    internal Panel? Root { get; private set; }
 
     private IDisposable? _templateDisposables;
     private readonly DisposeList _disposeList = new();
@@ -716,9 +716,10 @@ public class DialogHost : ContentControl {
         Root = e.NameScope.Find<Panel>(DialogHostRoot) 
                 ?? throw new InvalidOperationException($"No Panel with name {DialogHostRoot} found. " +
                                                        $"Did you add the styles as stated in getting started?");
-
-        if (IsOpen) {
-            AddHost(null);
+        
+        foreach (var popupHost in _overlayPopupHosts)
+        {
+            popupHost.IsOpen = true;
         }
 
         _templateDisposables = new CompositeDisposable() {
@@ -758,21 +759,14 @@ public class DialogHost : ContentControl {
         if (DialogContent == null && content == null) {
             throw new ArgumentNullException(nameof(content), "DialogContent and content is null");
         }
+        
+        var targetContent = content ?? DialogContent;
 
-        if (content != null) {
-            foreach (var item in _overlayPopupHosts) {
-                if (item.Content == content) {
-                    PopCoreHost(item);
-                    return item.DialogTaskCompletionSource;
-                }
-            }
-        }
-        else {
-            foreach (var item in _overlayPopupHosts) {
-                if (item.Content == DialogContent) {
-                    PopCoreHost(item);
-                    return item.DialogTaskCompletionSource;
-                }
+        // Check if the content is already shown
+        foreach (var item in _overlayPopupHosts) {
+            if (item.Content == targetContent) {
+                PopCoreHost(item);
+                return item.DialogTaskCompletionSource;
             }
         }
 
@@ -794,7 +788,9 @@ public class DialogHost : ContentControl {
             host.Bind(PaddingProperty, this.GetBindingObservable(DialogMarginProperty)),
             host.Bind(PopupPositionerProperty, this.GetBindingObservable(PopupPositionerProperty)));
 
-        host.IsOpen = true;
+        if (Root is not null) {
+            host.IsOpen = true;
+        }
 
         _overlayPopupHosts.Add(host);
 
