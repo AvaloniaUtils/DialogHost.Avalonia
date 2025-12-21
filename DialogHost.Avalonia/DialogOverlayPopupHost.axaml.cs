@@ -40,6 +40,10 @@ public class DialogOverlayPopupHost : ContentControl, ICustomKeyboardNavigation 
     internal readonly TaskCompletionSource<object?> DialogTaskCompletionSource = new();
     internal readonly DialogSession Session;
 
+    static DialogOverlayPopupHost() {
+        AffectsArrange<DialogOverlayPopupHost>(PopupPositionerProperty);
+    }
+
     public DialogOverlayPopupHost(DialogHost host, DialogOpenedEventHandler? open, DialogClosingEventHandler? closing) {
         _host = host;
         Session = new(host, this, open, closing);
@@ -71,10 +75,7 @@ public class DialogOverlayPopupHost : ContentControl, ICustomKeyboardNavigation 
 
     public IDialogPopupPositioner? PopupPositioner {
         get => _popupPositioner;
-        set {
-            SetAndRaise(PopupPositionerProperty, ref _popupPositioner, value);
-            UpdatePosition();
-        }
+        set => SetAndRaise(PopupPositionerProperty, ref _popupPositioner, value);
     }
 
     internal void Show() {
@@ -86,7 +87,6 @@ public class DialogOverlayPopupHost : ContentControl, ICustomKeyboardNavigation 
         // Set the minimum priority to allow overriding it everywhere
         ClearValue(IsActuallyOpenProperty);
         Focus();
-        UpdatePosition();
     }
 
     internal void Hide() {
@@ -117,17 +117,6 @@ public class DialogOverlayPopupHost : ContentControl, ICustomKeyboardNavigation 
 
         var (finalWidth, finalHeight) = ArrangeOverride(bounds.Size).Constrain(size);
         Bounds = new Rect(bounds.X + margin.Left, bounds.Y + margin.Top, finalWidth, finalHeight);
-    }
-
-
-    private void UpdatePosition() {
-        // Don't bother the positioner with layout system artifacts
-        // if (_positionerParameters.Size.Width == 0 || _positionerParameters.Size.Height == 0)
-        // return;
-        // if (Parent != null)
-        // {
-        // _popupPositioner.Update(_positionerParameters.);
-        // }
     }
 
     public (bool handled, IInputElement? next) GetNext(IInputElement element, NavigationDirection direction) {

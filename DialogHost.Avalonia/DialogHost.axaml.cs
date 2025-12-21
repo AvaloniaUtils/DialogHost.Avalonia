@@ -258,7 +258,7 @@ public class DialogHost : ContentControl {
     /// </summary>
     public ICommand OpenDialogCommand {
         get => _openDialogCommand;
-        private set => SetAndRaise<ICommand>(OpenDialogCommandProperty, ref _openDialogCommand, value);
+        private set => SetAndRaise(OpenDialogCommandProperty, ref _openDialogCommand, value);
     }
 
     /// <summary>
@@ -266,7 +266,7 @@ public class DialogHost : ContentControl {
     /// </summary>
     public ICommand CloseDialogCommand {
         get => _closeDialogCommand;
-        private set => SetAndRaise<ICommand>(CloseDialogCommandProperty, ref _closeDialogCommand, value);
+        private set => SetAndRaise(CloseDialogCommandProperty, ref _closeDialogCommand, value);
     }
 
     /// <summary>
@@ -516,20 +516,19 @@ public class DialogHost : ContentControl {
     /// <returns>Task result is the parameter used to close the dialog, typically what is passed to the <see cref="CloseDialogCommand"/> command.</returns>
     public static Task<object?> Show(object? content, DialogHost instance, DialogOpenedEventHandler? openedEventHandler,
         DialogClosingEventHandler? closingEventHandler) {
-        //if (content is null) throw new ArgumentNullException(nameof(content));
         if (instance is null) throw new ArgumentNullException(nameof(instance));
         return instance.ShowCore(content, openedEventHandler, closingEventHandler);
     }
 
     /// <summary>Close a modal dialog.</summary>
-    /// <param name="dialogIdentifier">of the instance where the dialog should be closed. Typically this will match an identifier set in XAML.</param>
+    /// <param name="dialogIdentifier">of the instance where the dialog should be closed. Typically, this will match an identifier set in XAML.</param>
     public static void Close(string? dialogIdentifier)
         => Close(dialogIdentifier, null);
 
     /// <summary>
     /// Close a modal dialog, with content
     /// </summary>
-    /// <param name="dialogIdentifier">of the instance where the dialog should be closed. Typically this will match an identifier set in XAML.</param>
+    /// <param name="dialogIdentifier">of the instance where the dialog should be closed. Typically, this will match an identifier set in XAML.</param>
     /// <param name="parameter">to provide to close handler</param>
     public static void Close(string? dialogIdentifier, object? parameter)
         => Close(dialogIdentifier, parameter, null);
@@ -537,7 +536,7 @@ public class DialogHost : ContentControl {
     /// <summary>
     ///  Close a modal dialog.
     /// </summary>
-    /// <param name="dialogIdentifier"> of the instance where the dialog should be closed. Typically this will match an identifier set in XAML. </param>
+    /// <param name="dialogIdentifier"> of the instance where the dialog should be closed. Typically, this will match an identifier set in XAML. </param>
     /// <param name="parameter">to provide to close handler</param>
     /// <param name="content">the open content</param>
     public static void Close(string? dialogIdentifier, object? parameter, object? content) {
@@ -557,7 +556,7 @@ public class DialogHost : ContentControl {
             }
         }
 
-        throw new InvalidOperationException("DialogHost is not open.");
+        throw new InvalidOperationException("DialogHost session with requested parameters is not found.");
     }
 
     /// <summary>
@@ -566,13 +565,7 @@ public class DialogHost : ContentControl {
     /// <param name="dialogIdentifier"><see cref="Identifier"/> of the instance where the dialog should be shown. Typically this will match an identifier set in XAML. <c>null</c> is allowed.</param>
     /// <param name="content">Content to show (can be a control or view model).</param>
     public static void Pop(string? dialogIdentifier, object? content) {
-        var dialogHost = GetInstance(dialogIdentifier);
-        if (dialogHost != null) {
-            dialogHost.PopCore(content);
-            return;
-        }
-
-        throw new InvalidOperationException("DialogHost is not open.");
+        GetInstance(dialogIdentifier).PopCore(content);
     }
 
     private void PopCore(object? content) {
@@ -588,7 +581,6 @@ public class DialogHost : ContentControl {
         _overlayPopupHosts.Remove(host);
         _overlayPopupHosts.Add(host);
         host.Pop();
-        return;
     }
 
     /// <summary>
@@ -631,11 +623,11 @@ public class DialogHost : ContentControl {
                 return false;
             }
 
-            return host.CurrentSession.IsEnded == false;
+            return !host.CurrentSession.IsEnded;
         }
         foreach (var item in host._overlayPopupHosts) {
             if (item.Content == content) {
-                return item.Session.IsEnded == false;
+                return !item.Session.IsEnded;
             }
         }
 
@@ -666,9 +658,7 @@ public class DialogHost : ContentControl {
 
         IsOpen = true;
 
-        var result = await task.Task;
-
-        return result;
+        return await task.Task;
     }
 
     private void IsOpenPropertyChangedCallback(bool newValue) {
@@ -722,7 +712,7 @@ public class DialogHost : ContentControl {
             popupHost.IsOpen = true;
         }
 
-        _templateDisposables = new CompositeDisposable() {
+        _templateDisposables = new CompositeDisposable {
             _disposeList,
             e.NameScope.Find<Rectangle>(ContentCoverName)?.AddDisposableHandler(PointerReleasedEvent, ContentCoverGrid_OnPointerReleased) ?? EmptyDisposable.Instance
         };
