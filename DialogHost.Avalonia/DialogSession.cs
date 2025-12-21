@@ -58,7 +58,7 @@ public class DialogSession {
     {
         if (IsEnded) throw new InvalidOperationException("Dialog session has ended.");
 
-        _owner.InternalClose(this, null);
+        _owner.InternalClose(this, null, true);
     }
 
     /// <summary>
@@ -70,7 +70,7 @@ public class DialogSession {
     {
         if (IsEnded) throw new InvalidOperationException("Dialog session has ended.");
 
-        _owner.InternalClose(this, parameter);
+        _owner.InternalClose(this, parameter, true);
     }
 
     internal void ShowOpened(object obj, DialogOpenedEventArgs args) {

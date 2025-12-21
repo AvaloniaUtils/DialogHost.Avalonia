@@ -687,11 +687,13 @@ public class DialogHost : ContentControl {
             OnDialogOpened(dialogOpenedEventArgs);
             DialogOpenedCallback?.Invoke(this, dialogOpenedEventArgs);
             CurrentSession?.ShowOpened(this, dialogOpenedEventArgs);
-
-            // dialogHost._overlayPopupHost?.ConfigurePosition(dialogHost._root, PlacementMode.AnchorAndGravity, new Point());
         }
         else {
-            RemoveAllHost();
+            for (var i = _overlayPopupHosts.Count - 1; i >= 0; i--)
+            {
+                var session = _overlayPopupHosts[i].Session;
+                InternalClose(session, session.CloseParameter, false);
+            }
 
             _restoreFocusDialogClose?.Focus();
         }
@@ -799,25 +801,9 @@ public class DialogHost : ContentControl {
         return host.DialogTaskCompletionSource;
     }
 
-    private void RemoveHost(DialogOverlayPopupHost? host) {
-        if (host == null) {
-            return;
-        }
-
-        var session = host.Session;
-        if (!session.IsEnded) {
-            session.Close(session.CloseParameter);
-            return;
-        }
-
-        //DialogSession.Close may attempt to cancel the closing of the dialog.
-        //When the dialog is closed in this manner it is not valid
-        if (!session.IsEnded) {
-            throw new InvalidOperationException($"Cannot cancel dialog closing after {nameof(IsOpen)} property has been set to {bool.FalseString}");
-        }
-
+    private void RemoveHost(DialogOverlayPopupHost host) {
         //NB: _dialogTaskCompletionSource is only set in the case where the dialog is shown with Show
-        host.DialogTaskCompletionSource.TrySetResult(session.CloseParameter);
+        host.DialogTaskCompletionSource.TrySetResult(host.Session.CloseParameter);
         host.IsOpen = false;
         host.Content = null;
 
@@ -827,12 +813,6 @@ public class DialogHost : ContentControl {
 
         if (_overlayPopupHosts.Count == 0) {
             SetAndRaise(IsOpenProperty, ref _isOpen, false);
-        }
-    }
-
-    private void RemoveAllHost() {
-        foreach (var host in _overlayPopupHosts.ToArray().Reverse()) {
-            RemoveHost(host);
         }
     }
 
@@ -873,10 +853,10 @@ public class DialogHost : ContentControl {
     internal void InternalClose(object? parameter) {
         var session = CurrentSession ?? throw new InvalidOperationException($"{nameof(DialogHost)} does not have a current session");
 
-        InternalClose(session, parameter);
+        InternalClose(session, parameter, true);
     }
 
-    internal void InternalClose(DialogSession session, object? parameter) {
+    internal void InternalClose(DialogSession session, object? parameter, bool canBeCancelled) {
         session.CloseParameter = parameter;
         session.IsEnded = true;
 
@@ -884,7 +864,7 @@ public class DialogHost : ContentControl {
         // * routed event
         // * straight forward IsOpen dependency property 
         // * handler provided to the async show method
-        var dialogClosingEventArgs = new DialogClosingEventArgs(session, DialogClosingEvent);
+        var dialogClosingEventArgs = new DialogClosingEventArgs(session, DialogClosingEvent, canBeCancelled);
         OnDialogClosing(dialogClosingEventArgs);
         DialogClosingCallback?.Invoke(this, dialogClosingEventArgs);
         session.ShowClosing(this, dialogClosingEventArgs);
