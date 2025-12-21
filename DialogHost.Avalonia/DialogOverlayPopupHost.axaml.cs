@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Avalonia;
@@ -78,7 +79,8 @@ public class DialogOverlayPopupHost : ContentControl, ICustomKeyboardNavigation 
 
     internal void Show() {
         if (Parent == null) {
-            _host.Root.Children.Add(this);
+            Debug.Assert(_host.Root is not null, "Show called before DialogHost template is applied");
+            _host.Root?.Children.Add(this);
         }
 
         // Set the minimum priority to allow overriding it everywhere
@@ -88,7 +90,7 @@ public class DialogOverlayPopupHost : ContentControl, ICustomKeyboardNavigation 
     }
 
     internal void Hide() {
-        _host.Root.Children.Remove(this);
+        _host.Root?.Children.Remove(this);
     }
 
     protected override Size MeasureOverride(Size availableSize) {
