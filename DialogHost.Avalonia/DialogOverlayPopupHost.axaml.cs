@@ -110,8 +110,8 @@ public class DialogOverlayPopupHost : ContentControl, ICustomKeyboardNavigation 
             Math.Max(0, finalRect.Height - margin.Top - margin.Bottom));
 
         var contentSize = new Size(
-            Math.Min(size.Width, DesiredSize.Width - margin.Left - margin.Right),
-            Math.Min(size.Height, DesiredSize.Height - margin.Top - margin.Bottom));
+            Math.Max(0, Math.Min(size.Width, DesiredSize.Width - margin.Left - margin.Right)),
+            Math.Max(0, Math.Min(size.Height, DesiredSize.Height - margin.Top - margin.Bottom)));
         var positioner = PopupPositioner ?? CenteredDialogPopupPositioner.Instance;
         var bounds = positioner.Update(size, contentSize);
 
