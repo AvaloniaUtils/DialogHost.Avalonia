@@ -11,9 +11,6 @@ namespace DialogHostDemo.Views;
 public partial class MainWindow : Window {
     public MainWindow() {
         InitializeComponent();
-#if DEBUG
-        this.AttachDevTools();
-#endif
     }
     
     private async void OpenNoAnimationDialog(object? sender, RoutedEventArgs e) {

@@ -1,5 +1,5 @@
 ﻿using Avalonia;
-using Avalonia.ReactiveUI;
+using ReactiveUI.Avalonia;
 
 namespace DialogHostDemo;
 
@@ -16,5 +16,6 @@ class Program
         => AppBuilder.Configure<App>()
             .UsePlatformDetect()
             .LogToTrace()
-            .UseReactiveUI();
+            .UseReactiveUI()
+            .WithDeveloperTools();
 }

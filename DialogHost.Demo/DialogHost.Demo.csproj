@@ -6,7 +6,7 @@
     <RootNamespace>DialogHostDemo</RootNamespace>
     <IsPackable>false</IsPackable>
 
-    <AvaloniaVersion>11.2.3</AvaloniaVersion>
+    <AvaloniaVersion>12.0.0-preview1</AvaloniaVersion>
   </PropertyGroup>
   <ItemGroup>
     <Folder Include="Models\"/>
@@ -15,10 +15,10 @@
   <ItemGroup>
     <PackageReference Include="Avalonia" Version="$(AvaloniaVersion)"/>
     <PackageReference Include="Avalonia.Desktop" Version="$(AvaloniaVersion)"/>
-    <PackageReference Include="Avalonia.Diagnostics" Version="$(AvaloniaVersion)"/>
-    <PackageReference Include="Avalonia.ReactiveUI" Version="$(AvaloniaVersion)"/>
     <PackageReference Include="Avalonia.Themes.Fluent" Version="$(AvaloniaVersion)"/>
-    <PackageReference Include="Material.Icons.Avalonia" Version="2.1.0"/>
+    <PackageReference Include="AvaloniaUI.DiagnosticsSupport" Version="2.2.0-beta2"/>
+    <PackageReference Include="ReactiveUI.Avalonia" Version="11.3.8"/>
+    <PackageReference Include="Material.Icons.Avalonia" Version="3.0.0-avalonia12"/>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DialogHost.Avalonia\DialogHost.Avalonia.csproj"/>
