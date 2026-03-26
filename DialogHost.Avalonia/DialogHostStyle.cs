@@ -36,6 +36,13 @@ public static class DialogHostStyle {
         AvaloniaProperty.RegisterAttached<DialogHost, Thickness>("BorderThickness", typeof(DialogHostStyle));
 
     /// <summary>
+    /// Controls BoxShadow DialogHost's popup background.
+    /// Works only for default DialogHost theme!
+    /// </summary>
+    public static readonly AttachedProperty<BoxShadows> BoxShadowProperty =
+        AvaloniaProperty.RegisterAttached<DialogHost, BoxShadows>("BoxShadow", typeof(DialogHostStyle));
+
+    /// <summary>
     /// Get CornerRadius in DialogHost's popup background.
     /// Works only for default DialogHost theme!
     /// </summary>
@@ -87,5 +94,23 @@ public static class DialogHostStyle {
     public static void SetBorderThickness(DialogHost element, Thickness value)
     {
         element.SetValue(BorderThicknessProperty, value);
+    }
+
+    /// <summary>
+    /// Get BoxShadow in DialogHost's popup background.
+    /// Works only for default DialogHost theme!
+    /// </summary>
+    public static BoxShadows GetBoxShadow(DialogHost element)
+    {
+        return element.GetValue(BoxShadowProperty);
+    }
+
+    /// <summary>
+    /// Set BoxShadow in DialogHost's popup background.
+    /// Works only for default DialogHost theme!
+    /// </summary>
+    public static void SetBoxShadow(DialogHost element, BoxShadows value)
+    {
+        element.SetValue(BoxShadowProperty, value);
     }
 }
