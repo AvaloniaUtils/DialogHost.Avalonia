@@ -29,6 +29,7 @@
     <Setter Property="Background" Value="{DynamicResource DialogHostBackgroundMixinBrush}" />
     <Setter Property="dialogHostAvalonia:DialogHostStyle.ClipToBounds" Value="False" />
     <Setter Property="dialogHostAvalonia:DialogHostStyle.CornerRadius" Value="2" />
+    <Setter Property="dialogHostAvalonia:DialogHostStyle.BoxShadow" Value="1.5 1.5 8 #4c000000" />
     <Setter Property="Template">
       <ControlTemplate>
         <Panel Name="PART_DialogHostRoot" Focusable="False">
@@ -56,7 +57,7 @@
                 BorderBrush="{Binding Path=(dialogHostAvalonia:DialogHostStyle.BorderBrush), RelativeSource={RelativeSource FindAncestor, AncestorType=dialogHostAvalonia:DialogHost}}"
                 BorderThickness="{Binding Path=(dialogHostAvalonia:DialogHostStyle.BorderThickness), RelativeSource={RelativeSource FindAncestor, AncestorType=dialogHostAvalonia:DialogHost}}"
                 CornerRadius="{Binding Path=(dialogHostAvalonia:DialogHostStyle.CornerRadius), RelativeSource={RelativeSource FindAncestor, AncestorType=dialogHostAvalonia:DialogHost}}"
-                BoxShadow="1.5 1.5 8 #4c000000"
+                BoxShadow="{Binding Path=(dialogHostAvalonia:DialogHostStyle.BoxShadow), RelativeSource={RelativeSource FindAncestor, AncestorType=dialogHostAvalonia:DialogHost}}"
                 ClipToBounds="{Binding Path=(dialogHostAvalonia:DialogHostStyle.ClipToBounds), RelativeSource={RelativeSource FindAncestor, AncestorType=dialogHostAvalonia:DialogHost}}"
                 Background="{Binding Path=Background, RelativeSource={RelativeSource FindAncestor, AncestorType=dialogHostAvalonia:DialogHost}}">
           <ContentPresenter Name="PART_ContentPresenter"
