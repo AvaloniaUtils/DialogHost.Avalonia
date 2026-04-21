@@ -38,13 +38,13 @@ public class DialogHostStyles : Styles, IResourceNode {
     /// Lists of resource keys which will be used as defaults for DialogHost.Background property
     /// </summary>
     public static IReadOnlyList<string> BackgroundColorKeys { get; } =
-        ["SystemControlBackgroundAltHighBrush", "MaterialDesignPaper", "MaterialPaperBrush"];
+        ["SystemControlBackgroundAltHighBrush", "MaterialDesignPaper", "MaterialPaperBrush", "ThemeBackgroundBrush"];
 
     /// <summary>
     /// Lists of resource keys which will be used as defaults for DialogHost.OverlayBackground property
     /// </summary>
     public static IReadOnlyList<string> OverlayBackgroundColorKeys { get; } =
-        ["SystemChromeDisabledLowColor", "MaterialBodyLightColor"];
+        ["SystemChromeDisabledLowColor", "MaterialBodyLightColor", "ThemeBorderLowBrush"];
 
     bool IResourceNode.HasResources => true;
 
