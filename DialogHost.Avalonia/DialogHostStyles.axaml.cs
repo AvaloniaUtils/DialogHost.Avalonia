@@ -68,7 +68,7 @@ public class DialogHostStyles : Styles, IResourceNode {
                 }
             }
 
-            value = Brushes.Black;
+            value = ResolveFallbackBrush(theme);
             return true;
         }
 
@@ -79,10 +79,31 @@ public class DialogHostStyles : Styles, IResourceNode {
                 }
             }
 
-            value = Brushes.Black;
+            value = ResolveFallbackBrush(theme);
             return true;
         }
 
         return base.TryGetResource(key, theme, out value);
+    }
+
+    private IBrush ResolveFallbackBrush(ThemeVariant? theme) {
+        // No theme - look global
+        if (theme is null) {
+            return Application.Current?.ActualThemeVariant is not null
+                ? ResolveFallbackBrush(Application.Current.ActualThemeVariant)
+                : Brushes.Gray; // Or return fallback
+        }
+
+        if (theme == ThemeVariant.Light || theme.Key == ThemeVariant.Light.Key) {
+            return Brushes.White;
+        }
+
+        if (theme == ThemeVariant.Dark || theme.Key == ThemeVariant.Dark.Key) {
+            return Brushes.Black;
+        }
+
+        return theme.InheritVariant is not null 
+            ? ResolveFallbackBrush(theme.InheritVariant) 
+            : Brushes.Gray;
     }
 }
