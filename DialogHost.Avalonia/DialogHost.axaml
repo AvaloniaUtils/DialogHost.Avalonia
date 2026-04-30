@@ -19,7 +19,7 @@
       </Button>
     </dialogHostAvalonia:DialogHost>
   </Design.PreviewWith>
-
+  
   <ControlTheme x:Key="{x:Type dialogHostAvalonia:DialogHost}"
                 TargetType="dialogHostAvalonia:DialogHost">
     <Setter Property="HorizontalAlignment" Value="Stretch" />
@@ -53,13 +53,17 @@
     </Setter>
     <Setter Property="PopupTemplate">
       <ControlTemplate>
-        <Border Name="PART_ContentBackground"
-                BorderBrush="{Binding Path=(dialogHostAvalonia:DialogHostStyle.BorderBrush), RelativeSource={RelativeSource FindAncestor, AncestorType=dialogHostAvalonia:DialogHost}}"
-                BorderThickness="{Binding Path=(dialogHostAvalonia:DialogHostStyle.BorderThickness), RelativeSource={RelativeSource FindAncestor, AncestorType=dialogHostAvalonia:DialogHost}}"
-                CornerRadius="{Binding Path=(dialogHostAvalonia:DialogHostStyle.CornerRadius), RelativeSource={RelativeSource FindAncestor, AncestorType=dialogHostAvalonia:DialogHost}}"
-                BoxShadow="{Binding Path=(dialogHostAvalonia:DialogHostStyle.BoxShadow), RelativeSource={RelativeSource FindAncestor, AncestorType=dialogHostAvalonia:DialogHost}}"
-                ClipToBounds="{Binding Path=(dialogHostAvalonia:DialogHostStyle.ClipToBounds), RelativeSource={RelativeSource FindAncestor, AncestorType=dialogHostAvalonia:DialogHost}}"
-                Background="{Binding Path=Background, RelativeSource={RelativeSource FindAncestor, AncestorType=dialogHostAvalonia:DialogHost}}">
+        <Border Name="PART_ContentBackground">
+          <Border.Styles>
+            <Style Selector="Border#PART_ContentBackground">
+                <Setter Property="BorderBrush" Value="{Binding (dialogHostAvalonia:DialogHostStyle.BorderBrush), RelativeSource={RelativeSource AncestorType=dialogHostAvalonia:DialogHost}}" />
+                <Setter Property="BorderThickness" Value="{Binding (dialogHostAvalonia:DialogHostStyle.BorderThickness), RelativeSource={RelativeSource AncestorType=dialogHostAvalonia:DialogHost}}" />
+                <Setter Property="CornerRadius" Value="{Binding (dialogHostAvalonia:DialogHostStyle.CornerRadius), RelativeSource={RelativeSource AncestorType=dialogHostAvalonia:DialogHost}}" />
+                <Setter Property="BoxShadow" Value="{Binding (dialogHostAvalonia:DialogHostStyle.BoxShadow), RelativeSource={RelativeSource AncestorType=dialogHostAvalonia:DialogHost}}" />
+                <Setter Property="ClipToBounds" Value="{Binding (dialogHostAvalonia:DialogHostStyle.ClipToBounds), RelativeSource={RelativeSource AncestorType=dialogHostAvalonia:DialogHost}}" />
+                <Setter Property="Background" Value="{Binding Background, RelativeSource={RelativeSource AncestorType=dialogHostAvalonia:DialogHost}}" />
+            </Style>
+          </Border.Styles>
           <ContentPresenter Name="PART_ContentPresenter"
                             ContentTemplate="{TemplateBinding ContentTemplate}"
                             Content="{TemplateBinding Content}"
