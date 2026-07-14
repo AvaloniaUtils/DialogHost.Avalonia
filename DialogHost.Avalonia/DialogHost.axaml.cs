@@ -788,8 +788,6 @@ public class DialogHost : ContentControl {
     }
 
     private void RemoveHost(DialogOverlayPopupHost host) {
-        //NB: _dialogTaskCompletionSource is only set in the case where the dialog is shown with Show
-        host.DialogTaskCompletionSource.TrySetResult(host.Session.CloseParameter);
         host.IsOpen = false;
         host.Content = null;
 
@@ -800,6 +798,8 @@ public class DialogHost : ContentControl {
         if (_overlayPopupHosts.Count == 0) {
             SetAndRaise(IsOpenProperty, ref _isOpen, false);
         }
+
+        host.DialogTaskCompletionSource.TrySetResult(host.Session.CloseParameter);
     }
 
     private void ContentCoverGrid_OnPointerReleased(object sender, PointerReleasedEventArgs e) {
